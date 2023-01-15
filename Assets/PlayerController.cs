@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public float fromLeftJetForce;
     public float fromRightJetForce;
 
+    public Joystick joystick;
+
     public Sprite[] spriteArray;
     public SpriteRenderer spriteRenderer;
     //public Sprite newSprite;
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour
     {
         SpriteRenderer spriteActive = GetComponent<SpriteRenderer>(); //DISTRUGGE SPRITE
         //LEFT
-        if (Input.GetKey(KeyCode.LeftArrow))
+        if (Input.GetKey(KeyCode.LeftArrow)|| joystick.Horizontal !=null)
         {
             RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
             if (hit2.collider != null)
@@ -72,7 +74,7 @@ public class PlayerController : MonoBehaviour
         }
 
         //RIGHT
-        if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKey(KeyCode.RightArrow) || joystick.Horizontal != null)
         {
             RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
             if (hit2.collider != null)
