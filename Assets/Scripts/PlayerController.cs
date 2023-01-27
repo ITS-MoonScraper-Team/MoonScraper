@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -12,11 +13,13 @@ public class PlayerController : MonoBehaviour
     //TrailRenderer trailRenderer;
     public FixedJoystick joystick;
     public Sprite[] spriteArray;
+    public GameObject[] stageWalls;
 
     //public GameObject Handle;
     //RectTransform rectTransform;
 
     bool inputPressed;
+    private bool upPressedDown;
     private bool spacePressedDown;
     private bool spacePressed;
     private bool spacePressedUp;
@@ -29,6 +32,8 @@ public class PlayerController : MonoBehaviour
     public float fromRightJetForce;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
+
+    public GameObject startingStage;
 
     // Start is called before the first frame update
     void Start()
@@ -50,6 +55,36 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //float maxY;
+        Collider2D[] stageColliders; /*= new Collider2D[4];*/
+        stageColliders =  startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
+        //float[] maxYs = new float[stageColliders.Length];
+        float maxY = stageColliders[0].transform.position.y;
+        for (int i = 1; i < stageColliders.Length; i++)
+        {  /*maxYs[i] =*/
+            Debug.Log(stageColliders[i].transform.position.y);
+            if (stageColliders[i].transform.position.y >= stageColliders[i - 1].transform.position.y)
+            {
+                maxY = stageColliders[i].transform.position.y;
+            }
+            else
+            {
+
+            }
+            Debug.Log(stageColliders[i].name +" = "+maxY);
+        }
+        Debug.Log("yoooooo"+maxY);
+
+        //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
+        //{
+        //    Debug.Log(capsuleCollider.bounds.max.y);
+
+        //   // newStage = Instantiate(stageWalls[0]);
+        //    //balls[i].transform.position = ballPos + (direction * newSpacing);
+
+
+        //}
+
         Sprite spriteActive = spriteRenderer.sprite;
         //DISTRUGGE SPRITE attiva: SpriteRenderer.Destroy(spriteActive);
 
@@ -158,9 +193,9 @@ public class PlayerController : MonoBehaviour
             }
 
             // ***KEYBOARD JUMP***
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.UpArrow))
             {
-                spacePressedDown = true;
+                upPressedDown = true;
                 //bool grounded = false;
                 //RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, capsuleCollider.size, capsuleCollider.direction, 0f, Vector2.down, 6);
                 //List<RaycastHit2D> hits = new List<RaycastHit2D>();
@@ -180,7 +215,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                spacePressedDown = false;
+                upPressedDown = false;
             }
 
             // ***KEYBOARD PROPULSION***
