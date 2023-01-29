@@ -60,12 +60,14 @@ public class PlayerController : MonoBehaviour
         stageColliders =  startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
         //float[] maxYs = new float[stageColliders.Length];
         float maxY = stageColliders[0].transform.position.y;
+        string collName = stageColliders[0].name;
         for (int i = 1; i < stageColliders.Length; i++)
         {  /*maxYs[i] =*/
             Debug.Log(stageColliders[i].transform.position.y);
-            if (stageColliders[i].transform.position.y >= stageColliders[i - 1].transform.position.y)
+            if (stageColliders[i].transform.position.y >= maxY)
             {
                 maxY = stageColliders[i].transform.position.y;
+                collName = stageColliders[i].name;
             }
             else
             {
@@ -73,7 +75,13 @@ public class PlayerController : MonoBehaviour
             }
             Debug.Log(stageColliders[i].name +" = "+maxY);
         }
-        Debug.Log("yoooooo"+maxY);
+        Debug.Log("MAX Y"+collName + maxY);
+        Debug.Log(capsuleCollider.bounds.max.y);
+
+        if ((maxY-capsuleCollider.bounds.max.y)<5)
+        {
+            Instantiate(stageWalls[0], new Vector3(0, 10.7f, 0), Quaternion.identity);
+        }
 
         //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
         //{
