@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
-    PolygonCollider2D polygonCollider;
+    //PolygonCollider2D polygonCollider;
     SpriteRenderer spriteRenderer;
     public FixedJoystick joystick;
     public Sprite[] spriteArray;
@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        polygonCollider = GetComponent<PolygonCollider2D>();
+        //polygonCollider = GetComponent<PolygonCollider2D>();
 
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>(); 
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
         //if ((maxY - capsuleCollider.bounds.max.y) < 5)
         //    firstStagePassed = false;
 
-        if ((startingStage.transform.position.y - polygonCollider.bounds.max.y) < 4.7f && firstStagePassed == false)
+        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.7f && firstStagePassed == false)
         {
             listaStageGenerati.Add(Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
             listaBackGround.Add(Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
@@ -123,7 +123,7 @@ public class PlayerController : MonoBehaviour
         //        stageDone = true;
         //    }
 
-        if ((listaStageGenerati[0].transform.position.y - polygonCollider.bounds.max.y) < 5)
+        if ((listaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 5)
         { stageDone = false; }
         if ( stageDone == false)
         {
@@ -187,7 +187,7 @@ public class PlayerController : MonoBehaviour
             // ***KEYBOARD LEFT MOVEMENT***
             if (Input.GetKey(KeyCode.LeftArrow))
             {
-                RaycastHit2D hit = Physics2D.Raycast(polygonCollider.bounds.min, Vector2.down, 0.1f);
+                RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
                 if (hit.collider != null)
                 {
                     Debug.Log("Sono a terra.");
@@ -218,7 +218,7 @@ public class PlayerController : MonoBehaviour
             // ***KEYBOARD RIGHT MOVEMENT***
             if (Input.GetKey(KeyCode.RightArrow))
             {
-                RaycastHit2D hit = Physics2D.Raycast(polygonCollider.bounds.min, Vector2.down, 0.1f);
+                RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
                 if (hit.collider != null)
                 {
                     Debug.Log("Sono a terra.");
@@ -253,7 +253,7 @@ public class PlayerController : MonoBehaviour
                 //RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, capsuleCollider.size, capsuleCollider.direction, 0f, Vector2.down, 6);
                 //List<RaycastHit2D> hits = new List<RaycastHit2D>();
 
-                RaycastHit2D hit = Physics2D.Raycast(polygonCollider.bounds.min, Vector2.down, 0.1f);
+                RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
                 if (hit.collider != null)
                 {
                     Debug.Log("Sono a terra.");
@@ -278,7 +278,7 @@ public class PlayerController : MonoBehaviour
 
                 //Rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
 
-                RaycastHit2D hit2 = Physics2D.Raycast(polygonCollider.bounds.min, Vector2.down, 0.1f);
+                RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
 
                 if (hit2.collider != null)
                 {

@@ -1184,7 +1184,7 @@ MonoBehaviour:
   m_ScreenX: 0.5
   m_ScreenY: 0.4
   m_CameraDistance: 10
-  m_DeadZoneWidth: 0.76
+  m_DeadZoneWidth: 0.73
   m_DeadZoneHeight: 0
   m_DeadZoneDepth: 0
   m_UnlimitedSoftZone: 0
@@ -2289,6 +2289,10 @@ PrefabInstance:
       propertyPath: startingStage
       value: 
       objectReference: {fileID: 2088106759}
+    - target: {fileID: 7523121409246785218, guid: f87df8eac3985ad428bfd4991e0ff433, type: 3}
+      propertyPath: JoystickControl
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7523121409246785218, guid: f87df8eac3985ad428bfd4991e0ff433, type: 3}
       propertyPath: backGround.Array.size
       value: 1
