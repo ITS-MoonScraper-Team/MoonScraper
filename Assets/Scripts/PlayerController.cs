@@ -17,12 +17,15 @@ public class PlayerController : MonoBehaviour
     //public TrailRenderer trailRenderer;
     //public GameObject Handle;
 
+    #region State Variables
     private bool inputPressed;
     private bool upPressedDown;
     private bool spacePressedDown;
     private bool spacePressed;
     private bool spacePressedUp;
     private bool leftPressed;
+    #endregion
+
     private bool firstStagePassed = false;
     private bool stageDone = true;
 
@@ -81,11 +84,9 @@ public class PlayerController : MonoBehaviour
         if (JoystickControl)
         {
             if (joystick.Vertical > 0)
-            {
-                Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * joystick.Vertical);
-            }
+            { Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * joystick.Vertical); }
 
-            // **Check Facing**
+            //Check Facing
             float posizFacing;
 
             if (joystick.Horizontal != 0)
@@ -106,9 +107,7 @@ public class PlayerController : MonoBehaviour
             }
         }
         else
-        {
-            //FixedUpdate();
-        }
+        { /*FixedUpdate();*/ }
     }
 
     void FixedUpdate()
@@ -188,17 +187,12 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Sono a terra.");
                     Debug.Log($"{hit.collider.gameObject.name}");
                     Rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-
                 }
                 else
-                {
-                    Debug.Log("Sono in aria.");
-                }
+                { Debug.Log("Sono in aria."); }
             }
             else
-            {
-                upPressedDown = false;
-            }
+            { upPressedDown = false; }
 
             // ***KEYBOARD PROPULSION***
             if (Input.GetKey(KeyCode.Space))
@@ -226,9 +220,7 @@ public class PlayerController : MonoBehaviour
                 }
             }
             else
-            {
-                spacePressed = false;
-            }
+            { spacePressed = false; }
         
     }
 }

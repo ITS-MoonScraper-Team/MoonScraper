@@ -8,12 +8,14 @@ public class WallGeneration : MonoBehaviour
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
     //PolygonCollider2D polygonCollider;
-    SpriteRenderer spriteRenderer;
-    public Sprite[] spriteArray;
+
     public GameObject startingStage;
     public GameObject[] stageWalls;
     public GameObject[] backGround;
+
     //public Camera MainCamera;
+    //SpriteRenderer spriteRenderer;
+    //public Sprite[] spriteArray;
 
     private bool firstStagePassed = false;
     private bool stageDone = true;
