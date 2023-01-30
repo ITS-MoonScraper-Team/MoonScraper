@@ -15,6 +15,11 @@ public class PlayerController : MonoBehaviour
     public Sprite[] spriteArray;
     public GameObject[] stageWalls;
 
+    //public class GeneratedWalls
+    //{
+    //    //public GameObject wall;
+    //}
+
     //public GameObject Handle;
     //RectTransform rectTransform;
 
@@ -24,6 +29,8 @@ public class PlayerController : MonoBehaviour
     private bool spacePressed;
     private bool spacePressedUp;
     private bool leftPressed;
+    private bool firstStagePassed = false;
+    private List<GameObject> listaStageGenerati = new List<GameObject>();
 
     public bool JoystickControl;
     public float jumpForce;
@@ -34,6 +41,8 @@ public class PlayerController : MonoBehaviour
     public bool leftRightInAirOnly;
 
     public GameObject startingStage;
+
+    //private int rng;
 
     // Start is called before the first frame update
     void Start()
@@ -55,33 +64,71 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        
         //float maxY;
-        Collider2D[] stageColliders; /*= new Collider2D[4];*/
-        stageColliders =  startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
-        //float[] maxYs = new float[stageColliders.Length];
-        float maxY = stageColliders[0].transform.position.y;
-        string collName = stageColliders[0].name;
-        for (int i = 1; i < stageColliders.Length; i++)
-        {  /*maxYs[i] =*/
-            Debug.Log(stageColliders[i].transform.position.y);
-            if (stageColliders[i].transform.position.y >= maxY)
-            {
-                maxY = stageColliders[i].transform.position.y;
-                collName = stageColliders[i].name;
-            }
-            else
-            {
+        //if (firstStagePassed == false)
+        //{
 
-            }
-            Debug.Log(stageColliders[i].name +" = "+maxY);
-        }
-        Debug.Log("MAX Y"+collName + maxY);
-        Debug.Log(capsuleCollider.bounds.max.y);
+            Collider2D[] stageColliders; /*= new Collider2D[4];*/
+            stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
+            //float[] maxYs = new float[stageColliders.Length];
+            float maxY = stageColliders[0].transform.position.y;
+            string collName = stageColliders[0].name;
+            for (int i = 1; i < stageColliders.Length; i++)
+            {  /*maxYs[i] =*/
+                Debug.Log(stageColliders[i].transform.position.y);
+                if (stageColliders[i].transform.position.y >= maxY)
+                {
+                    maxY = stageColliders[i].transform.position.y;
+                    collName = stageColliders[i].name;
+                }
+                else
+                {
 
-        if ((maxY-capsuleCollider.bounds.max.y)<5)
-        {
-            Instantiate(stageWalls[0], new Vector3(0, 10.7f, 0), Quaternion.identity);
-        }
+                }
+                Debug.Log(stageColliders[i].name + " = " + maxY);
+            }
+            Debug.Log("MAX Y" + collName + maxY);
+            Debug.Log(capsuleCollider.bounds.max.y);
+
+            if ((maxY - capsuleCollider.bounds.max.y) < 5)
+            {
+                listaStageGenerati.Add(Instantiate(stageWalls[Random.Range(0, 1)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
+                firstStagePassed = true;
+            }
+        //}
+
+        //else
+        //{
+
+            Collider2D[] newStageColliders; /*= new Collider2D[4];*/
+            newStageColliders = listaStageGenerati[0].GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
+            //float[] maxYs = new float[stageColliders.Length];
+            float newMaxY = newStageColliders[0].transform.position.y;
+            string newCollName = newStageColliders[0].name;
+            for (int i = 1; i < newStageColliders.Length; i++)
+            {  /*maxYs[i] =*/
+                Debug.Log(newStageColliders[i].transform.position.y);
+                if (newStageColliders[i].transform.position.y >= newMaxY)
+                {
+                    newMaxY = newStageColliders[i].transform.position.y;
+                    newCollName = newStageColliders[i].name;
+                }
+                else
+                {
+
+                }
+                Debug.Log(newStageColliders[i].name + " = " + newMaxY);
+            }
+
+            if ((newMaxY - capsuleCollider.bounds.max.y) < 5)
+            {
+                listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 1)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
+            }
+        //}
+
+        //if (())
 
         //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
         //{
