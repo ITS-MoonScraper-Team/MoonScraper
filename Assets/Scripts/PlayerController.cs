@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
+using Unity.Burst.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
@@ -48,7 +49,20 @@ public class PlayerController : MonoBehaviour
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>(); 
     }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == 3)
+        {
+            Destroy(gameObject);
+        }
+        if (collision.gameObject.layer==8)
+        {
+            if (transform.position.y < collision.transform.position.y)
+            Destroy(gameObject);
+        }
 
+    }
+    
     // ***Cambia sprite direzione movimento***
     void ChangeSprite(Sprite _newSprite)
     {
@@ -58,6 +72,31 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
+        //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
+        //{
+        //    hit.collider.GetComponent<MainCharacter>().OnHitSuffered();
+        //}
+
+        //RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+        //if (hit.collider != null)
+        //{
+        //    Debug.Log("Sono a terra.");
+        //}
+
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.1f, 6);
+        //if (hit)
+        //{
+        //    hit.collider.IsTouchingLayers(3);
+        //}
+
+        //if(capsuleCollider.CompareTag("walls"))
+        //{
+        //    Destroy(gameObject);
+        //}
+
+
 
         Debug.Log("VELOCITY " + Rigidbody.velocity.magnitude);
 

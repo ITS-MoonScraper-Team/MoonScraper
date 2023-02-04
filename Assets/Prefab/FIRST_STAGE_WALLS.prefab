@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2251112384981550047}
   - component: {fileID: 2251112384981550046}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spike_01 (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: 2251112385566987384}
   - component: {fileID: 2251112385566987386}
   - component: {fileID: 2251112385566987387}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: wall3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -204,7 +204,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2251112385572680136}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlatformChipArrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -244,7 +244,7 @@ GameObject:
   - component: {fileID: 2251112385810403380}
   - component: {fileID: 2251112385810403382}
   - component: {fileID: 2251112385810403383}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: wall2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -354,7 +354,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2251112385868717797}
   - component: {fileID: 2251112385868717796}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spike_01 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -438,7 +438,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2251112386062708610}
   - component: {fileID: 2251112386062708613}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Spike_01 (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -521,7 +521,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2251112385728178427}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: FIRST_STAGE_WALLS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -560,7 +560,7 @@ GameObject:
   - component: {fileID: 2251112386529757412}
   - component: {fileID: 2251112386529757414}
   - component: {fileID: 2251112386529757415}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSteps (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -685,7 +685,7 @@ GameObject:
   - component: {fileID: 2251112386583427097}
   - component: {fileID: 2251112386583427099}
   - component: {fileID: 2251112386583427096}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSteps
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -810,7 +810,7 @@ GameObject:
   - component: {fileID: 2251112386642598703}
   - component: {fileID: 2251112386642598737}
   - component: {fileID: 2251112386642598702}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: wall1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -921,7 +921,7 @@ GameObject:
   - component: {fileID: 2251112386793771662}
   - component: {fileID: 2251112386793771696}
   - component: {fileID: 2251112386793771697}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: TileForward (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1032,7 +1032,7 @@ GameObject:
   - component: {fileID: 2251112386880672766}
   - component: {fileID: 2251112386880672736}
   - component: {fileID: 2251112386880672737}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: wall4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1143,7 +1143,7 @@ GameObject:
   - component: {fileID: 2251112386924765944}
   - component: {fileID: 2251112386924765946}
   - component: {fileID: 2251112386924765947}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSteps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1317,6 +1317,18 @@ PrefabInstance:
     - target: {fileID: 5955942350611972103, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
       propertyPath: m_Name
       value: CrystalBox
+      objectReference: {fileID: 0}
+    - target: {fileID: 5955942350611972103, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5955942350888614073, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5955942352246040140, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
