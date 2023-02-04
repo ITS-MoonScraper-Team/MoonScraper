@@ -59,7 +59,13 @@ public class PlayerController : MonoBehaviour
         {
             if (transform.position.y < collision.transform.position.y)
             Destroy(gameObject);
+            //else
+            //{
+            //    if (Rigidbody.velocity.magnitude > 10f)
+            //        Destroy(gameObject);
+            //}
         }
+        
 
     }
     
