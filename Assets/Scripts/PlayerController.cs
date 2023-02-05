@@ -106,10 +106,47 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("VELOCITY " + Rigidbody.velocity.magnitude);
 
-        //muore se scende troppo
-        if (transform.position.y < GetComponent<WallGeneration>().listaStageGenerati[4].transform.position.y)
+
+        #region |>>> JOYSTICK MOVEMENT <<<|
+
+        if (JoystickControl)
         {
-            Destroy(gameObject);
+            if (joystick.Vertical > 0)
+            { Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * joystick.Vertical); }
+
+            //Check Facing
+            float posizFacing;
+
+            if (joystick.Horizontal != 0)
+            {
+                posizFacing = joystick.Horizontal;
+                if (posizFacing > 0)
+                {
+                    Rigidbody.velocity = new Vector2(fromLeftJetForce * joystick.Horizontal, Rigidbody.velocity.y);
+                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
+                    ChangeSprite(spriteArray[1]);
+                    //ChangeAnimationRight();
+                }
+                if (posizFacing < 0)
+                {
+                    Rigidbody.velocity = new Vector2(fromRightJetForce * joystick.Horizontal, Rigidbody.velocity.y);
+                    //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
+                    ChangeSprite(spriteArray[0]);
+                    //ChangeAnimationLeft();
+                }
+            }
+        }
+        else
+        { }
+
+        #endregion
+        //muore se scende troppo
+        if(WallGeneration.Instance.listaStageGenerati.Count > 3)
+        {
+            if (transform.position.y < WallGeneration.Instance.listaStageGenerati[3].transform.position.y)
+            {
+                Destroy(gameObject);
+            }
         }
 
         #region reycast test
@@ -155,39 +192,7 @@ public class PlayerController : MonoBehaviour
     void FixedUpdate()
     {
 
-        #region |>>> JOYSTICK MOVEMENT <<<|
-
-        if (JoystickControl)
-        {
-            if (joystick.Vertical > 0)
-            { Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * joystick.Vertical); }
-
-            //Check Facing
-            float posizFacing;
-
-            if (joystick.Horizontal != 0)
-            {
-                posizFacing = joystick.Horizontal;
-                if (posizFacing > 0)
-                {
-                    Rigidbody.velocity = new Vector2(fromLeftJetForce * joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    ChangeSprite(spriteArray[1]);
-                    //ChangeAnimationRight();
-                }
-                if (posizFacing < 0)
-                {
-                    Rigidbody.velocity = new Vector2(fromRightJetForce * joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
-                    ChangeSprite(spriteArray[0]);
-                    //ChangeAnimationLeft();
-                }
-            }
-        }
-        else
-        {  }
-
-        #endregion
+        
 
         #region |>>> KEYBOARD MOVEMENT <<<|
 

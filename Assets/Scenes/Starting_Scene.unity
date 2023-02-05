@@ -1930,6 +1930,10 @@ PrefabInstance:
       propertyPath: startingStage
       value: 
       objectReference: {fileID: 2088106759}
+    - target: {fileID: 4970136228053240306, guid: f87df8eac3985ad428bfd4991e0ff433, type: 3}
+      propertyPath: m_LinearDrag
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4970136228053240307, guid: f87df8eac3985ad428bfd4991e0ff433, type: 3}
       propertyPath: joystick
       value: 

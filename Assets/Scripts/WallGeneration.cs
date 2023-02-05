@@ -23,6 +23,13 @@ public class WallGeneration : MonoBehaviour
     public List<GameObject> listaStageGenerati;
     private List<GameObject> listaBackGround = new List<GameObject>();
 
+    public static WallGeneration Instance;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
