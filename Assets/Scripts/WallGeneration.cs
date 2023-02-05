@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
@@ -19,7 +20,7 @@ public class WallGeneration : MonoBehaviour
 
     private bool firstStagePassed = false;
     private bool stageDone = true;
-    private List<GameObject> listaStageGenerati = new List<GameObject>();
+    public List<GameObject> listaStageGenerati;
     private List<GameObject> listaBackGround = new List<GameObject>();
 
     // Start is called before the first frame update
