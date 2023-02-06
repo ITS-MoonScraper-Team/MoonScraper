@@ -31,10 +31,10 @@ public class PlayerController : MonoBehaviour
     public bool JoystickControl;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
-    public float jumpForce;
-    public float jetpackForce;
-    public float fromLeftJetForce;
-    public float fromRightJetForce;
+    public float jumpForce=6;
+    public float jetpackForce=27;
+    public float fromLeftJetForce=9;
+    public float fromRightJetForce=9;
     #endregion
 
     #region |> CONTROL VARIABLES <|
@@ -86,7 +86,6 @@ public class PlayerController : MonoBehaviour
         int iterMax = WallGeneration.Instance.listaStageGenerati.Count > 3 ? 3 : WallGeneration.Instance.listaStageGenerati.Count;
         for (int i = 0; i < iterMax; i++)
         {
-
             if (yCollision < WallGeneration.Instance.listaStageGenerati[i].transform.position.y && WallGeneration.Instance.listaStageGenerati[i].name.Contains("FIRST"))
             {
                 yRespawn = 0f;
@@ -176,8 +175,12 @@ public class PlayerController : MonoBehaviour
 
         if (JoystickControl)
         {
-            if (joystick.Vertical > 0)
-            { Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * joystick.Vertical); }
+            if (joystick.Vertical < 0)
+
+            //Alternativa Velocity:
+            //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+
+            { Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); }
 
             //Check Facing
             float posizFacing;
@@ -187,16 +190,20 @@ public class PlayerController : MonoBehaviour
                 posizFacing = joystick.Horizontal;
                 if (posizFacing > 0)
                 {
-                    Rigidbody.velocity = new Vector2(fromLeftJetForce * joystick.Horizontal, Rigidbody.velocity.y);
+                    Rigidbody.AddForce(Vector2.left* fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
                     //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    ChangeSprite(spriteArray[1]);
+                    ChangeSprite(spriteArray[0]);
                     //ChangeAnimationRight();
                 }
                 if (posizFacing < 0)
                 {
-                    Rigidbody.velocity = new Vector2(fromRightJetForce * joystick.Horizontal, Rigidbody.velocity.y);
+                    Rigidbody.AddForce(Vector2.right*fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //Rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
                     //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
-                    ChangeSprite(spriteArray[0]);
+                    ChangeSprite(spriteArray[1]);
                     //ChangeAnimationLeft();
                 }
             }
@@ -282,8 +289,9 @@ public class PlayerController : MonoBehaviour
                     ChangeSprite(spriteArray[1]);
                     //ChangeAnimationRight();
 
-                    //Più LENTO: Rigidbody.AddForce(Vector2.right * fromLeftJetForce, ForceMode2D.Force);
-                    Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
+                    Rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
 
                     //Rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
                 }
@@ -294,8 +302,9 @@ public class PlayerController : MonoBehaviour
                 ChangeSprite(spriteArray[1]);
                 //ChangeAnimationRight();
 
-                //Più LENTO: Rigidbody.AddForce(Vector2.right * fromLeftJetForce, ForceMode2D.Force);
-                Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
+                Rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                //Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
             }
         }
 
@@ -316,8 +325,9 @@ public class PlayerController : MonoBehaviour
                     ChangeSprite(spriteArray[0]);
                     //ChangeAnimationLeft();
 
-                    //Più LENTO: Rigidbody.AddForce(Vector2.left * fromRightJetForce, ForceMode2D.Force);
-                    Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
+                    Rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
 
                     //Rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
                 }
@@ -327,8 +337,10 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("Sono in aria.");
                 ChangeSprite(spriteArray[0]);
                 //ChangeAnimationLeft();
-                //Più LENTO: Rigidbody.AddForce(Vector2.left * fromRightJetForce, ForceMode2D.Force);
-                Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
+
+                Rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                //Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
             }
         }
 
@@ -367,15 +379,18 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("Sono a terra.");
                 if (!jetpackInAirOnly)
                 {
-                    //Più LENTO: Rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
-                    Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+                    Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
                 }
             }
             else
             {
                 Debug.Log("Sono in aria.");
-                //Più LENTO: Rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
-                Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+
+                Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                //Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
             }
         }
         else

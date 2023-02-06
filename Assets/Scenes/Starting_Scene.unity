@@ -2061,6 +2061,10 @@ PrefabInstance:
       propertyPath: startingStage
       value: 
       objectReference: {fileID: 2088106759}
+    - target: {fileID: 8955911963742077090, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: m_LinearDrag
+      value: 1.25
+      objectReference: {fileID: 0}
     - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
       propertyPath: Player
       value: 
@@ -2073,6 +2077,18 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: jetpackForce
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: fromLeftJetForce
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: fromRightJetForce
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 8955911963846126508, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
       propertyPath: m_RootOrder
       value: 4
