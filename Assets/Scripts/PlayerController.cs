@@ -8,30 +8,37 @@ using Unity.Burst.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
+    
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
     SpriteRenderer spriteRenderer;
     //PolygonCollider2D polygonCollider;
 
-    //public GameObject playerDeathExplode;
-    //public GameObject playerIdleLeft;
-    //public GameObject playerIdleRight;
-
+    #region ||>> OBJECT VARIABLES <<||
+    public GameObject Player;
     public FixedJoystick joystick;
     public Sprite[] spriteArray;
+    public Camera mainCamera;
 
     //public TrailRenderer trailRenderer;
     //public GameObject Handle;
+    //public GameObject playerDeathExplode;
+    //public GameObject playerIdleLeft;
+    //public GameObject playerIdleRight;
+    #endregion
 
+    #region ||>> INTERFACE VARIABLES <<||
     public bool JoystickControl;
+    public bool jetpackInAirOnly;
+    public bool leftRightInAirOnly;
     public float jumpForce;
     public float jetpackForce;
     public float fromLeftJetForce;
     public float fromRightJetForce;
-    public bool jetpackInAirOnly;
-    public bool leftRightInAirOnly;
+    #endregion
 
-    #region State variables:
+    #region |> CONTROL VARIABLES <|
+
     private bool inputPressed;
     private bool upPressedDown;
     private bool spacePressedDown;
@@ -40,52 +47,112 @@ public class PlayerController : MonoBehaviour
     private bool leftPressed;
     #endregion
 
-    // Start is called before the first frame update
     void Start()
     {
+        //GETTING PLAYER COMPONENTS
         spriteRenderer = GetComponent<SpriteRenderer>();
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        //polygonCollider = GetComponent<PolygonCollider2D>();
 
+        //Player = GetComponent<GameObject>();
+        //polygonCollider = GetComponent<PolygonCollider2D>();
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>(); 
     }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        //if(capsuleCollider.CompareTag("walls"))
-        //{
-        //    Destroy(gameObject);
-        //}
-        if (collision.gameObject.layer == 3)
-        {
-            //Instantiate(playerDeathExplode, transform.position, transform.rotation);
-            //Animation.pl
-            Destroy(gameObject, 0.1f);
-        }
-        if (collision.gameObject.layer == 8)
-        {
-            if (transform.position.y < collision.transform.position.y)
-                Destroy(gameObject, 0.1f);
 
-            else if (transform.position.y >= collision.transform.position.y)
+    #region |||>>>PLAYER RESPAWN<<<|||
+
+    private void SetPlayerActive()
+    {
+        gameObject.SetActive(true);
+    }
+
+    private void SetPlayerRespawn(float xRespawn, float yRespawn)
+    {
+        mainCamera.transform.position = new Vector3(xRespawn, yRespawn, mainCamera.transform.position.z);
+        gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
+        Invoke("SetPlayerActive", 1);
+    }
+    #endregion
+
+    #region |||>>>COLLISIONS DEATHS<<<|||
+
+    private void CollisionStageCalculator(float yCollision)
+    {
+        float yRespawn;
+        float xRespawn;
+        gameObject.SetActive(false);
+        Rigidbody.velocity = new Vector2(0, 0);
+        int iterMax = WallGeneration.Instance.listaStageGenerati.Count > 3 ? 3 : WallGeneration.Instance.listaStageGenerati.Count;
+        for (int i = 0; i < iterMax; i++)
+        {
+
+            if (yCollision < WallGeneration.Instance.listaStageGenerati[i].transform.position.y && WallGeneration.Instance.listaStageGenerati[i].name.Contains("FIRST"))
             {
-                if (Mathf.Abs(collision.relativeVelocity.y) > 10.0f)
-                    Destroy(gameObject, 0.1f);
+                yRespawn = 0f;
+                xRespawn = 0f;
+                SetPlayerRespawn(xRespawn, yRespawn);
+                break;
+            }
+            else if (yCollision > WallGeneration.Instance.listaStageGenerati[i].transform.position.y)
+            {
+                yRespawn = WallGeneration.Instance.listaStageGenerati[i].transform.position.y + 1f;
+                xRespawn = WallGeneration.Instance.listaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                SetPlayerRespawn(xRespawn, yRespawn);
+                break;
             }
         }
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        //if(capsuleCollider.CompareTag("walls"))
+        //{Destroy(gameObject);}
+        
+        float yCollision;
+        yCollision = collision.transform.position.y;
+
+        //wall collision
+        if (collision.gameObject.layer == 3)
+        {
+            //Instantiate(playerDeathExplode, transform.position, transform.rotation);
+            //Animation.player
+            CollisionStageCalculator(yCollision);
+        }
+
+        //platform collison
+        if (collision.gameObject.layer ==8)
+        {
+            //sistemo y rilevata per le piattaforme!!!
+            //collision da sotto
+            if (transform.position.y < collision.transform.position.y)
+            {
+                CollisionStageCalculator(yCollision);
+            }
+
+            //atterraggio da sopra
+            else if (transform.position.y >= collision.transform.position.y)
+            {
+                if (Mathf.Abs(collision.relativeVelocity.y) > 10.0f)
+                {
+                    CollisionStageCalculator(yCollision);
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region |||>>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<<|||
+    private void ChangeSprite(Sprite _newSprite)
+    {
+        spriteRenderer.sprite = _newSprite;
+    }
+    #endregion
 
     //void OnBecameInvisible()
     //{
     //    Destroy(gameObject);
     //}
-
-    // |>>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<<|
-    private void ChangeSprite(Sprite _newSprite)
-    {
-        spriteRenderer.sprite = _newSprite;
-    }
 
     #region changeAnim test
     //void ChangeAnimationRight()
@@ -101,13 +168,11 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    // Update is called once per frame
     void Update()
     {
         Debug.Log("VELOCITY " + Rigidbody.velocity.magnitude);
 
-
-        #region |>>> JOYSTICK MOVEMENT <<<|
+        #region |||>>> JOYSTICK MOVEMENT <<<|||
 
         if (JoystickControl)
         {
@@ -138,14 +203,21 @@ public class PlayerController : MonoBehaviour
         }
         else
         { }
-
         #endregion
-        //muore se scende troppo
+
+        //Morte se scende di troppi stage(sistemare)
         if(WallGeneration.Instance.listaStageGenerati.Count > 3)
         {
-            if (transform.position.y < WallGeneration.Instance.listaStageGenerati[3].transform.position.y)
+            float yRespawn;
+            float xRespawn;
+            if (transform.position.y < WallGeneration.Instance.listaStageGenerati[3].transform.position.y-5.5f)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
+                Rigidbody.velocity = new Vector2(0, 0);
+                //gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
+                yRespawn = WallGeneration.Instance.listaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.listaStageGenerati[3].transform.position.y + 1f;
+                xRespawn = WallGeneration.Instance.listaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.listaStageGenerati[3].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                SetPlayerRespawn(xRespawn, yRespawn);
             }
         }
 
@@ -191,12 +263,9 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
-
+        #region |||>>> KEYBOARD MOVEMENT <<<|||
         
-
-        #region |>>> KEYBOARD MOVEMENT <<<|
-
-        // |>> KEYBOARD LEFT <<|
+        // ||>> KEYBOARD LEFT <<||
         if (Input.GetKey(KeyCode.LeftArrow))
         {
             RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
@@ -230,7 +299,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // |>>KEYBOARD RIGHT<<|
+        // ||>>KEYBOARD RIGHT<<||
         if (Input.GetKey(KeyCode.RightArrow))
         {
             RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
@@ -263,7 +332,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        // |>>KEYBOARD JUMP<<|
+        // ||>>KEYBOARD JUMP<<||
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             upPressedDown = true;
@@ -284,7 +353,7 @@ public class PlayerController : MonoBehaviour
         else
         { upPressedDown = false; }
 
-        // |>>KEYBOARD PROPULSION<<|
+        // ||>>KEYBOARD PROPULSION<<||
         if (Input.GetKey(KeyCode.Space))
         {
             spacePressed = true;
@@ -311,7 +380,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         { spacePressed = false; }
-
         #endregion
     }
 }

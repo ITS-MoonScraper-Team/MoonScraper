@@ -8,7 +8,6 @@ public class WallGeneration : MonoBehaviour
 {
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
-    //PolygonCollider2D polygonCollider;
 
     public GameObject startingStage;
     public GameObject[] stageWalls;
@@ -35,6 +34,7 @@ public class WallGeneration : MonoBehaviour
     {
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        listaStageGenerati.Add(startingStage);
     }
 
     // Update is called once per frame
@@ -43,9 +43,9 @@ public class WallGeneration : MonoBehaviour
         Debug.Log("VELOCITY " + Rigidbody.velocity.magnitude);
 
         //GENERAZIONE SECONDO STAGE
-        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.7f && firstStagePassed == false)
+        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.5f && firstStagePassed == false)
         {
-            listaStageGenerati.Add(Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
+            listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
             listaBackGround.Add(Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
             firstStagePassed = true;
         }
@@ -59,7 +59,7 @@ public class WallGeneration : MonoBehaviour
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19, 0), Quaternion.Euler(0, 0, 270)));
             stageDone = true;
         }
-        #region Children.collider.transform.position.Y
+        #region Children.collider test
         //Collider2D[] stageColliders;
         //stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
         //float maxY = stageColliders[0].transform.position.y;
@@ -105,7 +105,7 @@ public class WallGeneration : MonoBehaviour
         //    }
         #endregion
 
-        #region Instantiate Walls
+        #region Instantiate Walls test
         //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
         //{
         //    Debug.Log(capsuleCollider.bounds.max.y);
