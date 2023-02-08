@@ -95,7 +95,7 @@ public class WallGeneration : MonoBehaviour
         if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.5f && firstStagePassed == false)
         {
             ListaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
+            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
             //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
             //Platforms secondPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
@@ -108,7 +108,7 @@ public class WallGeneration : MonoBehaviour
         if (stageDone == false)
         {
             listaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19, 0), Quaternion.Euler(0, 0, 270)));
+            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19, 1), Quaternion.Euler(0, 0, 270)));
 
             //Platforms nextPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
