@@ -35,10 +35,6 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> INTERFACE VARIABLES <<||
 
-    [Header("MOVEMENT MODE")]
-    public bool JoystickControl;
-    public bool jetpackInAirOnly;
-    public bool leftRightInAirOnly;
     [Header("FORCE LEVELS")]
     public float jumpForce=6;
     public float jetpackForce=27;
@@ -47,6 +43,13 @@ public class PlayerController : MonoBehaviour
     [Header("FUEL LEVELS")]
     public float maxFuel=100f;
     public float fuelPerSecond = 45f;
+    [Header("MOVEMENT MODES")]
+    public bool joystickControl;
+    public bool jetpackInAirOnly;
+    public bool leftRightInAirOnly;
+    [Header("OTHER")]
+    public float deathFallingSpeed = 9.0f;
+    public int secretNumber;
     #endregion
 
     #region |> CONTROL VARIABLES <|
@@ -278,7 +281,7 @@ public class PlayerController : MonoBehaviour
             else if (transform.position.y >= yCollisionPlat)
             {
 
-                if (Mathf.Abs(collision.relativeVelocity.y) > 10.0f)
+                if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
                 {
                     gameObject.SetActive(false);
                     xyRespawn = CollisionStageCalculator(yCollision);
@@ -311,6 +314,16 @@ public class PlayerController : MonoBehaviour
                     /*platformReached = */
                     Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
                 }
+            }
+        }
+        //collision ground level
+        if (collision.gameObject.layer == 6)
+        {
+            if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
+            {
+                gameObject.SetActive(false);
+                xyRespawn = CollisionStageCalculator(yCollision);
+                SetPlayerRespawn(xyRespawn[0], xyRespawn[1]);
             }
         }
     }
@@ -373,6 +386,9 @@ public class PlayerController : MonoBehaviour
         if(Input.GetKey(KeyCode.F))
         { remainingFuel = maxFuel; Debug.Log("FUEL " + remainingFuel); }
 
+        if(secretNumber==666)
+        { remainingFuel = maxFuel; }
+
         //if (isOnGround)
         //{
         //    rb.drag = drag;
@@ -380,7 +396,7 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> JOYSTICK MOVEMENT <<<|||
 
-        if (JoystickControl&&remainingFuel>0)
+        if (joystickControl&&remainingFuel>0)
         {
             if (joystick.Vertical < 0 || joystick.Horizontal != 0)
             { Trail.SetActive(true); }
