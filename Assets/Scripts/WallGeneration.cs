@@ -6,21 +6,57 @@ using UnityEngine;
 
 public class WallGeneration : MonoBehaviour
 {
+    private bool firstStagePassed = false;
+    private bool stageDone = true;
+
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
 
     public GameObject startingStage;
+    public GameObject backGroundStart;
     public GameObject[] stageWalls;
     public GameObject[] backGround;
+
+    //private int[] platformStatusIndexRange = new int[] { 0, 1, 2 };
+    
+    public class Platforms 
+    {
+
+        private GameObject platformGenerated;
+        public GameObject PlatformGenerated { get; set; }
+
+        private int platformStatusIndex;
+        public int PlatformStatusIndex { get; set; }
+
+        public Platforms (GameObject _platformGenerated, int _platformStatusIndex)
+        {
+            PlatformGenerated = _platformGenerated;
+            
+            PlatformStatusIndex = platformStatusIndex;
+        }
+    }
+
 
     //public Camera MainCamera;
     //SpriteRenderer spriteRenderer;
     //public Sprite[] spriteArray;
 
-    private bool firstStagePassed = false;
-    private bool stageDone = true;
-    public List<GameObject> listaStageGenerati;
     private List<GameObject> listaBackGround = new List<GameObject>();
+
+    private List<GameObject> listaStageGenerati = new List<GameObject>();
+    public List<GameObject> ListaStageGenerati
+    {
+        get { return listaStageGenerati; }
+        set { listaStageGenerati = value; }
+    }
+
+    private List<Platforms> listaPlatforms = new List<Platforms>();
+    public List<Platforms> ListaPlatforms
+    {
+        get { return listaPlatforms; }
+        set { listaPlatforms = value; }
+    }
+  
 
     public static WallGeneration Instance;
 
@@ -35,30 +71,62 @@ public class WallGeneration : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         listaStageGenerati.Add(startingStage);
+        listaBackGround.Add(backGroundStart);
+        //Platforms firstPlat = new Platforms ( startingStage.transform.GetChild(0).gameObject , platformStatusIndexRange[0]);
+
+        ListaPlatforms.Add(new Platforms(startingStage.transform.GetChild(0).gameObject, 0/*platformStatusIndexRange[0]*/));
+            //[0].Platform=startingStage.transform.GetChild(0).gameObject;
+
+        //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
+
+        //var georgeEmail = platformsList[1].platformStatusIndex[0];
+        //var people = new List<Person>();
+
+        //prende child come GameObject: oggettoparent.transform.getchild(n).gameObject
+        //se invece: oggettoparent.transform.getchild(n) --> è preso come Transform
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("VELOCITY " + Rigidbody.velocity.magnitude);
 
         //GENERAZIONE SECONDO STAGE
         if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.5f && firstStagePassed == false)
         {
-            listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
-            listaBackGround.Add(Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
+            ListaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
+            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
+            //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
+            //Platforms secondPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
+            ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
             firstStagePassed = true;
         }
 
         //GENERAZIONE ENDLESS STAGE
-        if ((listaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 5)
+        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 5)
         { stageDone = false; }
         if (stageDone == false)
         {
-            listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
+            listaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19, 0), Quaternion.Euler(0, 0, 270)));
+
+            //Platforms nextPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
+            ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
+
             stageDone = true;
         }
+
+        #region destroyExcessTest
+        //if (listaStageGenerati.Count > 50)
+        //{ listaStageGenerati.RemoveRange(50, listaStageGenerati.Count); }
+
+        //if (listaStageGenerati.Count > 3)
+        //{
+        //    for (int i = 3; i < listaStageGenerati.Count + 1; i++)
+        //    { Destroy(listaStageGenerati[i].gameObject); }
+        //}
+        #endregion
+
         #region Children.collider test
         //Collider2D[] stageColliders;
         //stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
