@@ -40,14 +40,14 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> INTERFACE VARIABLES <<||
 
-    [Header("FORCE LEVELS")]
+    [Header("FORCE LEVELS")] //BALANCING: jetForce=25, fromLeftRight=13
     public float jumpForce=6;
-    public float jetpackForce=27;
-    public float fromLeftJetForce=9;
-    public float fromRightJetForce=9;
-    [Header("FUEL LEVELS")]
+    public float jetpackForce=25;
+    public float fromLeftJetForce=13;
+    public float fromRightJetForce=13;
+    [Header("FUEL LEVELS")] //BALANCING: fuel=100, fuelPerSec=49 
     public float maxFuel=100f;
-    public float fuelPerSecond = 45f;
+    public float fuelPerSecond = 49f;
     [Header("MOVEMENT MODES")]
     public bool joystickControl;
     public bool jetpackInAirOnly;
@@ -69,6 +69,8 @@ public class PlayerController : MonoBehaviour
     private bool leftPressed;
     private float remainingFuel;
     private float yLastCollidedPlatform = 0;
+    private float xRespawn;
+    private float yRespawn;
     #endregion
 
     void Start()
@@ -81,6 +83,8 @@ public class PlayerController : MonoBehaviour
         //polygonCollider = GetComponent<PolygonCollider2D>();
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>();
+        xRespawn= gameObject.transform.position.x;
+        yRespawn= gameObject.transform.position.y;
 
         remainingFuel = maxFuel;
         buttonRestart.onClick.AddListener(RestartGame);
@@ -137,8 +141,8 @@ public class PlayerController : MonoBehaviour
 
     private float[] CollisionStageCalculator(float yCollision)
     {
-        float yRespawn = 0f;
-        float xRespawn = 0f;
+        //float yRespawn = 0f;
+        //float xRespawn = 0f;
         float[] xyRespawn = new float[2];
         //if (HARDCORE == false)
         //{
@@ -158,7 +162,7 @@ public class PlayerController : MonoBehaviour
                 //{
                 if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
                 {
-                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.5f;
+                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.3f;
                     xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
 
                     //collidedPlatStatus = WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex;
@@ -187,8 +191,8 @@ public class PlayerController : MonoBehaviour
 
     private float[] CollisionPlatformCalculator(float yCollision)
     {
-        float yRespawn = 0f;
-        float xRespawn = 0f;
+        //float yRespawn = 0f;
+        //float xRespawn = 0f;
         float[] xyRespawn = new float[2];
          
         //int collidedPlatStatus = 0;
@@ -205,8 +209,10 @@ public class PlayerController : MonoBehaviour
                     platformCount++;
                     remainingFuel = maxFuel;
                     WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex = 1;
+                    WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(200f, 0f, 0f,255f);
+                    WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = new Color(200f, 0f, 0f, 255f);
                     xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.5f;
+                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.3f;
                     
                     //for (int z=i+1; z<iterMax; z++)
                     if (i < iterMax - 1)
@@ -387,6 +393,10 @@ public class PlayerController : MonoBehaviour
 
         if(secretNumber==666)
         { remainingFuel = maxFuel; }
+
+        if(remainingFuel<1)
+        { Invoke("DestroyTrail", 0.2f); }
+
         #endregion
 
         //if (isOnGround)
@@ -402,7 +412,7 @@ public class PlayerController : MonoBehaviour
             { Trail.SetActive(true); }
             else
             {
-                Invoke( "DestroyTrail", 0.4f);
+               Invoke( "DestroyTrail", 0.4f);
             }
 
             if (joystick.Vertical < 0)

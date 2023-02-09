@@ -62,7 +62,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8955911964241707964}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.019, z: 0.59275246}
+  m_LocalPosition: {x: 0, y: 0.75, z: 0.59275246}
   m_LocalScale: {x: 0.8082966, y: 0.80829656, z: 0.8082966}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -172,19 +172,28 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18ed5aaa3ff3dff4e9175b77e03ad13f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  buttonRestart: {fileID: 0}
   Player: {fileID: 0}
   joystick: {fileID: 0}
   spriteArray:
   - {fileID: -6628414004274166170, guid: 7adb3002b143465ca80d83e1b71af788, type: 3}
   - {fileID: 21300000, guid: e1dc90c77adcc3040be7ed4b8ffb9106, type: 3}
   mainCamera: {fileID: 0}
-  JoystickControl: 1
+  fuelSlider: {fileID: 0}
+  fuelMeter: {fileID: 0}
+  Trail: {fileID: 0}
+  scoreText: {fileID: 0}
   jumpForce: 6
   jetpackForce: 10
   fromLeftJetForce: 4
   fromRightJetForce: 4
+  maxFuel: 100
+  fuelPerSecond: 45
+  joystickControl: 0
   jetpackInAirOnly: 0
   leftRightInAirOnly: 0
+  deathFallingSpeed: 9
+  secretNumber: 0
 --- !u!60 &8955911963742077088
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -255,12 +264,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startingStage: {fileID: 0}
+  backGroundStart: {fileID: 0}
   stageWalls:
   - {fileID: 6385631170130673218, guid: 53f3ae7d93cbfb94292bca8865f40c8b, type: 3}
   - {fileID: 5641088114664336554, guid: 7e66b66d4dd2aba48bcdffea74030069, type: 3}
   backGround:
   - {fileID: 562969251924698526, guid: 469ae3a6d30e231418babcaddb4cf614, type: 3}
-  listaStageGenerati: []
 --- !u!1 &8955911964559686737
 GameObject:
   m_ObjectHideFlags: 0
@@ -317,7 +326,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8955911965215215701}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.008, y: 0.038, z: 0}
+  m_LocalPosition: {x: 0, y: 0.075, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -419,7 +428,7 @@ TrailRenderer:
     alignment: 0
     textureMode: 0
     shadowBias: 0.5
-    generateLightingData: 0
+    generateLightingData: 1
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1

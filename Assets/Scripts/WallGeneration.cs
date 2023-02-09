@@ -70,7 +70,7 @@ public class WallGeneration : MonoBehaviour
     {
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        listaStageGenerati.Add(startingStage);
+        ListaStageGenerati.Add(startingStage);
         listaBackGround.Add(backGroundStart);
         //Platforms firstPlat = new Platforms ( startingStage.transform.GetChild(0).gameObject , platformStatusIndexRange[0]);
 
@@ -92,23 +92,25 @@ public class WallGeneration : MonoBehaviour
     {
 
         //GENERAZIONE SECONDO STAGE
-        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4.5f && firstStagePassed == false)
+        ///SISTEMO LOGICA STARTINGSTAGE - BOOL STAGE PASSED
+        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
         {
-            ListaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 11)], new Vector3(0, startingStage.transform.position.y + 10.7f, 0), Quaternion.identity));
+            ListaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, startingStage.transform.position.y + 11f, 0), Quaternion.identity));
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 19f, 0), Quaternion.Euler(0, 0, 270)));
+            //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 9.5f, 0), Quaternion.Euler(0, 0, 270)));
             //Platforms secondPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
             firstStagePassed = true;
         }
 
         //GENERAZIONE ENDLESS STAGE
-        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 5)
+        ///SISTEMO LOGICA BOOL STAGEDONE
+        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f&&firstStagePassed==true)
         { stageDone = false; }
         if (stageDone == false)
         {
-            listaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 11)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19, 1), Quaternion.Euler(0, 0, 270)));
+            ListaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
+            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
 
             //Platforms nextPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
