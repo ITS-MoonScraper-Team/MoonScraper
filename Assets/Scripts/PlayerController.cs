@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 using System;
 using TMPro;
+using System.Xml.Schema;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,9 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> OBJECT VARIABLES <<||
 
+    //public Button HCmodeButton;
+    //public Toggle HCmode;
+    public Button buttonRestart;
     public GameObject Player;
     public FixedJoystick joystick;
     public Sprite[] spriteArray;
@@ -26,6 +30,7 @@ public class PlayerController : MonoBehaviour
     public Slider fuelSlider;
     public TMP_Text fuelMeter;
     public GameObject Trail;
+    public TMP_Text scoreText;
     //public TrailRenderer trailRenderer;
     //public GameObject Handle;
     //public GameObject playerDeathExplode;
@@ -50,10 +55,12 @@ public class PlayerController : MonoBehaviour
     [Header("OTHER")]
     public float deathFallingSpeed = 9.0f;
     public int secretNumber;
+    //public bool HARDCORE;
     #endregion
 
     #region |> CONTROL VARIABLES <|
 
+    private int platformCount=0;
     private bool inputPressed;
     private bool upPressedDown;
     private bool spacePressedDown;
@@ -70,14 +77,33 @@ public class PlayerController : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
-        remainingFuel = maxFuel;
         //Player = GetComponent<GameObject>();
         //polygonCollider = GetComponent<PolygonCollider2D>();
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
-        //rectTransform=Handle.GetComponent<RectTransform>(); 
-        
+        //rectTransform=Handle.GetComponent<RectTransform>();
 
+        remainingFuel = maxFuel;
+        buttonRestart.onClick.AddListener(RestartGame);
+
+        //if (gameObject.transform.position.y > 1)
+        //{
+        //    mainCamera.transform.position = new Vector3(0, 0, mainCamera.transform.position.z);
+        //    gameObject.transform.position = new Vector3(0, 0, 0);
+        //}
     }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    //public void HardcoreMode()
+    //{
+    //    if (HARDCORE == false)
+    //        HARDCORE = true;
+    //    else if (HARDCORE)
+    //    { HARDCORE = false; }
+    //}
 
     #region |||>>>PLAYER RESPAWN<<<|||
 
@@ -97,95 +123,69 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>>COLLISIONS DEATHS<<<|||
+    #region |||>>>COLLISIONS CALCULATORS<<<|||
 
-    #region||funzione alt||
-    //private float[] CollisionStageCalculator(float yCollision)
-    //{
-    //    float yRespawn = 0f;
-    //    float xRespawn = 0f;
-    //    float[] xyRespawn = new float[2];
-    //    int collidedPlatStatus = 0;
-    //    Rigidbody.velocity = new Vector2(0, 0);
-    //    int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 3 ? 3 : WallGeneration.Instance.ListaStageGenerati.Count;
-    //    for (int i = 0; i < iterMax; i++)
-    //    {
-    //        //if (yCollision < WallGeneration.Instance.ListaStageGenerati[i].transform.position.y && WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
-    //        //{
-    //        ////    yRespawn = 0f;
-    //        ////    xRespawn = 0f;
-    //        ////    SetPlayerRespawn(xRespawn, yRespawn);
+    #region|> Get colliders syntax <|
 
-    //        //}
-    //        if (yCollision > WallGeneration.Instance.ListaStageGenerati[i].transform.position.y)
-    //        {
-    //            //if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
-    //            //{
-    //            yRespawn = WallGeneration.Instance.ListaStageGenerati[i].transform.position.y + 1f;
-    //            xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+    //collision.gameObject.transform.parent.gameObject
+    //prende parent come GameObject: oggettofiglio.transform.parent.gameObject
+    //se invece: oggettofiglio.transform.parent --> è preso come Transform
 
-    //            collidedPlatStatus = WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex;
-    //            //collidedPlat = WallGeneration.Instance.ListaStageGenerati[i].transform.GetChild(0).gameObject;
-    //            //}
-    //            break;
-    //        }
-    //        else if (WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
-    //        {
-    //            break;
-    //        }
-    //    }
-    //    xyRespawn[0] = xRespawn;
-    //    xyRespawn[1] = yRespawn;
-    //    //xyRespawn[2]=collidedPlatStatus;
-    //    return xyRespawn;
-    //    //SetPlayerRespawn(xRespawn, yRespawn);
-    //}
+    //prende child come GameObject: oggettoparent.transform.getchild(n).gameObject
+    //se invece: oggettoparent.transform.getchild(n) --> è preso come Transform
     #endregion
 
     private float[] CollisionStageCalculator(float yCollision)
     {
-        float yRespawn = 0f;  
+        float yRespawn = 0f;
         float xRespawn = 0f;
         float[] xyRespawn = new float[2];
-        //int collidedPlatStatus=0;
-        Rigidbody.velocity = new Vector2(0, 0);
-        int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        for (int i = 0; i < iterMax; i++)
-        {
-        //if (yCollision < WallGeneration.Instance.ListaStageGenerati[i].transform.position.y && WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
+        //if (HARDCORE == false)
         //{
-        ////    yRespawn = 0f;
-        ////    xRespawn = 0f;
-        ////    SetPlayerRespawn(xRespawn, yRespawn);
-                
-        //}
-            //if (yCollision > WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y)
-            //{
-            if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
+            //int collidedPlatStatus=0;
+            Rigidbody.velocity = new Vector2(0, 0);
+            int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
+            for (int i = 0; i < iterMax; i++)
             {
-                yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y + 1f;
-                xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                //if (yCollision < WallGeneration.Instance.ListaStageGenerati[i].transform.position.y && WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
+                //{
+                ////    yRespawn = 0f;
+                ////    xRespawn = 0f;
+                ////    SetPlayerRespawn(xRespawn, yRespawn);
 
-                //collidedPlatStatus = WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex;
-                //collidedPlat = WallGeneration.Instance.ListaStageGenerati[i].transform.GetChild(0).gameObject;
-                break;
+                //}
+                //if (yCollision > WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y)
+                //{
+                if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
+                {
+                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.5f;
+                    xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+
+                    //collidedPlatStatus = WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex;
+                    //collidedPlat = WallGeneration.Instance.ListaStageGenerati[i].transform.GetChild(0).gameObject;
+                    break;
+                }
+
+                //}
+                //else if(WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
+                //{
+                //    break;
+                //}
             }
-            
-            //}
-            //else if(WallGeneration.Instance.ListaStageGenerati[i].name.Contains("FIRST"))
-            //{
-            //    break;
-            //}
-        }
-        xyRespawn[0] = xRespawn;
-        xyRespawn[1]=yRespawn;
+            //SetPlayerRespawn(xRespawn, yRespawn);
+        //}
+        //else if (HARDCORE==true)
+        //{
+        //    RestartGame();
+        //}
+            xyRespawn[0] = xRespawn;
+            xyRespawn[1] = yRespawn;
 
-        //xyRespawn[2]=collidedPlatStatus;
-        return xyRespawn;
-        //SetPlayerRespawn(xRespawn, yRespawn);
+            //xyRespawn[2]=collidedPlatStatus;
+            return xyRespawn;
     }
 
-    private float[] CollisionPlatformCalculator(float yCollision/*, float yCollisionLastPlatform*/)
+    private float[] CollisionPlatformCalculator(float yCollision)
     {
         float yRespawn = 0f;
         float xRespawn = 0f;
@@ -202,10 +202,11 @@ public class PlayerController : MonoBehaviour
 
                 if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 0)
                 {
+                    platformCount++;
                     remainingFuel = maxFuel;
                     WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex = 1;
                     xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y + 1f;
+                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.5f;
                     
                     //for (int z=i+1; z<iterMax; z++)
                     if (i < iterMax - 1)
@@ -243,17 +244,18 @@ public class PlayerController : MonoBehaviour
         //SetPlayerRespawn(xRespawn, yRespawn);
     }
 
-    //faccio collision calculator separato per le piattaforme, OVERLOAD di CollisonStageCalculator
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
         //{Destroy(gameObject);}
+
+
+        //SISTEMO COLLISION; USO STATUS PIATTAFORMA E NON POSIZIONE DEL COLLIDER
         float[] xyRespawn = new float[2];
         float[] collidedPlatformInfo = new float[2];
         float yCollision = collision.gameObject.transform.position.y;
         float yCollisionPlat = collision.gameObject.transform.parent.transform.position.y;
-        //int collidedPlatformStatus;
+
         //wall collision
         if (collision.gameObject.layer == 3)
         {
@@ -262,7 +264,6 @@ public class PlayerController : MonoBehaviour
             gameObject.SetActive(false);
             xyRespawn = CollisionStageCalculator(yCollision);
             SetPlayerRespawn(xyRespawn[0], xyRespawn[1]);
-
         }
 
         //platform collison
@@ -280,18 +281,21 @@ public class PlayerController : MonoBehaviour
             //atterraggio da sopra
             else if (transform.position.y >= yCollisionPlat)
             {
-
+                //morte too fast
                 if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
                 {
                     gameObject.SetActive(false);
                     xyRespawn = CollisionStageCalculator(yCollision);
                     SetPlayerRespawn(xyRespawn[0], xyRespawn[1]);
                 }
+                //rileva se nuova piattaforma
                 else if (yCollisionPlat != yLastCollidedPlatform)
                 {
-                    
-                    xyRespawn = CollisionPlatformCalculator(yCollisionPlat/*, yCollisionLastPlatform*/);
+                    xyRespawn = CollisionPlatformCalculator(yCollisionPlat);
                     yLastCollidedPlatform = yCollisionPlat;
+                    Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
+
+                    #region Rapid fuel recharge test
                     //FUNZIONA PER TEST RAPIDO
                     //collidedPlatformStatus = (int)xyRespawn[2];
                     //if(collidedPlatformStatus==0)
@@ -300,19 +304,9 @@ public class PlayerController : MonoBehaviour
                     //    collidedPlatformStatus=1;
                     //}
                     //FINE TEST
+                    #endregion
 
-                    //int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 3 ? 3 : WallGeneration.Instance.ListaStageGenerati.Count;
-                    //if (collision.gameObject.transform.parent.gameObject)
 
-                    //collision.gameObject.transform.parent.gameObject
-
-                    //prende child come GameObject: oggettoparent.transform.getchild(n).gameObject
-
-                    //collision.gameObject.transform.parent.gameObject;
-                    //prende parent come GameObject: oggettofiglio.transform.parent.gameObject
-                    //se invece: oggettofiglio.transform.parent --> è preso come Transform
-                    /*platformReached = */
-                    Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
                 }
             }
         }
@@ -335,6 +329,7 @@ public class PlayerController : MonoBehaviour
     {
         Trail.SetActive(false);
     }
+
     #region trail test
         //if(transform.position.x /*transform.position.x*/ == 0 & transform.position.y == 0)
         //{
@@ -375,19 +370,24 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        //HCmodeButton.onClick.AddListener(HardcoreMode);
+        //HCmode.onValueChanged.AddListener(HardcoreMode);
+
+        #region |||>>> FUEL CONTROL <<<|||
 
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel}");
+        remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         fuelMeter.text = $"FUEL {(int)remainingFuel}";
-
+        scoreText.text = $"SCORE {platformCount}";
         fuelSlider.value = remainingFuel / maxFuel;
-        remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         if(Input.GetKey(KeyCode.F))
         { remainingFuel = maxFuel; Debug.Log("FUEL " + remainingFuel); }
 
         if(secretNumber==666)
         { remainingFuel = maxFuel; }
+        #endregion
 
         //if (isOnGround)
         //{
@@ -444,22 +444,40 @@ public class PlayerController : MonoBehaviour
         { }
         #endregion
 
-        //Morte se scende di troppi stage(sistemare)
-        if(WallGeneration.Instance.ListaStageGenerati.Count > 3)
+        #region |||>>> MUORE SE SCENDE SOTTO PIATTAFORMA RAGGIUNTA <<<|||
+
+        if (WallGeneration.Instance.ListaStageGenerati.Count > 3)
         {
+            float yMin;
             float xRespawn;
             float yRespawn;
-
-            if (transform.position.y < WallGeneration.Instance.ListaStageGenerati[3].transform.position.y-5.5f)
+            int i;
+            for(i=0; i<WallGeneration.Instance.ListaStageGenerati.Count; i++)
             {
-                gameObject.SetActive(false);
-                Rigidbody.velocity = new Vector2(0, 0);
-                //gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
-                yRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].transform.position.y + 1f;
-                xRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                SetPlayerRespawn(xRespawn, yRespawn);
+                if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
+                {
+                    yMin = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y;
+                    if (transform.position.y < yMin - 5f)
+                    {
+                        gameObject.SetActive(false);
+                        yRespawn = yMin + 1f;
+                        xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                        Rigidbody.velocity = new Vector2(0, 0);
+                        SetPlayerRespawn(xRespawn, yRespawn);
+
+                        //gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
+                        //yRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].transform.position.y + 1f;
+                        //xRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                        //SetPlayerRespawn(xRespawn, yRespawn);
+                    }
+                    break;
+                }
+                else
+                {
+                }
             }
         }
+        #endregion
 
         #region reycast test
         //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
@@ -487,7 +505,6 @@ public class PlayerController : MonoBehaviour
         //    this.gameObject.SetActive(false);
         //}
         #endregion
-
 
     }
 
