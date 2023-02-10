@@ -34,7 +34,8 @@ public class PlayerController : MonoBehaviour
     public TMP_Text fuelMeter;
     public GameObject Trail;
     public TMP_Text scoreText;
-    public TMP_Text GameOverTEXT;
+    public TMP_Text GameOverText;
+    public TMP_Text livesText;
     //public TrailRenderer trailRenderer;
     //public GameObject Handle;
     //public GameObject playerDeathExplode;
@@ -391,35 +392,30 @@ public class PlayerController : MonoBehaviour
     private void GameOver()
     {
         GameOverCall();
+        //livesText.text = "LIVES 0";
         Invoke("GameOverOff", 2f);
         Invoke("RestartGame", 2f);
     }
 
     void Update()
     {
+        Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
 
         //metto possibilità di cambiare vite max al volo:
         //in questo modo ogni morte ricarica le vite al max, devo mettere controllo quando entro in opzioni
         //livesMax = MainMenu.InstanceMenu.LivesMax;
 
-        //GAME OVER
-        //if(livesActive && livesCount==0)
-        //{
-        //    GameOver();
-                
-        //}
-
-
         //HCmodeButton.onClick.AddListener(HardcoreMode);
         //HCmode.onValueChanged.AddListener(HardcoreMode);
 
+
+        scoreText.text = $"SCORE {platformCount}";
+
         #region |||>>> FUEL CONTROL <<<|||
 
-        Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         fuelMeter.text = $"FUEL {(int)remainingFuel}";
-        scoreText.text = $"SCORE {platformCount}";
         fuelSlider.value = remainingFuel / maxFuel;
 
         if(Input.GetKey(KeyCode.F))
@@ -430,7 +426,21 @@ public class PlayerController : MonoBehaviour
 
         if(remainingFuel<1)
         { Invoke("DestroyTrail", 0.2f); }
+        #endregion
 
+        #region |||>>> LIFE COUNT <<<|||
+
+        if (livesCount != 0)
+        {
+            if (livesMax == 11)
+            { livesText.text = "ETERNAL LIFE"; }
+            else if (livesMax == 1)
+            { livesText.text = "HARDCORE"; }
+            else
+            { livesText.text = $"LIVES {livesCount}"; }
+        }
+        else
+        { livesText.text = "LIVES 0"; }
         #endregion
 
         //if (isOnGround)
@@ -488,25 +498,10 @@ public class PlayerController : MonoBehaviour
         { }
         #endregion
 
-        //if(remainingFuel<1&&Rigidbody.velocity.x==0&&Rigidbody.velocity.y==0)
-        //{
-        //    //Instantiate(GameOver, new Vector3(SERVONO RECT TRANSFORM))
-        //    xRespawn = gameObject.transform.position.x;
-        //    yRespawn = gameObject.transform.position.y;
-        //    Invoke("GameOverCall", .5f);
-        //    gameObject.SetActive(false);
-        //    SetPlayerRespawn(xRespawn, yRespawn);
-        //    Invoke("GameOverOff", 2f);
-        //    Invoke("SetPlayerActive", 0f);
-
-
-        //    //xyRespawn = CollisionStageCalculator(yCollision);
-        //}
-
         #region |||>>> MUORE SOTTO PIATTAFORMA RAGGIUNTA <<<|||
 
-        if (WallGeneration.Instance.ListaStageGenerati.Count > 3)
-        {
+        //if (WallGeneration.Instance.ListaStageGenerati.Count )
+        //{
             float yMin;
             float xRespawn;
             float yRespawn;
@@ -535,8 +530,8 @@ public class PlayerController : MonoBehaviour
                 else
                 {
                 }
+            //}
             }
-        }
         #endregion
 
         #region reycast test
@@ -568,8 +563,8 @@ public class PlayerController : MonoBehaviour
 
     }
     public void GameOverCall()
-    { 
-        GameOverTEXT.gameObject.SetActive(true); 
+    {
+        GameOverText.gameObject.SetActive(true); 
     
     }
     //public void GameOverCall(bool dallInizio)
@@ -577,7 +572,7 @@ public class PlayerController : MonoBehaviour
 
     //}
     public void GameOverOff()
-    { GameOverTEXT.gameObject.SetActive(false); }
+    { GameOverText.gameObject.SetActive(false); }
 
     void FixedUpdate()
     {

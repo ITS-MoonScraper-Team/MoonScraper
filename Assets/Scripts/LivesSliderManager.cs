@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class SliderValueShow : MonoBehaviour
+public class LivesSliderManager : MonoBehaviour
 {
     private Slider livesSlider;
     private TMP_Text livesTxt;
