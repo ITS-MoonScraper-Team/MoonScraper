@@ -75,7 +75,6 @@ public class WallGeneration : MonoBehaviour
         //Platforms firstPlat = new Platforms ( startingStage.transform.GetChild(0).gameObject , platformStatusIndexRange[0]);
 
         ListaPlatforms.Add(new Platforms(startingStage.transform.GetChild(0).gameObject, 0/*platformStatusIndexRange[0]*/));
-            //[0].Platform=startingStage.transform.GetChild(0).gameObject;
 
         //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
 
