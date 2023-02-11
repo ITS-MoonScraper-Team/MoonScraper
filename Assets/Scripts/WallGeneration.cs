@@ -6,41 +6,19 @@ using UnityEngine;
 
 public class WallGeneration : MonoBehaviour
 {
-    private bool firstStagePassed = false;
-    private bool stageDone = true;
-
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
+    //SpriteRenderer spriteRenderer;
 
     public GameObject startingStage;
     public GameObject backGroundStart;
     public GameObject[] stageWalls;
     public GameObject[] backGround;
-
-    //private int[] platformStatusIndexRange = new int[] { 0, 1, 2 };
-    
-    public class Platforms 
-    {
-
-        private GameObject platformGenerated;
-        public GameObject PlatformGenerated { get; set; }
-
-        private int platformStatusIndex;
-        public int PlatformStatusIndex { get; set; }
-
-        public Platforms (GameObject _platformGenerated, int _platformStatusIndex)
-        {
-            PlatformGenerated = _platformGenerated;
-            
-            PlatformStatusIndex =_platformStatusIndex;
-        }
-    }
-
-
     //public Camera MainCamera;
-    //SpriteRenderer spriteRenderer;
     //public Sprite[] spriteArray;
 
+    private bool firstStagePassed = false;
+    private bool stageDone = true;
     private List<GameObject> listaBackGround = new List<GameObject>();
 
     private List<GameObject> listaStageGenerati = new List<GameObject>();
@@ -56,7 +34,22 @@ public class WallGeneration : MonoBehaviour
         get { return listaPlatforms; }
         set { listaPlatforms = value; }
     }
-  
+    //private int[] platformStatusIndexRange = new int[] { 0, 1, 2 };
+
+    public class Platforms 
+    {
+        private GameObject platformGenerated;
+        public GameObject PlatformGenerated { get; set; }
+
+        private int platformStatusIndex;
+        public int PlatformStatusIndex { get; set; }
+
+        public Platforms (GameObject _platformGenerated, int _platformStatusIndex)
+        {
+            PlatformGenerated = _platformGenerated;
+            PlatformStatusIndex =_platformStatusIndex;
+        }
+    }
 
     public static WallGeneration Instance;
 
@@ -65,7 +58,6 @@ public class WallGeneration : MonoBehaviour
         Instance = this;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         Rigidbody = GetComponent<Rigidbody2D>();
@@ -77,19 +69,12 @@ public class WallGeneration : MonoBehaviour
         ListaPlatforms.Add(new Platforms(startingStage.transform.GetChild(0).gameObject, 0/*platformStatusIndexRange[0]*/));
 
         //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
-
         //var georgeEmail = platformsList[1].platformStatusIndex[0];
         //var people = new List<Person>();
-
-        //prende child come GameObject: oggettoparent.transform.getchild(n).gameObject
-        //se invece: oggettoparent.transform.getchild(n) --> è preso come Transform
-
     }
 
-    // Update is called once per frame
     void Update()
     {
-
         //GENERAZIONE SECONDO STAGE
         ///SISTEMO LOGICA STARTINGSTAGE - BOOL STAGE PASSED
         if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
@@ -99,6 +84,7 @@ public class WallGeneration : MonoBehaviour
             //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 9.5f, 0), Quaternion.Euler(0, 0, 270)));
             //Platforms secondPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
+
             firstStagePassed = true;
         }
 
@@ -110,8 +96,6 @@ public class WallGeneration : MonoBehaviour
         {
             ListaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-
-            //Platforms nextPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
 
             stageDone = true;

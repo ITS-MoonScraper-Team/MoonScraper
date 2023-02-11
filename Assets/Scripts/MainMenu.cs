@@ -8,9 +8,10 @@ using TMPro;
 
 public class MainMenu : MonoBehaviour
 {
+    public static MainMenu InstanceMenu;
+
     public TMP_Text lifeMeterTXT;
     public Slider maxLivesSlider;
-    public static MainMenu InstanceMenu;
 
     private int livesMax;
     public int LivesMax
@@ -20,7 +21,6 @@ public class MainMenu : MonoBehaviour
     {
         InstanceMenu = this;
     }
-    // Start is called before the first frame update
     public void PlayGame()
     {
         //get Scenes to play from builder
@@ -32,9 +32,7 @@ public class MainMenu : MonoBehaviour
         Debug.Log("QUIT!");
     }
     private void Start()
-    {
-        //LivesMax = (int)maxLivesSlider.value;
-    }
+    { }
 
     void Update()
     {
@@ -45,6 +43,6 @@ public class MainMenu : MonoBehaviour
         {
             lifeMeterTXT.text = LivesMax.ToString();
         }
-        Debug.Log($"VITE{LivesMax}");
+        Debug.Log($"VITE {LivesMax}");
     }
 }
