@@ -10,12 +10,11 @@ public class MainMenu : MonoBehaviour
 {
     public TMP_Text lifeMeterTXT;
     public Slider maxLivesSlider;
+    public static MainMenu InstanceMenu;
+
     private int livesMax;
     public int LivesMax
     { get; set; }
-    private int livesCount;
-
-    public static MainMenu InstanceMenu;
 
     private void Awake()
     {
