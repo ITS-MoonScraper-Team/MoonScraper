@@ -28,6 +28,7 @@ public class PlayerController : MonoBehaviour
     public GameObject Trail;
     public Camera mainCamera;
     public FixedJoystick joystick;
+    public FloatingJoystick joyFloat;
     public Sprite[] spriteArray;
     public Slider fuelSlider;
     public Button buttonRestart;
