@@ -102,80 +102,82 @@ public class WallGeneration : MonoBehaviour
         }
 
         #region destroyExcessTest
-        //if (listaStageGenerati.Count > 50)
-        //{ listaStageGenerati.RemoveRange(50, listaStageGenerati.Count); }
+        while (listaStageGenerati.Count > 3)
+        {
+            int i;
+            for (i = 3; i < listaStageGenerati.Count; i++)
+            {
+                GameObject twalls = listaStageGenerati[i];
 
-        //if (listaStageGenerati.Count > 3)
-        //{
-        //    for (int i = 3; i < listaStageGenerati.Count + 1; i++)
-        //    { Destroy(listaStageGenerati[i].gameObject); }
-        //}
-        #endregion
+                Destroy(twalls.gameObject);
+            }
+        }
+            #endregion
 
-        #region Children.collider test
-        //Collider2D[] stageColliders;
-        //stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
-        //float maxY = stageColliders[0].transform.position.y;
-        //string collName = stageColliders[0].name;
-        //for (int i = 1; i < stageColliders.Length; i++)
-        //{  
-        //    Debug.Log(stageColliders[i].transform.position.y);
-        //    if (stageColliders[i].transform.position.y >= maxY)
-        //    {
-        //        maxY = stageColliders[i].transform.position.y;
-        //        collName = stageColliders[i].name;
-        //    }
-        //    else
-        //    {
-        //    }
-        //    Debug.Log(stageColliders[i].name + " = " + maxY);
-        //}
-        //Debug.Log("MAX Y" + collName + maxY);
-        //Debug.Log(capsuleCollider.bounds.max.y);
+            #region Children.collider test
+            //Collider2D[] stageColliders;
+            //stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
+            //float maxY = stageColliders[0].transform.position.y;
+            //string collName = stageColliders[0].name;
+            //for (int i = 1; i < stageColliders.Length; i++)
+            //{  
+            //    Debug.Log(stageColliders[i].transform.position.y);
+            //    if (stageColliders[i].transform.position.y >= maxY)
+            //    {
+            //        maxY = stageColliders[i].transform.position.y;
+            //        collName = stageColliders[i].name;
+            //    }
+            //    else
+            //    {
+            //    }
+            //    Debug.Log(stageColliders[i].name + " = " + maxY);
+            //}
+            //Debug.Log("MAX Y" + collName + maxY);
+            //Debug.Log(capsuleCollider.bounds.max.y);
 
-        //listaStageGenerati.Add(startingStage);
-        //if ((maxY - capsuleCollider.bounds.max.y) < 5)
-        //    firstStagePassed = false;
+            //listaStageGenerati.Add(startingStage);
+            //if ((maxY - capsuleCollider.bounds.max.y) < 5)
+            //    firstStagePassed = false;
 
-        //Collider2D[] newStageColliders; /*= new Collider2D[4];*/
-        //newStageColliders = listaStageGenerati[0].GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
-        //float newMaxY = newStageColliders[0].transform.position.y;
-        //string newCollName = newStageColliders[0].name;
-        //for (int i = 1; i < newStageColliders.Length; i++)
-        //{  
-        //    Debug.Log(newStageColliders[i].transform.position.y);
-        //    if (newStageColliders[i].transform.position.y >= newMaxY)
-        //    {
-        //        newMaxY = newStageColliders[i].transform.position.y;
-        //        newCollName = newStageColliders[i].name;
-        //    }
-        //    Debug.Log(newStageColliders[i].name + " = " + newMaxY);
-        //}
-        //    if ((newMaxY - capsuleCollider.bounds.max.y) < 5 && stageDone==false)
-        //    {
-        //        listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
-        //        stageDone = true;
-        //    }
-        #endregion
+            //Collider2D[] newStageColliders; /*= new Collider2D[4];*/
+            //newStageColliders = listaStageGenerati[0].GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
+            //float newMaxY = newStageColliders[0].transform.position.y;
+            //string newCollName = newStageColliders[0].name;
+            //for (int i = 1; i < newStageColliders.Length; i++)
+            //{  
+            //    Debug.Log(newStageColliders[i].transform.position.y);
+            //    if (newStageColliders[i].transform.position.y >= newMaxY)
+            //    {
+            //        newMaxY = newStageColliders[i].transform.position.y;
+            //        newCollName = newStageColliders[i].name;
+            //    }
+            //    Debug.Log(newStageColliders[i].name + " = " + newMaxY);
+            //}
+            //    if ((newMaxY - capsuleCollider.bounds.max.y) < 5 && stageDone==false)
+            //    {
+            //        listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
+            //        stageDone = true;
+            //    }
+            #endregion
 
-        #region Instantiate Walls test
-        //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
-        //{
-        //    Debug.Log(capsuleCollider.bounds.max.y);
-        //    //newStage = Instantiate(stageWalls[0]);
-        //    //stageWalls[i].transform.position = wallPos + (direction * newSpacing);
-        //}
+            #region Instantiate Walls test
+            //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
+            //{
+            //    Debug.Log(capsuleCollider.bounds.max.y);
+            //    //newStage = Instantiate(stageWalls[0]);
+            //    //stageWalls[i].transform.position = wallPos + (direction * newSpacing);
+            //}
 
-        //if (gameObject.transform.position.y-MainCamera.transform.position.y<3)
-        //{
-        //    GameObject gameObj = new GameObject() ;
-        //    gameObj.AddComponent<WallGeneration>();
-        //    gameObj.AddComponent<Transform>();
-        //    gameObj.AddComponent<SpriteRenderer>();
-        //    gameObj.AddComponent<Collider2D>();
-        //    wallPos = gameObj.AddComponent<Transform>()=
-        //    gameObj.transform.position.y = (gameObject.transform.position.y + 5.2);
-        //}
-        #endregion
-    }
+            //if (gameObject.transform.position.y-MainCamera.transform.position.y<3)
+            //{
+            //    GameObject gameObj = new GameObject() ;
+            //    gameObj.AddComponent<WallGeneration>();
+            //    gameObj.AddComponent<Transform>();
+            //    gameObj.AddComponent<SpriteRenderer>();
+            //    gameObj.AddComponent<Collider2D>();
+            //    wallPos = gameObj.AddComponent<Transform>()=
+            //    gameObj.transform.position.y = (gameObject.transform.position.y + 5.2);
+            //}
+            #endregion
+        }
 }
