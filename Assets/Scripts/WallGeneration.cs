@@ -97,21 +97,32 @@ public class WallGeneration : MonoBehaviour
             ListaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
             ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
+            //if(listaStageGenerati.Count>5)
+            //{
+            //    int i =5;
+            //    //for (i=5; i < listaStageGenerati.Count; i++)
+            //    //{
+            //        GameObject twalls = listaStageGenerati[i];
+            //        listaStageGenerati.RemoveAt(i);
 
+            //        Destroy(twalls.gameObject);
+            //    //}
+            //}
             stageDone = true;
         }
 
         #region destroyExcessTest
-        if (listaStageGenerati.Count > 5)
-        {
-            int i;
-            for (i = 5; i < listaStageGenerati.Count; i++)
-            {
-                GameObject twalls = listaStageGenerati[i];
+        //if (listaStageGenerati.Count > 5)
+        //{
+        //    int i;
+        //    for (i = 5; i < listaStageGenerati.Count; i++)
+        //    {
+        //        GameObject twalls = listaStageGenerati[i];
+        //        listaStageGenerati.RemoveAt(i);
 
-                Destroy(twalls.gameObject);
-            }
-        }
+        //        Destroy(twalls.gameObject);
+        //    }
+        //}
             #endregion
 
             #region Children.collider test
