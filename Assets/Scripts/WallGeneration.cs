@@ -102,10 +102,10 @@ public class WallGeneration : MonoBehaviour
         }
 
         #region destroyExcessTest
-        while (listaStageGenerati.Count > 3)
+        if (listaStageGenerati.Count > 5)
         {
             int i;
-            for (i = 3; i < listaStageGenerati.Count; i++)
+            for (i = 5; i < listaStageGenerati.Count; i++)
             {
                 GameObject twalls = listaStageGenerati[i];
 
