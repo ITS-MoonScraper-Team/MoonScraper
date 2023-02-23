@@ -33,7 +33,9 @@ public class LivesSliderManager : MonoBehaviour
         if(livesSlider.value == 1)
         {
             livesTxt.text = "HC";
+            //livesTxt.fontSize = 60;
             livesTxt.color = Color.red;
+            
             sliderFiller.color = Color.red;
         }
         else if(livesSlider.value == 11)
