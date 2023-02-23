@@ -13,7 +13,7 @@ using System.Runtime.CompilerServices;
 
 public class PlayerController : MonoBehaviour
 {
-    #region |||>>> THIS GAME OBJECT COMPONENTS <<<|||
+    #region |||>>> PLAYER COMPONENTS <<<|||
 
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
@@ -38,6 +38,8 @@ public class PlayerController : MonoBehaviour
     public TMP_Text livesText;
     public TMP_Text deadText;
     public TMP_Text outOfFuelText;
+    public ParticleSystem ExplosionTemplate;
+
     //public Button HCmodeButton;
     //public Slider maxLivesSlider;
     //public TrailRenderer trailRenderer;
@@ -159,13 +161,19 @@ public class PlayerController : MonoBehaviour
 
     private void SetPlayerInactiveLoseLife()
     {
+        ////FX MORTE
+        //ParticleSystem ps = Instantiate(ExplosionTemplate, transform.position, Quaternion.identity);
+        ////controllo particella da codice
+        //ps.Emit(60);
+        //Destroy(ps.gameObject, .5f);
+
         //apapre scritta: morto
         if (livesActive==true)
         {
             gameObject.SetActive(false);
             livesCount--;
         }
-        else 
+        else //GAMEOVER
         { 
             gameObject.SetActive(false);
         }

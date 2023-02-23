@@ -30,6 +30,7 @@ public class LivesSliderManager : MonoBehaviour
     // Update is called once per frame
     void UpdateText(float val)
     {
+        
         if(livesSlider.value == 1)
         {
             livesTxt.text = "HC";
