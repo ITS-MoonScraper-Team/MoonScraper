@@ -186,6 +186,8 @@ public class PlayerController : MonoBehaviour
 
             //controllo particella da codice
             ps.Emit(60);
+            if(SoundManager.AudioON)
+            SoundManager.PlaySound("playerDeath");
 
             Destroy(ps.gameObject, .4f);
         }
@@ -196,6 +198,9 @@ public class PlayerController : MonoBehaviour
 
             //controllo particella da codice
             ps.Emit(60);
+            if (SoundManager.AudioON)
+            SoundManager.PlaySound("playerDeath");
+
             Destroy(ps.gameObject, .4f);
         }
 
