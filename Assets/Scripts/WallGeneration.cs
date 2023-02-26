@@ -10,10 +10,11 @@ public class WallGeneration : MonoBehaviour
     CapsuleCollider2D capsuleCollider;
     //SpriteRenderer spriteRenderer;
 
-    public GameObject startingStage;
+    public StageSection startingStage;
     public GameObject backGroundStart;
     public GameObject[] stageWalls;
     public GameObject[] backGround;
+    public PlatformBehaviour startingPlatform;
     //public Camera MainCamera;
     //public Sprite[] spriteArray;
 
@@ -21,35 +22,22 @@ public class WallGeneration : MonoBehaviour
     private bool stageDone = true;
     private List<GameObject> listaBackGround = new List<GameObject>();
 
-    private List<GameObject> listaStageGenerati = new List<GameObject>();
-    public List<GameObject> ListaStageGenerati
+    private List<StageSection> listaStageGenerati = new List<StageSection>();
+    public List<StageSection> ListaStageGenerati
     {
         get { return listaStageGenerati; }
         set { listaStageGenerati = value; }
     }
 
-    private List<Platforms> listaPlatforms = new List<Platforms>();
-    public List<Platforms> ListaPlatforms
+    private List<PlatformBehaviour> listaPlatforms = new List<PlatformBehaviour>();
+    public List<PlatformBehaviour> ListaPlatforms
     {
         get { return listaPlatforms; }
         set { listaPlatforms = value; }
     }
     //private int[] platformStatusIndexRange = new int[] { 0, 1, 2 };
 
-    public class Platforms 
-    {
-        private GameObject platformGenerated;
-        public GameObject PlatformGenerated { get; set; }
 
-        private int platformStatusIndex;
-        public int PlatformStatusIndex { get; set; }
-
-        public Platforms (GameObject _platformGenerated, int _platformStatusIndex)
-        {
-            PlatformGenerated = _platformGenerated;
-            PlatformStatusIndex =_platformStatusIndex;
-        }
-    }
 
     public static WallGeneration Instance;
 
@@ -62,11 +50,13 @@ public class WallGeneration : MonoBehaviour
     {
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+        ListaStageGenerati = new List<StageSection>();
         ListaStageGenerati.Add(startingStage);
         listaBackGround.Add(backGroundStart);
         //Platforms firstPlat = new Platforms ( startingStage.transform.GetChild(0).gameObject , platformStatusIndexRange[0]);
-
-        ListaPlatforms.Add(new Platforms(startingStage.transform.GetChild(0).gameObject, 0/*platformStatusIndexRange[0]*/));
+        startingPlatform.index = 0;
+        ListaPlatforms = new List<PlatformBehaviour>();
+        ListaPlatforms.Add(startingPlatform);
 
         //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
         //var georgeEmail = platformsList[1].platformStatusIndex[0];
@@ -79,36 +69,29 @@ public class WallGeneration : MonoBehaviour
         ///SISTEMO LOGICA STARTINGSTAGE - BOOL STAGE PASSED
         if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
         {
-            ListaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, startingStage.transform.position.y + 11f, 0), Quaternion.identity));
+            GameObject newStage = Instantiate(Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, startingStage.transform.position.y + 11f, 0), Quaternion.identity));
+            StageSection newStageSection = newStage.GetComponent<StageSection>();
+            ListaStageGenerati.Insert(0, newStageSection);
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            //listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGround[0].transform.position.y + 9.5f, 0), Quaternion.Euler(0, 0, 270)));
-            //Platforms secondPlat = new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, platformStatusIndexRange[0]);
-            ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
+            ListaPlatforms.Insert(0, newStageSection.platform);
 
             firstStagePassed = true;
         }
 
         //GENERAZIONE ENDLESS STAGE
         ///SISTEMO LOGICA BOOL STAGEDONE
-        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f&&firstStagePassed==true)
+        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed==true)
         { stageDone = false; }
         if (stageDone == false)
         {
-            ListaStageGenerati.Insert (0, Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            ListaPlatforms.Insert(0, new Platforms(ListaStageGenerati[0].transform.GetChild(0).gameObject, 0));
-            //if(listaStageGenerati.Count>5)
-            //{
-            //    int i =5;
-            //    //for (i=5; i < listaStageGenerati.Count; i++)
-            //    //{
-            //        GameObject twalls = listaStageGenerati[i];
-            //        listaStageGenerati.RemoveAt(i);
+            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
+            StageSection newStageSection = newStage.GetComponent<StageSection>();
+            ListaStageGenerati.Insert(0, newStageSection);
 
-            //        Destroy(twalls.gameObject);
-            //    //}
-            //}
+            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
+            ListaPlatforms.Insert(0, newStageSection.platform);
             stageDone = true;
+      
         }
 
         #region destroyExcessTest
@@ -190,5 +173,5 @@ public class WallGeneration : MonoBehaviour
             //    gameObj.transform.position.y = (gameObject.transform.position.y + 5.2);
             //}
             #endregion
-        }
+    }
 }

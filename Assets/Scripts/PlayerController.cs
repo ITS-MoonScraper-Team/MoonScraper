@@ -304,10 +304,10 @@ public class PlayerController : MonoBehaviour
         int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
         for (int i = 0; i < iterMax; i++)
         {
-            if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
+            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
             {
-                yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.3f;
-                xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y +.3f;
+                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side==PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
                 break;
             }
             else
@@ -331,16 +331,16 @@ public class PlayerController : MonoBehaviour
         //{
             for (int i = iterMax - 1; i >= 0; i--)
             {
-                if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 0)
+                if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.MAI_TOCCATA)
                 {
                     
                     platformCount++;
                     remainingFuel = maxFuel;
-                    WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex = 1;
-                    WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().color = new Color(200f, 0f, 0f,255f);
-                    WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.GetChild(1).gameObject.GetComponent<SpriteRenderer>().color = new Color(200f, 0f, 0f, 255f);
-                    xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y +.3f;
+                    WallGeneration.Instance.ListaPlatforms[i].index = PlatformBehaviour.Index.ULTIMA;
+                    WallGeneration.Instance.ListaPlatforms[i].mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f,255f);
+                    WallGeneration.Instance.ListaPlatforms[i].edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+                    xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side==PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
+                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y +.3f;
                     
                     //mette status "2" = "passed" alle piattaforme vecchie
                     //for (int z=i+1; z<iterMax; z++)
@@ -348,7 +348,7 @@ public class PlayerController : MonoBehaviour
                     {
                         for (int j = i + 1; j < iterMax - 1; j++)
                         {
-                            WallGeneration.Instance.ListaPlatforms[j].PlatformStatusIndex = 2;
+                            WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
                         }
                     }
                     break;
@@ -403,7 +403,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //atterraggio da sopra
-            else if (transform.position.y >= yCollisionPlat)
+            else/* if (transform.position.y >= yCollisionPlat)*/
             {
                 //morte too fast
                 if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
@@ -759,9 +759,9 @@ public class PlayerController : MonoBehaviour
         //if()
         for(i=0; i<WallGeneration.Instance.ListaStageGenerati.Count; i++)
         {
-            if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
+            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
             {
-                yMin = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y;
+                yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
                 if (transform.position.y < yMin - 5f&&isAlive)
                 {
                     isAlive = false;

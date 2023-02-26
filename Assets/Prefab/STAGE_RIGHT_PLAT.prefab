@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5641088114664336555}
+  - component: {fileID: 6930864143452250017}
   m_Layer: 3
   m_Name: STAGE_RIGHT_PLAT
   m_TagString: walls
@@ -34,6 +35,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6930864143452250017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5641088114664336554}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b40b4ab008b5d9f40bcf28529578f3c6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  platform: {fileID: 8645613172729677349}
 --- !u!1 &8007949637735392326
 GameObject:
   m_ObjectHideFlags: 0
@@ -154,6 +168,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8007949637810790052}
+  - component: {fileID: 8645613172729677349}
   m_Layer: 8
   m_Name: PlatformChipArrow
   m_TagString: platform
@@ -183,6 +198,22 @@ Transform:
   m_Father: {fileID: 5641088114664336555}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8645613172729677349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8007949637810790055}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a31f0850e6d8c40b82b16fa9b19d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  side: 1
+  mainPart_SpriteRenderer: {fileID: 8007949638795809526}
+  edgePart_SpriteRenderer: {fileID: 8007949638720466238}
 --- !u!1 &8007949638203182662
 GameObject:
   m_ObjectHideFlags: 0
