@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text livesText;
     public TMP_Text deadText;
     public TMP_Text outOfFuelText;
-    public ParticleSystem ExplosionTemplate;
+    public GameObject ExplosionTemplate;
     public Image FuelCircleProgression;
     //public Button HCmodeButton;
     //public Slider maxLivesSlider;
@@ -67,6 +67,8 @@ public class PlayerController : MonoBehaviour
     public bool joystickControl;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
+    public bool joystickYaxisInverted=true;
+    public bool joystickXaxisInverted=true;
     [Header("OTHER")]
     public float deathFallingSpeed = 9.0f;
     public int secretNumber;
@@ -80,7 +82,7 @@ public class PlayerController : MonoBehaviour
     private float xRespawn;
     private float yRespawn;
     private int deathMessageNum;
-    private Transform posCollision;
+    private Vector2 posCollision;
     private float deathTimeDuration = .5f;
     //private float[] xyRespawn = new float[2];
     #endregion
@@ -97,6 +99,13 @@ public class PlayerController : MonoBehaviour
     private bool spacePressed;
     private bool spacePressedUp;
     private bool leftPressed;
+    private bool joystickYaxisCondition;
+    //private bool joystickXaxisCondition;
+    private Sprite directionLeftSprite;
+    private Sprite directionRightSprite;
+    private bool isFalling;
+    private Color currentWarnColor;
+    private bool isAlive;
     #endregion
 
     void Start()
@@ -165,7 +174,7 @@ public class PlayerController : MonoBehaviour
         }
         SetPlayerInactiveLoseLife();
         CollisionStageCalculator();
-        SetPlayerRespawn(/*xyRespawn[0], xyRespawn[1]*/);
+        //SetPlayerRespawn(/*xyRespawn[0], xyRespawn[1]*/);
         string condition = DeathMessageType();
         return condition;
     }
@@ -176,32 +185,19 @@ public class PlayerController : MonoBehaviour
 
         //FX MORTE
 
+        gameObject.SetActive(false);
+        GameObject explosion = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
+        //explosion.Emit(60);
+        if(SoundManager.AudioON)
+        SoundManager.PlaySound("playerDeath");
+
+        Destroy(explosion, .4f);
 
         //apapre scritta: morto
         if (livesActive == true)
         {
-            gameObject.SetActive(false);
             livesCount--;
-            ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision.position, Quaternion.identity);
-
             //controllo particella da codice
-            ps.Emit(60);
-            if(SoundManager.AudioON)
-            SoundManager.PlaySound("playerDeath");
-
-            Destroy(ps.gameObject, .4f);
-        }
-        else //GAMEOVER
-        {
-            gameObject.SetActive(false);
-            ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision.position, Quaternion.identity);
-
-            //controllo particella da codice
-            ps.Emit(60);
-            if (SoundManager.AudioON)
-            SoundManager.PlaySound("playerDeath");
-
-            Destroy(ps.gameObject, .4f);
         }
 
     }
@@ -213,7 +209,7 @@ public class PlayerController : MonoBehaviour
     //    {
     //        gameObject.SetActive(false);
     //        livesCount--;
-    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision.position, Quaternion.identity);
+    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
     //        //controllo particella da codice
     //        ps.Emit(60);
     //        yield return new WaitForSecondsRealtime(.4f);//NON deleta ps
@@ -222,7 +218,7 @@ public class PlayerController : MonoBehaviour
     //    else //GAMEOVER
     //    {
     //        gameObject.SetActive(false);
-    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision.position, Quaternion.identity);
+    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
     //        //controllo particella da codice
     //        ps.Emit(60);
     //        yield return new WaitForSecondsRealtime(.4f);
@@ -232,7 +228,8 @@ public class PlayerController : MonoBehaviour
 
     private void SetPlayerRespawn(/*float xRespawn, float yRespawn*/)
     {
-        mainCamera.transform.position = new Vector3(0, yRespawn, mainCamera.transform.position.z);
+        isAlive = true;
+        //mainCamera.transform.position = new Vector3(0, yRespawn, mainCamera.transform.position.z);
         gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
         remainingFuel = maxFuel;
         //Debug.Log("FUEL " + remainingFuel);
@@ -268,8 +265,17 @@ public class PlayerController : MonoBehaviour
         if(outOfFuelText.IsActive())
         outOfFuelText.gameObject.SetActive(false);
 
+        //StartCoroutine(SetPlayerActiveDelay());
+        SetPlayerRespawn();
         gameObject.SetActive(true);
     }
+
+    //IEnumerator SetPlayerActiveDelay()
+    //{
+    //    yield return new WaitForSeconds ()
+    //    SetPlayerRespawn();
+    //    gameObject.SetActive(true);
+    //}
 
     //private string RespawnCondition(int _deathMessageType)
     //{
@@ -291,7 +297,7 @@ public class PlayerController : MonoBehaviour
     ///se invece: oggettoparent.transform.getchild(n) --> è preso come Transform.
     #endregion
 
-    private void CollisionStageCalculator(/*Transform _posCollision*/)
+    private void CollisionStageCalculator(/*vector2 _posCollision*/)
     {
         //Rigidbody.velocity = new Vector2(0, 0);
         int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
@@ -362,7 +368,7 @@ public class PlayerController : MonoBehaviour
 
         //SISTEMO COLLISION; USO STATUS PIATTAFORMA E NON POSIZIONE DEL COLLIDER
         //float[] xyRespawn = new float[2];
-        posCollision = transform;
+        posCollision = transform.position;
         float yCollision = collision.gameObject.transform.position.y;
         float yCollisionPlat = collision.gameObject.transform.parent.transform.position.y;
         Rigidbody.velocity = new Vector2(0, 0);
@@ -372,6 +378,7 @@ public class PlayerController : MonoBehaviour
 
         //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
         {
+            isAlive = false;
             deathMessageNum = 0;
             Invoke(DeathLogic(), deathTimeDuration);
         }
@@ -384,6 +391,7 @@ public class PlayerController : MonoBehaviour
             //collision da sotto
             if (transform.position.y < yCollisionPlat)
             {
+                isAlive = false;
                 deathMessageNum = 0;
                 //DeadMessage();
                 Invoke(DeathLogic(), deathTimeDuration);
@@ -399,12 +407,14 @@ public class PlayerController : MonoBehaviour
                 //morte too fast
                 if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
                 {
+                    isAlive = false;
                     deathMessageNum = 0;
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
                 //respawn se finsici benza su stessa piatt
                 else if(yCollisionPlat==yLastReachedPlatform&&remainingFuel < 1)
                 {
+                    isAlive = false;
                     deathMessageNum = 1;
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
@@ -434,6 +444,7 @@ public class PlayerController : MonoBehaviour
         {
             if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
             {
+                isAlive = false;
                 deathMessageNum = 0;
                 Invoke(DeathLogic(), deathTimeDuration);
 
@@ -441,6 +452,7 @@ public class PlayerController : MonoBehaviour
             //fine benza
             else if (remainingFuel < 1)
             {
+                isAlive = false;
                 deathMessageNum = 1;
                 Invoke(DeathLogic(), deathTimeDuration);
             }
@@ -453,6 +465,10 @@ public class PlayerController : MonoBehaviour
     private void DestroyTrail()
     {
         Trail.SetActive(false);
+    }
+    private void DestroyParticleFX()
+    {
+        gameObject.transform.GetChild(2).gameObject.SetActive(false);
     }
 
     #region trail test
@@ -495,23 +511,32 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> VELOCITY WARNING COROUTINES <<||
 
-    public IEnumerator VelocityYellowWarnCoroutine()
+    //CTRL+RR cambia nome in tutto documento
+
+    IEnumerator VelocityWarnCoroutine()
     {
         //spriteRenderer.transform.DOShakePosition(.25f);
-        
-        ///SISTEMA COROUTINE CHE STARTA PIU'VOLTE
-        ///
-        spriteRenderer.DOColor(Color.yellow, .05f);
-        yield return new WaitForSeconds(.05f);
-        spriteRenderer.DOColor(colorCharacter, .05f);
 
+        ///SISTEMA COROUTINE CHE STARTA PIU'VOLTE-SISTEMA COLOR CHE RIMANE RED
+        ///
+       
+        isFalling = true;
+        while (isFalling)
+        {
+            
+            spriteRenderer.DOColor(currentWarnColor, .05f);
+            yield return new WaitForSeconds(.1f);
+            spriteRenderer.DOColor(colorCharacter, .05f);
+            yield return new WaitForSeconds(.1f);
+        }
+        
     }
-    public IEnumerator VelocityRedWarnCoroutine()
-    {
-        spriteRenderer.DOColor(Color.red, .05f);
-        yield return new WaitForSeconds(.05f);
-        spriteRenderer.DOColor(colorCharacter, .05f);
-    }
+    //IEnumerator VelocityRedWarnCoroutine()
+    //{
+    //    spriteRenderer.DOColor(Color.red, .05f);
+    //    yield return new WaitForSeconds(.05f);
+    //    spriteRenderer.DOColor(colorCharacter, .05f);
+    //}
     #endregion
 
     void Update()
@@ -519,23 +544,35 @@ public class PlayerController : MonoBehaviour
         ///metto possibilità di cambiare vite max in game menu
         //livesMax = MainMenu.InstanceMenu.LivesMax;
         //HCmodeButton.onClick.AddListener(HardcoreMode);
-        
 
+        
         ///DEBUG
         ///
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
+        if(Rigidbody.velocity.y>-7)
+        {
+            //spriteRenderer.DOColor(colorCharacter, .05f);
+            if (isFalling)
+            { isFalling = false; }
+            spriteRenderer.color = colorCharacter;
+        }
+
         if (Rigidbody.velocity.y <= -7.5f&&Rigidbody.velocity.y>-9)
         {
             //GetComponent<MeshRenderer>().material = myHitTakenMaterial;
             //Invoke("SetNormalMaterial", 0.25f);
-            StartCoroutine(VelocityYellowWarnCoroutine());
+            if (!isFalling)
+            {
+                currentWarnColor= Color.yellow;
+                StartCoroutine(VelocityWarnCoroutine());
+            }
         }
         if(Rigidbody.velocity.y<-9)
         {
-            StartCoroutine(VelocityRedWarnCoroutine());
+            currentWarnColor = Color.red;
         }
         #endregion
 
@@ -581,16 +618,57 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> JOYSTICK MOVEMENT <<<|||
 
+        if (joystickYaxisInverted)
+        {
+            if (joystick.Vertical < 0)
+            { joystickYaxisCondition = true; }
+            else
+            { joystickYaxisCondition = false; }
+        }
+        else
+        {
+            if(joystick.Vertical > 0)
+            { joystickYaxisCondition = true; }
+            else
+            { joystickYaxisCondition = false; }
+        }
+
+        //if (joystickXaxisInverted)
+        //{
+        //    if (joystick.Horizontal > 0)
+        //    { joystickXaxisCondition = true;
+        //      directionLeftSprite = spriteArray[0];
+        //    }
+        //    else if (joystick.Horizontal <0)
+        //    { joystickXaxisCondition = false;
+        //        directionRightSprite = spriteArray[1];
+        //    }
+        //}
+        //else
+        //{
+        //    if (joystick.Horizontal < 0)
+        //    { joystickXaxisCondition = true;
+        //        directionLeftSprite = spriteArray[1];
+        //    }
+        //    else if (joystick.Horizontal > 0)
+        //    { joystickXaxisCondition = false;
+        //        directionRightSprite = spriteArray[0];
+        //    }
+        //}
+
         if (joystickControl&&remainingFuel>0)
         {
-            if (joystick.Vertical < 0 || joystick.Horizontal != 0)
-            { Trail.SetActive(true); }
+            if (joystickYaxisCondition || joystick.Horizontal != 0)
+            { Trail.SetActive(true);
+                gameObject.transform.GetChild(2).gameObject.SetActive(true);
+            }
             else
             {
-               Invoke( "DestroyTrail", 0.4f);
+               Invoke( "DestroyTrail", 0.3f);
+               Invoke("DestroyParticleFX", .6f);
             }
 
-            if (joystick.Vertical < 0)
+            if (joystickYaxisCondition /*joystick.Vertical < 0*/)
             { 
                 //Alternativa Velocity:
                 //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
@@ -599,30 +677,71 @@ public class PlayerController : MonoBehaviour
             }
             else 
             {  }
+
             //Check Facing
             float posizFacing;
+            posizFacing = joystick.Horizontal;
 
             if (joystick.Horizontal != 0)
             {
-                posizFacing = joystick.Horizontal;
-                if (posizFacing > 0)
-                {
-                    Rigidbody.AddForce(Vector2.left* fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
 
-                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    ChangeSprite(spriteArray[0]);
-                    //ChangeAnimationRight();
-                }
-                if (posizFacing < 0)
+                if (joystickXaxisInverted)
                 {
-                    Rigidbody.AddForce(Vector2.right*fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                    directionLeftSprite = spriteArray[0];
+                    directionRightSprite = spriteArray[1];
+                    if (/*joystickXaxisCondition*/posizFacing > 0)
+                    {
+                        Rigidbody.AddForce(Vector2.left * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
 
-                    //Rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
-                    ChangeSprite(spriteArray[1]);
-                    //ChangeAnimationLeft();
+                        //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                        //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
+                        ChangeSprite(directionLeftSprite);
+                        //ChangeAnimationRight();
+                    }
+                    if (/*!joystickXaxisCondition*/posizFacing < 0)
+                    {
+                        Rigidbody.AddForce(Vector2.right * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+
+                        //Rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                        //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
+                        ChangeSprite(directionRightSprite);
+                        //ChangeAnimationLeft();
+                    }
                 }
+                else
+                {
+                    directionLeftSprite = spriteArray[0];
+                    directionRightSprite = spriteArray[1];
+                    if (posizFacing < 0)
+                    {
+                        Rigidbody.AddForce(Vector2.left * fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionLeftSprite);
+                    }
+                    if (posizFacing > 0)
+                    {
+                        Rigidbody.AddForce(Vector2.right * fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionRightSprite);
+                    }
+                }
+
+                //if (joystickXaxisCondition/*posizFacing > 0*/)
+                //{
+                //    Rigidbody.AddForce(Vector2.left* fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+
+                //    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                //    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
+                //    ChangeSprite(directionLeftSprite);
+                //    //ChangeAnimationRight();
+                //}
+                //if (!joystickXaxisCondition/*posizFacing < 0*/)
+                //{
+                //    Rigidbody.AddForce(Vector2.right*fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+
+                //    //Rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                //    //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
+                //    ChangeSprite(directionRightSprite);
+                //    //ChangeAnimationLeft();
+                //}
             }
         }
         else
@@ -634,21 +753,24 @@ public class PlayerController : MonoBehaviour
         float yMin;
         int i;
 
-        //if (WallGeneration.Instance.ListaStageGenerati.Count>1 )
 
+        //if (WallGeneration.Instance.ListaStageGenerati.Count>1 )
+        //if()
         for(i=0; i<WallGeneration.Instance.ListaStageGenerati.Count; i++)
         {
             if (WallGeneration.Instance.ListaPlatforms[i].PlatformStatusIndex == 1)
             {
                 yMin = WallGeneration.Instance.ListaPlatforms[i].PlatformGenerated.transform.position.y;
-                if (transform.position.y < yMin - 5f)
+                if (transform.position.y < yMin - 5f&&isAlive)
                 {
+                    isAlive = false;
                     deathMessageNum = 0;
+                    posCollision = transform.position;
                     SetPlayerInactiveLoseLife();
                     Rigidbody.velocity = new Vector2(0, 0);
                     yRespawn = yMin + .3f;
                     xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                    SetPlayerRespawn();
+                    //SetPlayerRespawn();
                     Invoke(DeathMessageType(), deathTimeDuration/*/2*/);
 
                     //gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
