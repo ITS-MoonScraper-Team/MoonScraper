@@ -105,7 +105,7 @@ public class PlayerController : MonoBehaviour
     private Sprite directionRightSprite;
     private bool isFalling;
     private Color currentWarnColor;
-    private bool isAlive;
+    private bool isAlive =true;
     #endregion
 
     void Start()
@@ -187,14 +187,12 @@ public class PlayerController : MonoBehaviour
         //FX MORTE
 
         gameObject.SetActive(false);
+        //if(SoundManager.AudioON)
+        SoundManager.PlaySound("playerDeath");
         GameObject explosion = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
         //explosion.Emit(60);
-        if(SoundManager.AudioON)
-        SoundManager.PlaySound("playerDeath");
-
         Destroy(explosion, .4f);
 
-        //apapre scritta: morto
         if (livesActive == true)
         {
             livesCount--;
@@ -202,35 +200,10 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    //IEnumerator SetPlayerInactiveCorutine()
-    //{
-    //    //FX MORTE
-    //    //apapre scritta: morto
-    //    if (livesActive == true)
-    //    {
-    //        gameObject.SetActive(false);
-    //        livesCount--;
-    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
-    //        //controllo particella da codice
-    //        ps.Emit(60);
-    //        yield return new WaitForSecondsRealtime(.4f);//NON deleta ps
-    //        Destroy(ps.gameObject);
-    //    }
-    //    else //GAMEOVER
-    //    {
-    //        gameObject.SetActive(false);
-    //        ParticleSystem ps = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
-    //        //controllo particella da codice
-    //        ps.Emit(60);
-    //        yield return new WaitForSecondsRealtime(.4f);
-    //        Destroy(ps.gameObject);
-    //    }
-    //}
 
     private void SetPlayerRespawn(/*float xRespawn, float yRespawn*/)
     {
         isAlive = true;
-        //mainCamera.transform.position = new Vector3(0, yRespawn, mainCamera.transform.position.z);
         gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
         remainingFuel = maxFuel;
         //Debug.Log("FUEL " + remainingFuel);
@@ -545,7 +518,6 @@ public class PlayerController : MonoBehaviour
         ///metto possibilità di cambiare vite max in game menu
         //livesMax = MainMenu.InstanceMenu.LivesMax;
         //HCmodeButton.onClick.AddListener(HardcoreMode);
-
         
         ///DEBUG
         ///
@@ -754,7 +726,6 @@ public class PlayerController : MonoBehaviour
         float yMin;
         int i;
 
-
         //if (WallGeneration.Instance.ListaStageGenerati.Count>1 )
         //if()
         for(i=0; i<WallGeneration.Instance.ListaStageGenerati.Count; i++)
@@ -770,14 +741,10 @@ public class PlayerController : MonoBehaviour
                     SetPlayerInactiveLoseLife();
                     Rigidbody.velocity = new Vector2(0, 0);
                     yRespawn = yMin + .3f;
-                    xRespawn = WallGeneration.Instance.ListaStageGenerati[i].name.Contains("RIGHT") ? 1.5f : -1.5f;
+                    xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side==PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
                     //SetPlayerRespawn();
                     Invoke(DeathMessageType(), deathTimeDuration/*/2*/);
 
-                    //gameObject.transform.position = new Vector3(xRespawn, yRespawn, 0);
-                    //yRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].transform.position.y + 1f;
-                    //xRespawn = WallGeneration.Instance.ListaStageGenerati[3].name.Contains("FIRST") ? 0f : WallGeneration.Instance.ListaStageGenerati[3].name.Contains("RIGHT") ? 1.5f : -1.5f;
-                    //SetPlayerRespawn(xRespawn, yRespawn);
                 }
                 break;
             }

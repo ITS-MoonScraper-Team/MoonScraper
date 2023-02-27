@@ -18,9 +18,6 @@ public class PlatformBehaviour : MonoBehaviour
         RIGHT=1
     }
     public Side side;
-    
-
-
     public SpriteRenderer mainPart_SpriteRenderer;
     public SpriteRenderer edgePart_SpriteRenderer;
 

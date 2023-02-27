@@ -35,9 +35,6 @@ public class WallGeneration : MonoBehaviour
         get { return listaPlatforms; }
         set { listaPlatforms = value; }
     }
-    //private int[] platformStatusIndexRange = new int[] { 0, 1, 2 };
-
-
 
     public static WallGeneration Instance;
 
@@ -53,8 +50,7 @@ public class WallGeneration : MonoBehaviour
         ListaStageGenerati = new List<StageSection>();
         ListaStageGenerati.Add(startingStage);
         listaBackGround.Add(backGroundStart);
-        //Platforms firstPlat = new Platforms ( startingStage.transform.GetChild(0).gameObject , platformStatusIndexRange[0]);
-        startingPlatform.index = 0;
+        startingPlatform.index = PlatformBehaviour.Index.MAI_TOCCATA;
         ListaPlatforms = new List<PlatformBehaviour>();
         ListaPlatforms.Add(startingPlatform);
 
@@ -65,11 +61,12 @@ public class WallGeneration : MonoBehaviour
 
     void Update()
     {
+       
         //GENERAZIONE SECONDO STAGE
         ///SISTEMO LOGICA STARTINGSTAGE - BOOL STAGE PASSED
-        if ((startingStage.transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
+        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
         {
-            GameObject newStage = Instantiate(Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, startingStage.transform.position.y + 11f, 0), Quaternion.identity));
+            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
             StageSection newStageSection = newStage.GetComponent<StageSection>();
             ListaStageGenerati.Insert(0, newStageSection);
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
@@ -87,7 +84,6 @@ public class WallGeneration : MonoBehaviour
             GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
             StageSection newStageSection = newStage.GetComponent<StageSection>();
             ListaStageGenerati.Insert(0, newStageSection);
-
             listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
             ListaPlatforms.Insert(0, newStageSection.platform);
             stageDone = true;
@@ -107,71 +103,6 @@ public class WallGeneration : MonoBehaviour
         //    }
         //}
             #endregion
-
-            #region Children.collider test
-            //Collider2D[] stageColliders;
-            //stageColliders = startingStage.GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
-            //float maxY = stageColliders[0].transform.position.y;
-            //string collName = stageColliders[0].name;
-            //for (int i = 1; i < stageColliders.Length; i++)
-            //{  
-            //    Debug.Log(stageColliders[i].transform.position.y);
-            //    if (stageColliders[i].transform.position.y >= maxY)
-            //    {
-            //        maxY = stageColliders[i].transform.position.y;
-            //        collName = stageColliders[i].name;
-            //    }
-            //    else
-            //    {
-            //    }
-            //    Debug.Log(stageColliders[i].name + " = " + maxY);
-            //}
-            //Debug.Log("MAX Y" + collName + maxY);
-            //Debug.Log(capsuleCollider.bounds.max.y);
-
-            //listaStageGenerati.Add(startingStage);
-            //if ((maxY - capsuleCollider.bounds.max.y) < 5)
-            //    firstStagePassed = false;
-
-            //Collider2D[] newStageColliders; /*= new Collider2D[4];*/
-            //newStageColliders = listaStageGenerati[0].GetComponentsInChildren<Collider2D>();/*GetComponent<Collider2D>().bounds.max.y;*/
-            //float newMaxY = newStageColliders[0].transform.position.y;
-            //string newCollName = newStageColliders[0].name;
-            //for (int i = 1; i < newStageColliders.Length; i++)
-            //{  
-            //    Debug.Log(newStageColliders[i].transform.position.y);
-            //    if (newStageColliders[i].transform.position.y >= newMaxY)
-            //    {
-            //        newMaxY = newStageColliders[i].transform.position.y;
-            //        newCollName = newStageColliders[i].name;
-            //    }
-            //    Debug.Log(newStageColliders[i].name + " = " + newMaxY);
-            //}
-            //    if ((newMaxY - capsuleCollider.bounds.max.y) < 5 && stageDone==false)
-            //    {
-            //        listaStageGenerati.Insert(0, Instantiate(stageWalls[Random.Range(0, 2)], new Vector3(0, listaStageGenerati[0].transform.position.y + 10.5f /**(1+listaStageGenerati.Count)*/, 0), Quaternion.identity));
-            //        stageDone = true;
-            //    }
-            #endregion
-
-            #region Instantiate Walls test
-            //if (capsuleCollider.bounds.max.y > maxStartStageY - 6.0f)
-            //{
-            //    Debug.Log(capsuleCollider.bounds.max.y);
-            //    //newStage = Instantiate(stageWalls[0]);
-            //    //stageWalls[i].transform.position = wallPos + (direction * newSpacing);
-            //}
-
-            //if (gameObject.transform.position.y-MainCamera.transform.position.y<3)
-            //{
-            //    GameObject gameObj = new GameObject() ;
-            //    gameObj.AddComponent<WallGeneration>();
-            //    gameObj.AddComponent<Transform>();
-            //    gameObj.AddComponent<SpriteRenderer>();
-            //    gameObj.AddComponent<Collider2D>();
-            //    wallPos = gameObj.AddComponent<Transform>()=
-            //    gameObj.transform.position.y = (gameObject.transform.position.y + 5.2);
-            //}
-            #endregion
+            
     }
 }

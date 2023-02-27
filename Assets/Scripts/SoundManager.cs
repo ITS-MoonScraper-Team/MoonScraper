@@ -8,14 +8,25 @@ public class SoundManager : MonoBehaviour
 {
     public Button AudioButton;
     public TMP_Text AudioText;
-    public static bool AudioON = true;
+    public static bool AudioON;
     public static AudioClip jetpack, playerDeathSound, landing;
     static AudioSource AudioSrc;
+    public AudioSource BackgroundAudio;
+    public static SoundManager instance;
+    void Awake()
+    {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        AudioON = true;
         playerDeathSound = Resources.Load < AudioClip > ("playerDeath");
         AudioSrc = GetComponent<AudioSource>();
+        AudioSrc.enabled = true;
+        AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
+        AudioButton.GetComponent<Image>().color = Color.green;
     }
 
     public static void PlaySound(string clip)
@@ -30,14 +41,20 @@ public class SoundManager : MonoBehaviour
     public void AudioONOFF()
     {
         if (AudioON)
-        { AudioON = false;
+        { 
+            AudioON = false;
           //AudioText.text = "audio OFF";
+          BackgroundAudio.Stop();
+            AudioSrc.enabled = false;
           AudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
             AudioButton.GetComponent<Image>().color = Color.red;
         }
         else
-        { AudioON=true;
-          AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
+        { 
+            AudioON=true;
+            BackgroundAudio.Play();
+            AudioSrc.enabled = true;
+            AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
            AudioButton.GetComponent<Image>().color = Color.green;
 
         }
