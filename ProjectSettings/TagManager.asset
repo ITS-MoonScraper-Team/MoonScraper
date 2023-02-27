@@ -6,6 +6,7 @@ TagManager:
   tags:
   - walls
   - platform
+  - soundManager
   layers:
   - Default
   - TransparentFX

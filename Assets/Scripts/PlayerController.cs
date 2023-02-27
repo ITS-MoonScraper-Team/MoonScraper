@@ -589,7 +589,8 @@ public class PlayerController : MonoBehaviour
         //    rb.drag = drag;
         //}
 
-        #region |||>>> JOYSTICK MOVEMENT <<<|||
+
+        #region |||>>> JOYSYICK AXIS ORIENTATION <<<|||
 
         if (joystickYaxisInverted)
         {
@@ -609,29 +610,20 @@ public class PlayerController : MonoBehaviour
         if (joystickXaxisInverted)
         {
             if (joystick.Horizontal > 0)
-            {
-                joystickXaxisCondition = true;
-                //directionLeftSprite = spriteArray[0];
-            }
+            { joystickXaxisCondition = true; }
             else if (joystick.Horizontal < 0)
-            {
-                joystickXaxisCondition = false;
-                //directionRightSprite = spriteArray[1];
-            }
+            { joystickXaxisCondition = false; }
         }
         else
         {
-            if (joystick.Horizontal < 0)
-            {
-                joystickXaxisCondition = true;
-                //directionLeftSprite = spriteArray[1];
-            }
-            else if (joystick.Horizontal > 0)
-            {
-                joystickXaxisCondition = false;
-                //directionRightSprite = spriteArray[0];
-            }
+            if (joystick.Horizontal > 0)
+            { joystickXaxisCondition = false; }
+            else if (joystick.Horizontal < 0)
+            { joystickXaxisCondition = true; }
         }
+        #endregion
+
+        #region |||>>> JOYSTICK MOVEMENT <<<|||
 
         if (joystickControl&&remainingFuel>0)
         {
@@ -705,15 +697,16 @@ public class PlayerController : MonoBehaviour
                 if (joystickXaxisCondition/*posizFacing > 0*/)
                 {
                     Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                    ChangeSprite(directionLeftSprite);
+
                     //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
                     //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    ChangeSprite(joystickXaxisInverted ? directionLeftSprite:directionRightSprite);
                     //ChangeAnimationRight();
                 }
                 if (!joystickXaxisCondition/*posizFacing < 0*/)
                 {
                     Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(joystickXaxisInverted ? directionRightSprite : directionLeftSprite);//SPRITE DIREZ SBAGLIATA,METTILA NELLA CONDIZ AXIX X
+                    ChangeSprite(directionRightSprite);
                 }
             }
         }
