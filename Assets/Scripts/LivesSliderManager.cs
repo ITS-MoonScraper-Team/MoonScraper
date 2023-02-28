@@ -10,14 +10,14 @@ public class LivesSliderManager : MonoBehaviour
     private TMP_Text livesTxt;
     private Color textStartingColor;
     private Color sliderStartingColor;
-    private Image sliderFiller;
+    public Image sliderFiller;
 
     private void Awake()
     {
         livesSlider = GetComponentInParent<Slider>();
         livesTxt = GetComponent<TMP_Text>();
         textStartingColor = livesTxt.color;
-        sliderFiller=livesSlider.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
+        //sliderFiller=livesSlider.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
         sliderStartingColor = sliderFiller.color;
     }
     // Start is called before the first frame update

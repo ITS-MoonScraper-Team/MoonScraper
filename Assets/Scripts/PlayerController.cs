@@ -120,6 +120,9 @@ public class PlayerController : MonoBehaviour
         //rectTransform=Handle.GetComponent<RectTransform>();
         directionLeftSprite= spriteArray[0];
         directionRightSprite= spriteArray[1];
+        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
+        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted;
+
 
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;

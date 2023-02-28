@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AxisOrientation : MonoBehaviour
 {
+    public static AxisOrientation instance;
     private bool xAxisInverted=true;
     public bool XAxisInverted
         { get { return xAxisInverted; } set { xAxisInverted = value; } }
@@ -25,6 +26,11 @@ public class AxisOrientation : MonoBehaviour
             YAxisInverted = false;
         else
             YAxisInverted = true;
+    }
+
+    private void Awake()
+    {
+        instance = this;
     }
     // Start is called before the first frame update
     void Start()
