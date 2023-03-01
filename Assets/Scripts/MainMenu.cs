@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using TMPro;
+using TMPro.EditorUtilities;
 
 public class MainMenu : MonoBehaviour
 {
@@ -12,7 +13,9 @@ public class MainMenu : MonoBehaviour
 
     public TMP_Text lifeMeterTXT;
     public Slider maxLivesSlider;
-
+    //public TMP_Text title12;
+    //public TMP_Text title2;
+    //public Material titleMat;
     private int livesMax;
     public int LivesMax
     { get; set; }
@@ -36,6 +39,7 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
+        //fon
         //font lightining angle modifica
         //Debug.Log lifeMeterTXT.fontMaterial.shader.GetPropertyAttributes(4);
         LivesMax = (int)maxLivesSlider.value;
