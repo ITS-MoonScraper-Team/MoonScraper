@@ -652,7 +652,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -2, y: 198}
+  m_AnchoredPosition: {x: -2, y: 178}
   m_SizeDelta: {x: 72.62, y: 30.94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &175430405
@@ -761,7 +761,7 @@ GameObject:
   - component: {fileID: 264611579}
   - component: {fileID: 264611578}
   m_Layer: 5
-  m_Name: SetLivesTitleTEXT
+  m_Name: OPTIONSTitleTEXT
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -784,7 +784,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.8390503, y: -66}
+  m_AnchoredPosition: {x: -0.8390503, y: -23}
   m_SizeDelta: {x: 736.3219, y: 102.45999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &264611578
@@ -1193,7 +1193,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -238, y: -287.51}
+  m_AnchoredPosition: {x: -238, y: -319}
   m_SizeDelta: {x: 60.85, y: 62.94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &692876647
@@ -1243,7 +1243,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 692876648}
+      - m_Target: {fileID: 1043724947}
         m_TargetAssemblyTypeName: AxisOrientation, Assembly-CSharp
         m_MethodName: InvertXAxis
         m_Mode: 1
@@ -1263,11 +1263,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 692876645}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99f584a77596a644bb0c98f2c097319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xAxisToggle: {fileID: 692876647}
+  yAxisToggle: {fileID: 727262297}
 --- !u!1 &727262294
 GameObject:
   m_ObjectHideFlags: 0
@@ -1305,7 +1307,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -238, y: -401}
+  m_AnchoredPosition: {x: -238, y: -432.48996}
   m_SizeDelta: {x: 60.85, y: 62.94}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &727262296
@@ -1315,11 +1317,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 727262294}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c99f584a77596a644bb0c98f2c097319, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  xAxisToggle: {fileID: 692876647}
+  yAxisToggle: {fileID: 727262297}
 --- !u!114 &727262297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1367,7 +1371,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 692876648}
+      - m_Target: {fileID: 1043724947}
         m_TargetAssemblyTypeName: AxisOrientation, Assembly-CSharp
         m_MethodName: InvertYAxis
         m_Mode: 1
@@ -1605,6 +1609,7 @@ GameObject:
   m_Component:
   - component: {fileID: 849491953}
   - component: {fileID: 849491954}
+  - component: {fileID: 849491955}
   m_Layer: 5
   m_Name: MAIN MENU
   m_TagString: Untagged
@@ -1649,6 +1654,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifeMeterTXT: {fileID: 1693867417}
   maxLivesSlider: {fileID: 987849759}
+--- !u!114 &849491955
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 849491952}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c99f584a77596a644bb0c98f2c097319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xAxisToggle: {fileID: 692876647}
+  yAxisToggle: {fileID: 727262297}
 --- !u!1 &987849757
 GameObject:
   m_ObjectHideFlags: 0
@@ -1687,7 +1706,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 13}
+  m_AnchoredPosition: {x: 0, y: 56}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &987849759
@@ -1839,8 +1858,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1043724946}
+  - component: {fileID: 1043724947}
   m_Layer: 5
-  m_Name: SET LIVES MENU
+  m_Name: OPTIONS MENU
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1855,7 +1875,7 @@ RectTransform:
   m_GameObject: {fileID: 1043724945}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.83206, y: 0.83206, z: 0.83206}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 264611577}
@@ -1869,9 +1889,23 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -52}
+  m_AnchoredPosition: {x: 0, y: -33}
   m_SizeDelta: {x: 740.8, y: 525.69}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1043724947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1043724945}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c99f584a77596a644bb0c98f2c097319, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xAxisToggle: {fileID: 692876647}
+  yAxisToggle: {fileID: 727262297}
 --- !u!1 &1112411852
 GameObject:
   m_ObjectHideFlags: 0
@@ -1907,7 +1941,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -0.8390503, y: -422}
+  m_AnchoredPosition: {x: -0.8390503, y: -442}
   m_SizeDelta: {x: 736.3219, y: 102.45999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1112411854
@@ -2839,7 +2873,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 6, y: -107}
+  m_AnchoredPosition: {x: 6, y: -104}
   m_SizeDelta: {x: 126.31, y: 30.86}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1516081064
@@ -3477,7 +3511,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0}
   m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: -5, y: -329.99997}
+  m_AnchoredPosition: {x: -5, y: -368.99997}
   m_SizeDelta: {x: 60.96, y: 15.279999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1759783785
@@ -4059,7 +4093,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -0.32, y: 35.6}
+  m_AnchoredPosition: {x: -0.3199997, y: 35.6}
   m_SizeDelta: {x: 241.17, y: 3.15}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2422704757038715574

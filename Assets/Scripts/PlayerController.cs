@@ -67,8 +67,8 @@ public class PlayerController : MonoBehaviour
     public bool joystickControl;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
-    public bool joystickYaxisInverted=true;
-    public bool joystickXaxisInverted=true;
+    public bool joystickYaxisInverted/*= true*/;
+    public bool joystickXaxisInverted/*=true*/;
     [Header("OTHER")]
     public float deathFallingSpeed = 9.0f;
     public int secretNumber;
@@ -84,6 +84,7 @@ public class PlayerController : MonoBehaviour
     private int deathMessageNum;
     private Vector2 posCollision;
     private float deathTimeDuration = .5f;
+    public static PlayerController instance;
     //private float[] xyRespawn = new float[2];
     #endregion
 
@@ -108,6 +109,13 @@ public class PlayerController : MonoBehaviour
     private bool isAlive =true;
     #endregion
 
+    private void Awake()
+    {
+        //instance = this;
+        joystickXaxisInverted = AxisOrientation.instance.xAxisToggle.isOn? AxisOrientation.instance.xAxisToggle.isOn : true;
+        joystickYaxisInverted = AxisOrientation.instance.yAxisToggle.isOn? AxisOrientation.instance.yAxisToggle.isOn : true;
+    }
+
     void Start()
     {
         //GETTING PLAYER COMPONENTS
@@ -118,10 +126,9 @@ public class PlayerController : MonoBehaviour
         //polygonCollider = GetComponent<PolygonCollider2D>();
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>();
-        directionLeftSprite= spriteArray[0];
+
+        directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
-        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
-        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted;
 
 
         //SETTING PLAYER DATA
