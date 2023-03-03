@@ -93,9 +93,10 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2251112385572680136}
+  - component: {fileID: 1988038867}
   m_Layer: 8
   m_Name: PlatformChipArrow
-  m_TagString: Untagged
+  m_TagString: platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,6 +123,22 @@ Transform:
   m_Father: {fileID: 2251112385728178427}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1988038867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251112385572680137}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4a31f0850e6d8c40b82b16fa9b19d55, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
+  side: 0
+  mainPart_SpriteRenderer: {fileID: 2251112386793771696}
+  edgePart_SpriteRenderer: {fileID: 2251112386529757414}
 --- !u!1 &2251112385810403381
 GameObject:
   m_ObjectHideFlags: 0
@@ -135,7 +152,7 @@ GameObject:
   - component: {fileID: 2251112385810403383}
   m_Layer: 3
   m_Name: wall2
-  m_TagString: Untagged
+  m_TagString: walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -451,8 +468,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b40b4ab008b5d9f40bcf28529578f3c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  platformLeft: {fileID: 0}
-  platformRight: {fileID: 0}
+  platform: {fileID: 1988038867}
 --- !u!1 &2251112386529757413
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,7 +732,7 @@ GameObject:
   - component: {fileID: 2251112386642598702}
   m_Layer: 3
   m_Name: wall1
-  m_TagString: Untagged
+  m_TagString: walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -936,7 +952,7 @@ GameObject:
   - component: {fileID: 2251112386924765944}
   - component: {fileID: 2251112386924765946}
   - component: {fileID: 2251112386924765947}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: RightSteps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1335,15 +1351,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5955942350611972103, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5955942350888614073, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5955942352246040140, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5592471056b88d4ab2ba24d162c4a81, type: 3}

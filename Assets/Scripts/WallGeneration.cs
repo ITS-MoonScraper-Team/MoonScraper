@@ -53,6 +53,7 @@ public class WallGeneration : MonoBehaviour
         startingPlatform.index = PlatformBehaviour.Index.MAI_TOCCATA;
         ListaPlatforms = new List<PlatformBehaviour>();
         ListaPlatforms.Add(startingPlatform);
+        //startingPlatform.absoluteNumber = 1;
 
         //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
         //var georgeEmail = platformsList[1].platformStatusIndex[0];
@@ -68,24 +69,24 @@ public class WallGeneration : MonoBehaviour
         {
             GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
             StageSection newStageSection = newStage.GetComponent<StageSection>();
-            ListaStageGenerati.Insert(0, newStageSection);
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            ListaPlatforms.Insert(0, newStageSection.platform);
+            ListaStageGenerati.Add(newStageSection);
+            listaBackGround.Add( Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
+            ListaPlatforms.Add(newStageSection.platform);
 
             firstStagePassed = true;
         }
 
         //GENERAZIONE ENDLESS STAGE
         ///SISTEMO LOGICA BOOL STAGEDONE
-        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed==true)
+        if ((ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed==true)
         { stageDone = false; }
         if (stageDone == false)
         {
-            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
+            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y + 11f, 0), Quaternion.identity);
             StageSection newStageSection = newStage.GetComponent<StageSection>();
-            ListaStageGenerati.Insert(0, newStageSection);
-            listaBackGround.Insert(0, Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[0].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            ListaPlatforms.Insert(0, newStageSection.platform);
+            ListaStageGenerati.Add( newStageSection);
+            listaBackGround.Add(Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[listaBackGround.Count-1].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
+            ListaPlatforms.Add(newStageSection.platform);
             stageDone = true;
       
         }

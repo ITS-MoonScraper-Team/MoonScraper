@@ -72,6 +72,7 @@ public class PlayerController : MonoBehaviour
     [Header("OTHER")]
     public float deathFallingSpeed = 9.0f;
     public int secretNumber;
+    public int springForce = 500;
     //public bool HARDCORE;
     #endregion
 
@@ -188,10 +189,17 @@ public class PlayerController : MonoBehaviour
 
         //SISTEMO COLLISION; USO STATUS PIATTAFORMA E NON POSIZIONE DEL COLLIDER
         //float[] xyRespawn = new float[2];
-        float yCollision = collision.gameObject.transform.position.y;
-        float yCollisionPlat = collision.gameObject.transform.parent.transform.position.y;
+        float yStageCollision = collision.gameObject.transform.position.y;
+        float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
+        PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
         posCollision = transform.position;
         Rigidbody.velocity = new Vector2(0, 0);
+
+        //jumper collision piazzato sul prefab col fungo 
+        if (collision.gameObject.layer==9)
+        {
+            Rigidbody.AddForce(Vector2.up*springForce*Time.deltaTime, ForceMode2D.Impulse);
+        }
 
         //wall collision
         if (collision.gameObject.layer == 3)
@@ -209,7 +217,7 @@ public class PlayerController : MonoBehaviour
             //sistemo y rilevata per le piattaforme!!!
 
             //collision da sotto
-            if (transform.position.y < yCollisionPlat)
+            if (transform.position.y < yCollidedPlat)
             {
                 isAlive = false;
                 deathMessage = Index.DEAD;
@@ -232,31 +240,43 @@ public class PlayerController : MonoBehaviour
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
                 //respawn se finsici benza su stessa piatt
-                else if(yCollisionPlat==yLastReachedPlatform&&remainingFuel < 1)
+                else if(yCollidedPlat == yLastReachedPlatform&&remainingFuel < 1)
                 {
                     isAlive = false;
                     deathMessage = Index.OUT_OF_FUEL;
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
                 //rileva se nuova piattaforma e aumenta score
-                else if (yCollisionPlat != yLastReachedPlatform)
+                else if(collidedPlat.index==PlatformBehaviour.Index.MAI_TOCCATA)
                 {
-                    ReachedPlatformCalculator(/*yCollisionPlat*/);
-                    yLastReachedPlatform = yCollisionPlat;
-                    Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
+                    ReachedPlatformCalculator(collidedPlat);
 
-                    #region Rapid fuel recharge test
-                    //FUNZIONA PER TEST RAPIDO
-                    //collidedPlatformStatus = (int)xyRespawn[2];
-                    //if(collidedPlatformStatus==0)
-                    //{
-                    //    remainingFuel=maxFuel;
-                    //    collidedPlatformStatus=1;
-                    //}
-                    //FINE TEST
-                    #endregion
+                    yLastReachedPlatform = yCollidedPlat;
+
+                    Debug.Log(collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
 
                 }
+
+                //rileva se nuova piattaforma, la attiva solo se è quella successiva all'ultima, non funzia se salti di due
+                //else if (yCollidedPlat != yLastReachedPlatform)
+                //{
+                //    OLD_ReachedPlatformCalculator_OLD();
+                //    yLastReachedPlatform = yCollidedPlat;
+
+                //    Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
+
+                //    #region Rapid fuel recharge test
+                //    //FUNZIONA PER TEST RAPIDO
+                //    //collidedPlatformStatus = (int)xyRespawn[2];
+                //    //if(collidedPlatformStatus==0)
+                //    //{
+                //    //    remainingFuel=maxFuel;
+                //    //    collidedPlatformStatus=1;
+                //    //}
+                //    //FINE TEST
+                //    #endregion
+
+                //}
             }
         }
         //collision ground level
@@ -340,8 +360,10 @@ public class PlayerController : MonoBehaviour
     private void CollisionRespawnCalculator(/*vector2 _posCollision*/)
     {
         //Rigidbody.velocity = new Vector2(0, 0);
-        int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        for (int i = 0; i < iterMax; i++)
+        //int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
+        int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 5 ? WallGeneration.Instance.ListaStageGenerati.Count - 5 : 0;
+
+        for (int i = WallGeneration.Instance.ListaStageGenerati.Count - 1; i >= iterMin; i--)
         {
             if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
             {
@@ -351,6 +373,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                //prova a commentare le prossime due righe
                 yRespawn = .3f;
                 xRespawn = 0f;
             }
@@ -394,49 +417,65 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    private void ReachedPlatformCalculator(/*Transform _posCollision*/)
+
+    private void OLD_ReachedPlatformCalculator_OLD()
     {
-        //float yRespawn = 0f;
-        //float xRespawn = 0f;
-        //float[] xyRespawn = new float[2];
-        //int collidedPlatStatus = 0;
-        //int platformListIndex = 0;
-        //Rigidbody.velocity = new Vector2(0, 0);
         int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        //if (yCollision != yCollisionLastPlatform)
-        //{
-            for (int i = iterMax - 1; i >= 0; i--)
+        for (int i = iterMax - 1; i >= 0; i--)
+
+        //int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? WallGeneration.Instance.ListaStageGenerati.Count - 4 : 0;
+        //for(int i = WallGeneration.Instance.ListaStageGenerati.Count-1; i>iterMin;i--)
+        {
+            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.MAI_TOCCATA)
             {
-                if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.MAI_TOCCATA)
+                platformCount++;
+                remainingFuel = maxFuel;
+                WallGeneration.Instance.ListaPlatforms[i].index = PlatformBehaviour.Index.ULTIMA;
+                yMinReachable = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
+                WallGeneration.Instance.ListaPlatforms[i].mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+                WallGeneration.Instance.ListaPlatforms[i].edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side == PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
+                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y + .3f;
+
+                //mette status "2" = "passed" alle piattaforme vecchie DOPO L'ULTIMA RAGGIUNTA
+                //for (int z=i+1; z<iterMax; z++)
+                if (i < iterMax - 1)
+
                 {
-                    
-                    platformCount++;
-                    remainingFuel = maxFuel;
-                    WallGeneration.Instance.ListaPlatforms[i].index = PlatformBehaviour.Index.ULTIMA;
-                    yMinReachable = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
-                    WallGeneration.Instance.ListaPlatforms[i].mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f,255f);
-                    WallGeneration.Instance.ListaPlatforms[i].edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-                    xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side==PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
-                    yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y +.3f;
-                    
-                    //mette status "2" = "passed" alle piattaforme vecchie
-                    //for (int z=i+1; z<iterMax; z++)
-                    if (i < iterMax - 1)
+                    for (int j = i + 1; j < iterMax - 1; j++)
                     {
-                        for (int j = i + 1; j < iterMax - 1; j++)
-                        {
-                            WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
-                        }
+                        WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
                     }
-                    break;
                 }
+                break;
             }
-            //yLastCollidedPlatform=yCollision;
-        //}
-        //xyRespawn[0] = xRespawn;
-        //xyRespawn[1] = yRespawn;
-        //return xyRespawn;
-        //SetPlayerRespawn(xRespawn, yRespawn);
+        }
+    }
+
+    private void ReachedPlatformCalculator(PlatformBehaviour collidedPlat)
+    {
+        //Rigidbody.velocity = new Vector2(0, 0);
+
+        platformCount++;
+        remainingFuel = maxFuel;
+        collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
+        yMinReachable = collidedPlat.transform.position.y;
+        collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+        collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+
+        xRespawn = collidedPlat.side == PlatformBehaviour.Side.RIGHT ? 1.5f : -1.5f;
+        yRespawn = collidedPlat.transform.position.y + .3f;
+
+        int iterMin = WallGeneration.Instance.ListaPlatforms.Count > 5 ? WallGeneration.Instance.ListaPlatforms.Count - 5 : 0;
+        for(int i = WallGeneration.Instance.ListaPlatforms.Count-1; i>=iterMin;i--)
+            if (WallGeneration.Instance.ListaPlatforms[i].index==PlatformBehaviour.Index.ULTIMA)
+            {
+                for (int j = iterMin; j < i; j++)
+                {
+                    WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
+                }
+                break;
+            }
     }
 
     #region |||>>> TRAIL MANAGEMENT <<<|||

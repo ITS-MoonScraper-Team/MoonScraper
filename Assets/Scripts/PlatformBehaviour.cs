@@ -18,12 +18,14 @@ public class PlatformBehaviour : MonoBehaviour
         RIGHT=1
     }
     public Side side;
+    //public int absoluteNumber;
     public SpriteRenderer mainPart_SpriteRenderer;
     public SpriteRenderer edgePart_SpriteRenderer;
 
-    public PlatformBehaviour(Index _index)
+    public PlatformBehaviour(Index _index /*,int _absoluteNumber*/)
     {
         index = _index;
+        //absoluteNumber = _absoluteNumber;   
     }
 
     // Start is called before the first frame update
