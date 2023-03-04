@@ -1,3 +1,4 @@
+using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,65 +6,37 @@ using UnityEngine.UI;
 
 public class AxisOrientation : MonoBehaviour
 {
-    public Toggle xAxisToggle;
-    public Toggle yAxisToggle;
     public static AxisOrientation instance;
 
-    private bool xAxisInverted;
+    private bool xAxisInverted=true;
     public bool XAxisInverted
-        { get { return xAxisInverted; } set { xAxisInverted = value; } }
-
-    private bool yAxisInverted;
-    public bool YAxisInverted
-        { get { return yAxisInverted; } set { yAxisInverted = value; } }
-
-    public void InvertXAxis()
-    {
-        if (XAxisInverted)
-            XAxisInverted = false;
-        else
-            XAxisInverted = true;
+    { 
+        get { return xAxisInverted; } 
+        set { xAxisInverted = value;  } 
     }
-    public void InvertYAxis()
-    {
-        if (YAxisInverted)
-            YAxisInverted = false;
-        else
-            YAxisInverted = true;
+
+    private bool yAxisInverted=true;
+    public bool YAxisInverted
+    { 
+        get { return yAxisInverted; } 
+        set { yAxisInverted = value;  } 
     }
 
     private void Awake()
     {
-        instance = this;
-        //if (PlayerController.instance.joystickXaxisInverted != null)
-        //{
-        //   xAxisToggle.isOn = PlayerController.instance.joystickXaxisInverted;
-        //    //XAxisInverted = PlayerController.instance.joystickXaxisInverted;
-
-        ////    //XAxisInverted = if( PlayerController.instance.joystickXaxisInverted)
-
-        //}
-        //if(PlayerController.instance.joystickYaxisInverted!=null)
-        //{
-        //    yAxisToggle.isOn = PlayerController.instance.joystickYaxisInverted;
-        ////    //YAxisInverted = PlayerController.instance.joystickYaxisInverted;
-
-        ////    //YAxisInverted = PlayerController.instance.joystickYaxisInverted;
-
-        //}
-        //xAxisInverted = xAxisToggle.isOn;
-        //yAxisInverted = yAxisToggle.isOn;
-
-
-
-        if (xAxisToggle.isOn)
-            XAxisInverted = true;
+        if(AxisOrientation.instance!=null)
+        {
+            Destroy(gameObject);
+               
+        }
         else
-            XAxisInverted = false;
-        if (yAxisToggle.isOn)
-            YAxisInverted = true;
-        else
-            YAxisInverted = false;         //(bool)PlayerController.instance.joystickYaxisInverted;
+        {
+            instance = this;
+            DontDestroyOnLoad(this);
+        }
+
+        LoadPlayerSettings();
+
     }
     // Start is called before the first frame update
     void Start()
@@ -74,5 +47,29 @@ public class AxisOrientation : MonoBehaviour
     void Update()
     {
         
+    }
+    public void SavePlayerSettings()
+    {
+        int xValue = XAxisInverted ? 1 : 0;
+        int yValue = YAxisInverted ? 1 : 0;
+        PlayerPrefs.SetInt("xAxisInverted", xValue);
+        PlayerPrefs.SetInt("yAxisInverted", yValue);
+        PlayerPrefs.Save();
+        Debug.Log("saved date");
+    }
+    public void LoadPlayerSettings()
+    {
+        if(PlayerPrefs.HasKey("xAxisInverted"))
+        {
+            int xValue = PlayerPrefs.GetInt("xAxisInverted");
+            XAxisInverted = xValue==1? true: false;
+        }
+        if (PlayerPrefs.HasKey("yAxisInverted"))
+        {
+            int yValue = PlayerPrefs.GetInt("yAxisInverted");
+            YAxisInverted = yValue == 1 ? true : false;
+
+        }
+        Debug.Log("loaded data");
     }
 }

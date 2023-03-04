@@ -126,8 +126,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         //instance = this;
-        joystickXaxisInverted = AxisOrientation.instance.xAxisToggle.isOn/*? AxisOrientation.instance.xAxisToggle.isOn : true*/;
-        joystickYaxisInverted = AxisOrientation.instance.yAxisToggle.isOn/*? AxisOrientation.instance.yAxisToggle.isOn : true*/;
+        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
+        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted;
     }
 
     void Start()
