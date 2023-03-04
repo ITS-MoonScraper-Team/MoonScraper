@@ -92,18 +92,17 @@ public class WallGeneration : MonoBehaviour
         }
 
         #region destroyExcessTest
-        //if (listaStageGenerati.Count > 5)
+        //if (listaStageGenerati.Count > 6)
         //{
-        //    int i;
-        //    for (i = 5; i < listaStageGenerati.Count; i++)
+        //    for (int i = 0; i < listaStageGenerati.Count-7; i++)
         //    {
-        //        GameObject twalls = listaStageGenerati[i];
-        //        listaStageGenerati.RemoveAt(i);
+        //        StageSection twalls = listaStageGenerati[i];
+                
 
         //        Destroy(twalls.gameObject);
         //    }
         //}
-            #endregion
-            
+        #endregion
+
     }
 }

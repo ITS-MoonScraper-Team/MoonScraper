@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text outOfFuelText;
     public GameObject ExplosionTemplate;
     public Image FuelCircleProgression;
+    public Animator PlayerAnimator;
     //public Button HCmodeButton;
     //public Slider maxLivesSlider;
     //public TrailRenderer trailRenderer;
@@ -117,6 +118,9 @@ public class PlayerController : MonoBehaviour
     private bool isFalling;
     private Color currentWarnColor;
     private bool isAlive =true;
+    private Vector3 leftFacingVector;
+    private Vector3 rightFacingVector;
+
     #endregion
 
     private void Awake()
@@ -140,6 +144,9 @@ public class PlayerController : MonoBehaviour
         directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
 
+        leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         livesMax = MainMenu.InstanceMenu.LivesMax;
@@ -152,7 +159,7 @@ public class PlayerController : MonoBehaviour
         xRespawn= gameObject.transform.position.x;
         yRespawn= gameObject.transform.position.y;
         
-        buttonRestart.onClick.AddListener(RestartGame);
+        //buttonRestart.onClick.AddListener(RestartGame);
 
     }
 
@@ -180,16 +187,13 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> COLLISION - DEATH LOGIC <<<|||
+    #region |||>>> COLLISIONS <<<|||
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
-        //{Destroy(gameObject);}
 
-        //SISTEMO COLLISION; USO STATUS PIATTAFORMA E NON POSIZIONE DEL COLLIDER
-        //float[] xyRespawn = new float[2];
-        float yStageCollision = collision.gameObject.transform.position.y;
+        //float yStageCollision = collision.gameObject.transform.position.y;
         float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
         PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
         posCollision = transform.position;
@@ -214,23 +218,16 @@ public class PlayerController : MonoBehaviour
         //platform collison
         if (collision.gameObject.layer ==8)
         {
-            //sistemo y rilevata per le piattaforme!!!
-
             //collision da sotto
             if (transform.position.y < yCollidedPlat)
             {
                 isAlive = false;
                 deathMessage = Index.DEAD;
-                //DeadMessage();
                 Invoke(DeathLogic(), deathTimeDuration);
-                //SetPlayerInactiveLoseLife();
-                //xyRespawn = CollisionStageCalculator(yCollision);
-                //SetPlayerRespawn(xyRespawn[0], xyRespawn[1]);
-                //RespawnCondition();
             }
 
             //atterraggio da sopra
-            else/* if (transform.position.y >= yCollisionPlat)*/
+            else
             {
                 //morte too fast
                 if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
@@ -249,33 +246,14 @@ public class PlayerController : MonoBehaviour
                 //rileva se nuova piattaforma e aumenta score
                 else if(collidedPlat.index==PlatformBehaviour.Index.MAI_TOCCATA)
                 {
-                    ReachedPlatformCalculator(collidedPlat);
-
+                    NewPlatformReached(collidedPlat);
                     yLastReachedPlatform = yCollidedPlat;
-
                     Debug.Log(collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
-
                 }
 
-                //rileva se nuova piattaforma, la attiva solo se è quella successiva all'ultima, non funzia se salti di due
                 //else if (yCollidedPlat != yLastReachedPlatform)
                 //{
-                //    OLD_ReachedPlatformCalculator_OLD();
                 //    yLastReachedPlatform = yCollidedPlat;
-
-                //    Debug.Log( collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
-
-                //    #region Rapid fuel recharge test
-                //    //FUNZIONA PER TEST RAPIDO
-                //    //collidedPlatformStatus = (int)xyRespawn[2];
-                //    //if(collidedPlatformStatus==0)
-                //    //{
-                //    //    remainingFuel=maxFuel;
-                //    //    collidedPlatformStatus=1;
-                //    //}
-                //    //FINE TEST
-                //    #endregion
-
                 //}
             }
         }
@@ -298,6 +276,9 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    #endregion
+
+    #region |||>>> DEATH LOGIC <<<|||
 
     private string DeathLogic()
     {
@@ -306,8 +287,6 @@ public class PlayerController : MonoBehaviour
             platformCount = 0;
         }
         SetPlayerInactiveLoseLife();
-        CollisionRespawnCalculator();
-        //SetPlayerRespawn(/*xyRespawn[0], xyRespawn[1]*/);
         string condition = DeathMessageType();
         return condition;
     }
@@ -357,29 +336,11 @@ public class PlayerController : MonoBehaviour
 
     #region |||>>> RESPAWN LOGIC <<<|||
 
-    private void CollisionRespawnCalculator(/*vector2 _posCollision*/)
+    private void PlayerRespawnCalculator(PlatformBehaviour _collidedPlat)
     {
-        //Rigidbody.velocity = new Vector2(0, 0);
-        //int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 5 ? WallGeneration.Instance.ListaStageGenerati.Count - 5 : 0;
-
-        for (int i = WallGeneration.Instance.ListaStageGenerati.Count - 1; i >= iterMin; i--)
-        {
-            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
-            {
-                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y +.3f;
-                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side==PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
-                break;
-            }
-            else
-            {
-                //prova a commentare le prossime due righe
-                yRespawn = .3f;
-                xRespawn = 0f;
-            }
-        }
+        xRespawn = _collidedPlat.side == PlatformBehaviour.Side.RIGHT ? 1.5f : -1.5f;
+        yRespawn = _collidedPlat.transform.position.y + .3f;
     }
-
 
     private void SetPlayerActive()
     {
@@ -417,7 +378,47 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
+    #region |||>>> NEW PLATFORM UPDATES <<<|||
 
+    private void NewPlatformReached(PlatformBehaviour collidedPlat)
+    {
+        //PLAYER VARIABLES UPDATE: Fuel refill, platform score +1, minima Y raggiungibile
+        remainingFuel = maxFuel;
+        platformCount++;
+        yMinReachable = collidedPlat.transform.position.y;
+        //Calculate new respawn position
+        PlayerRespawnCalculator(collidedPlat);
+        //Platform status and color 
+        SetNewPlatformStatus(collidedPlat);
+        //setta status PASSATA a piattaforme vecchie
+        SetPassedPlatformStatus();
+    }
+
+    private void SetNewPlatformStatus(PlatformBehaviour collidedPlat)
+    {
+        collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
+        collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+        collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+    }
+
+    private void SetPassedPlatformStatus()
+    {
+        int iterMin = WallGeneration.Instance.ListaPlatforms.Count > 5 ? WallGeneration.Instance.ListaPlatforms.Count - 5 : 0;
+        for (int i = WallGeneration.Instance.ListaPlatforms.Count - 1; i >= iterMin; i--)
+        {
+            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
+            {
+                for (int j = iterMin; j < i; j++)
+                {
+                    WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
+                }
+                break;
+            }
+        }
+    }
+    #endregion
+
+    #region <<<OLD COLLISION-RESPAWN CALCULATOR>>>
     private void OLD_ReachedPlatformCalculator_OLD()
     {
         int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
@@ -440,7 +441,6 @@ public class PlayerController : MonoBehaviour
                 //mette status "2" = "passed" alle piattaforme vecchie DOPO L'ULTIMA RAGGIUNTA
                 //for (int z=i+1; z<iterMax; z++)
                 if (i < iterMax - 1)
-
                 {
                     for (int j = i + 1; j < iterMax - 1; j++)
                     {
@@ -451,32 +451,26 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-
-    private void ReachedPlatformCalculator(PlatformBehaviour collidedPlat)
+    private void OLD_CollisionRespawnCalculator_OLD()
     {
-        //Rigidbody.velocity = new Vector2(0, 0);
-
-        platformCount++;
-        remainingFuel = maxFuel;
-        collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
-        yMinReachable = collidedPlat.transform.position.y;
-        collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-        collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-
-        xRespawn = collidedPlat.side == PlatformBehaviour.Side.RIGHT ? 1.5f : -1.5f;
-        yRespawn = collidedPlat.transform.position.y + .3f;
-
-        int iterMin = WallGeneration.Instance.ListaPlatforms.Count > 5 ? WallGeneration.Instance.ListaPlatforms.Count - 5 : 0;
-        for(int i = WallGeneration.Instance.ListaPlatforms.Count-1; i>=iterMin;i--)
-            if (WallGeneration.Instance.ListaPlatforms[i].index==PlatformBehaviour.Index.ULTIMA)
+        //int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
+        int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 5 ? WallGeneration.Instance.ListaStageGenerati.Count - 5 : 0;
+        for (int i = WallGeneration.Instance.ListaStageGenerati.Count - 1; i >= iterMin; i--)
+        {
+            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
             {
-                for (int j = iterMin; j < i; j++)
-                {
-                    WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
-                }
+                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y + .3f;
+                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side == PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
                 break;
             }
+            else
+            {
+                yRespawn = .3f;
+                xRespawn = 0f;
+            }
+        }
     }
+    #endregion
 
     #region |||>>> TRAIL MANAGEMENT <<<|||
 
@@ -524,11 +518,6 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    //void OnBecameInvisible()
-    //{
-    //    Destroy(gameObject);
-    //}
-
     #region ||>> VELOCITY WARNING COROUTINES <<||
 
     //CTRL+RR cambia nome in tutto documento
@@ -555,15 +544,16 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
+    //void OnBecameInvisible()
+    //{
+    //    Destroy(gameObject);
+    //}
+
     void Update()
     {
-        ///metto possibilità di cambiare vite max in game menu
-        //livesMax = MainMenu.InstanceMenu.LivesMax;
-        //HCmodeButton.onClick.AddListener(HardcoreMode);
-        
-        ///DEBUG
-        ///
+        //DEBUG
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
+        //
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
@@ -631,7 +621,6 @@ public class PlayerController : MonoBehaviour
         //    rb.drag = drag;
         //}
 
-
         #region |||>>> JOYSYICK AXIS ORIENTATION <<<|||
 
         if (joystickYaxisInverted)
@@ -669,9 +658,12 @@ public class PlayerController : MonoBehaviour
 
         if (joystickControl&&remainingFuel>0)
         {
+            //VERTICAL MOVEMENT
             if (joystickYaxisCondition || joystick.Horizontal != 0)
-            { Trail.SetActive(true);
+            { 
+                Trail.SetActive(true);
                 gameObject.transform.GetChild(2).gameObject.SetActive(true);
+                
             }
             else
             {
@@ -680,19 +672,27 @@ public class PlayerController : MonoBehaviour
             }
 
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
-            { 
-                //Alternativa Velocity:
-                //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+            {
                 Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
                 remainingFuel -= fuelPerSecond*Time.deltaTime;
+                //Alternativa Velocity:
+                //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+
+                //if (Rigidbody.velocity.y == .3f)
+                //{
+                //    PlayerAnimator = GetComponent<Animator>();
+                //    string animationName = "playerAnimation_JUMP";
+                //    PlayerAnimator.Play(animationName);
+                //}
+
             }
             else 
             {  }
 
             //Check Facing
-            float posizFacing;
-            posizFacing = joystick.Horizontal;
+            
 
+            //HORIZONTAL MOVEMENT
             if (joystick.Horizontal != 0)
             {
                 #region old xAxis
@@ -738,6 +738,7 @@ public class PlayerController : MonoBehaviour
 
                 if (joystickXaxisCondition/*posizFacing > 0*/)
                 {
+                    transform.localScale= leftFacingVector;
                     Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
                     ChangeSprite(directionLeftSprite);
 
@@ -747,6 +748,7 @@ public class PlayerController : MonoBehaviour
                 }
                 if (!joystickXaxisCondition/*posizFacing < 0*/)
                 {
+                    transform.localScale= rightFacingVector;
                     Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
                     ChangeSprite(directionRightSprite);
                 }
@@ -758,27 +760,18 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> DEATH BELOW LAST PLAT <<<|||
 
-        //float yMin;
-        //int i;
-
         if (transform.position.y < yMinReachable - 5f && isAlive /*WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA*/)
         {
             //yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
-            //if (transform.position.y < yMinReachable - 5f&&isAlive)
-            //{
                 posCollision = transform.position;
                 Rigidbody.velocity = new Vector2(0, 0);
                 isAlive = false;
                 deathMessage = Index.DEAD;
-                //SetPlayerRespawn();
                 Invoke(DeathLogic(), deathTimeDuration/*/2*/);
 
-            //}
-            //break;
         }
         else
         { }
-        //}
         #endregion
 
         #region reycast test

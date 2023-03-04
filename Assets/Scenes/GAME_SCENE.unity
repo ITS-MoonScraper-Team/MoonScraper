@@ -155,7 +155,7 @@ RectTransform:
   m_Children:
   - {fileID: 426101867}
   m_Father: {fileID: 1851055660}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
@@ -819,9 +819,10 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0.44038}
   m_LocalScale: {x: 1.0346453, y: 1.0346453, z: 1.0346453}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1842697784}
   m_Father: {fileID: 1851055660}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -1518,7 +1519,7 @@ RectTransform:
   m_Children:
   - {fileID: 542857909}
   m_Father: {fileID: 1851055660}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -1871,7 +1872,7 @@ Transform:
   - {fileID: 501767906}
   - {fileID: 1786448218}
   m_Father: {fileID: 1851055660}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &952722744 stripped
 RectTransform:
@@ -3903,16 +3904,16 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1842697783}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.94697016, y: 0.94697016, z: 0.94697016}
+  m_LocalPosition: {x: 0, y: 0, z: -0.42563382}
+  m_LocalScale: {x: 0.9152606, y: 0.9152606, z: 0.9152606}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1851055660}
-  m_RootOrder: 5
+  m_Father: {fileID: 459157207}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -293.02, y: 696.62213}
+  m_AnchoredPosition: {x: -592.21265, y: -46.97278}
   m_SizeDelta: {x: 92, y: 93.99999}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1842697785
@@ -4109,13 +4110,12 @@ RectTransform:
   - {fileID: 1189812225}
   - {fileID: 1480574848}
   - {fileID: 1435914151}
-  - {fileID: 1842697784}
   - {fileID: 459157207}
   - {fileID: 51733392}
+  - {fileID: 2000051574}
   - {fileID: 1509261626}
   - {fileID: 1533271964}
   - {fileID: 2104397151}
-  - {fileID: 2000051574}
   - {fileID: 933978230}
   - {fileID: 609828528}
   m_Father: {fileID: 0}
@@ -4416,7 +4416,7 @@ Transform:
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1851055660}
-  m_RootOrder: 11
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
 --- !u!95 &2000051575
 Animator:
@@ -5180,18 +5180,6 @@ PrefabInstance:
       propertyPath: FuelCircleProgression
       value: 
       objectReference: {fileID: 478541572}
-    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
-      propertyPath: spriteArray.Array.data[0]
-      value: 
-      objectReference: {fileID: 21300000, guid: 6a74b76caff9f8244bc01c44c452359e, type: 3}
-    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
-      propertyPath: spriteArray.Array.data[1]
-      value: 
-      objectReference: {fileID: 21300000, guid: a1c9ce850dd876b4c84826d3509f5f12, type: 3}
-    - target: {fileID: 8955911963742077092, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: 6a74b76caff9f8244bc01c44c452359e, type: 3}
     - target: {fileID: 8955911963846126508, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
       propertyPath: m_RootOrder
       value: 4
