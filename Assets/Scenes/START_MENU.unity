@@ -378,7 +378,7 @@ MonoBehaviour:
   AudioButton: {fileID: 0}
   AudioText: {fileID: 0}
   BackgroundAudio: {fileID: 1508676224}
-  MenuAudioButton: {fileID: 655923008}
+  MenuAudioButton: {fileID: 0}
 --- !u!82 &71036966
 AudioSource:
   m_ObjectHideFlags: 0
