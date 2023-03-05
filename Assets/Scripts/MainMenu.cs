@@ -42,9 +42,8 @@ public class MainMenu : MonoBehaviour
 
     void Update()
     {
-        //fon
         //font lightining angle modifica
-        //Debug.Log lifeMeterTXT.fontMaterial.shader.GetPropertyAttributes(4);
+        //Debug.Log (lifeMeterTXT.fontMaterial.shader.GetPropertyAttributes(4));
         LivesMax = (int)maxLivesSlider.value;
         if (LivesMax == 11)
         { lifeMeterTXT.text = "eternal"; }

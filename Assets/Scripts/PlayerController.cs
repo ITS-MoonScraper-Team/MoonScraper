@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     //PolygonCollider2D polygonCollider;
     #endregion
 
-    #region |||>> PUBLIC GAME OBJECTS <<|||
+    #region |||>> PUBLIC OBJECTS <<|||
 
     public GameObject Player;
     public GameObject Trail;
@@ -44,12 +44,11 @@ public class PlayerController : MonoBehaviour
     public GameObject ExplosionTemplate;
     public Image FuelCircleProgression;
     public Animator PlayerAnimator;
-    //public Button HCmodeButton;
     //public Slider maxLivesSlider;
     //public TrailRenderer trailRenderer;
-    //public GameObject Handle;
     //public GameObject playerIdleLeft;
     //public GameObject playerIdleRight;
+
     #endregion
 
     #region |||>> INTERFACE VARIABLES <<|||
@@ -74,20 +73,29 @@ public class PlayerController : MonoBehaviour
     public float deathFallingSpeed = 9.0f;
     public int secretNumber;
     public int springForce = 500;
-    //public bool HARDCORE;
+
     #endregion
 
     #region |||>>> PROGRAM VARIABLES <<<|||
 
+    private Sprite directionLeftSprite;
+    private Sprite directionRightSprite;
+    private Vector3 leftFacingVector;
+    private Vector3 rightFacingVector;
+    private Color currentWarnColor;
+    private Color currentFuelWarnColor;
+    private Color fullFuelColor;
     private float remainingFuel;
     private float yLastReachedPlatform = 0;
     private float xRespawn;
     private float yRespawn;
+    //private float[] xyRespawn = new float[2];
     private Vector2 posCollision;
     private float deathTimeDuration = .5f;
     private float yMinReachable=0;
-    public static PlayerController instance;
-    //private int deathMessageNum;
+    private int livesCount;
+    private int livesMax;
+    private int platformCount=0;
     private enum Index
     {
         DEAD = 0,
@@ -95,16 +103,12 @@ public class PlayerController : MonoBehaviour
         GONE_TOO_LOW = 2
     }
     private Index deathMessage;
+    public static PlayerController instance;
 
-    //private float[] xyRespawn = new float[2];
     #endregion
 
     #region |> CONTROL VARIABLES <|
 
-    private int livesCount;
-    private int livesMax;
-    private bool livesActive;
-    private int platformCount=0;
     private bool inputPressed;
     private bool upPressedDown;
     private bool spacePressedDown;
@@ -113,21 +117,18 @@ public class PlayerController : MonoBehaviour
     private bool leftPressed;
     private bool joystickYaxisCondition;
     private bool joystickXaxisCondition;
-    private Sprite directionLeftSprite;
-    private Sprite directionRightSprite;
+    private bool livesActive;
+    private bool halfFuel;
     private bool isFalling;
-    private Color currentWarnColor;
     private bool isAlive =true;
-    private Vector3 leftFacingVector;
-    private Vector3 rightFacingVector;
 
     #endregion
 
     private void Awake()
     {
         //instance = this;
-        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
-        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted;
+        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted!=null? AxisOrientation.instance.XAxisInverted:true;
+        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted != null ? AxisOrientation.instance.YAxisInverted : true;
     }
 
     void Start()
@@ -137,20 +138,21 @@ public class PlayerController : MonoBehaviour
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         colorCharacter = spriteRenderer.color;
+        fullFuelColor = FuelCircleProgression.color;
         //polygonCollider = GetComponent<PolygonCollider2D>();
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>();
 
-        directionLeftSprite = spriteArray[0];
-        directionRightSprite= spriteArray[1];
-
-        leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         livesMax = MainMenu.InstanceMenu.LivesMax;
         livesCount = livesMax;  
+
+        leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        directionLeftSprite = spriteArray[0];
+        directionRightSprite= spriteArray[1];
 
         if (livesMax != 11)
         { livesActive = true; }
@@ -472,7 +474,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> TRAIL MANAGEMENT <<<|||
+    #region |||>>> TRAIL DESTROY <<<|||
 
     private void DestroyTrail()
     {
@@ -482,17 +484,6 @@ public class PlayerController : MonoBehaviour
     {
         gameObject.transform.GetChild(2).gameObject.SetActive(false);
     }
-
-    #region trail test
-        //if(transform.position.x /*transform.position.x*/ == 0 & transform.position.y == 0)
-        //{
-        //    trailRenderer.enabled = false;
-        //}
-
-        //DISTRUGGE SPRITE attiva:
-        //Sprite spriteActive = spriteRenderer.sprite;
-        //SpriteRenderer.Destroy(spriteActive);
-        #endregion
     #endregion
 
     #region |||>>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<<|||
@@ -518,7 +509,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region ||>> VELOCITY WARNING COROUTINES <<||
+    #region ||>> VELOCITY/FUEL WARNING COROUTINES <<||
 
     //CTRL+RR cambia nome in tutto documento
 
@@ -536,6 +527,22 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(.1f);
         }
     }
+
+    IEnumerator FuelWarnCoroutine()
+    {
+        //spriteRenderer.transform.DOShakePosition(.25f);
+
+        halfFuel = true;
+        while (halfFuel)
+        {
+
+            FuelCircleProgression.DOColor(currentFuelWarnColor, .05f);
+            yield return new WaitForSeconds(.1f);
+            FuelCircleProgression.DOColor(fullFuelColor, .05f);
+            yield return new WaitForSeconds(.1f);
+        }
+    }
+
     //IEnumerator VelocityRedWarnCoroutine()
     //{
     //    spriteRenderer.DOColor(Color.red, .05f);
@@ -585,18 +592,42 @@ public class PlayerController : MonoBehaviour
 
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
+        //indicatore fuel vecchio
         fuelMeter.text = $"FUEL {(int)remainingFuel}";
         fuelSlider.value = remainingFuel / maxFuel;
+        //setta livello fuel del serbatoio nuovo
         FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
-
-        if(Input.GetKey(KeyCode.F))
-        { remainingFuel = maxFuel; Debug.Log("FUEL " + remainingFuel); }
-
-        if(secretNumber==666)
-        { remainingFuel = maxFuel; }
 
         if(remainingFuel<1)
         { Invoke("DestroyTrail", 0.2f); }
+
+        //FUEL WARNS
+        if (remainingFuel > maxFuel/2)
+        {
+            if (halfFuel)
+            { halfFuel = false; }
+            FuelCircleProgression.color = fullFuelColor;
+        }
+
+        if (remainingFuel<=maxFuel/2&&remainingFuel>maxFuel/4)
+        {
+            if (!halfFuel)
+            {
+                currentFuelWarnColor = Color.yellow;
+                StartCoroutine(FuelWarnCoroutine());
+            }
+        }
+        if (remainingFuel < maxFuel/4)
+        {
+            currentFuelWarnColor = Color.red;
+        }
+
+        //FUEL CHEATS
+        if (Input.GetKey(KeyCode.F))
+        { remainingFuel = 100000000; Debug.Log("FUEL " + remainingFuel); }
+
+        if(secretNumber==666)
+        { remainingFuel = maxFuel; }
         #endregion
 
         #region |||>>> LIFE AND SCORE COUNT <<<|||
@@ -668,7 +699,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                Invoke( "DestroyTrail", 0.3f);
-               Invoke("DestroyParticleFX", .6f);
+               Invoke("DestroyParticleFX", 0.6f);
             }
 
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
