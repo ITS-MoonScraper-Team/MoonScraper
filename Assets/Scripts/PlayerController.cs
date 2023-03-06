@@ -805,6 +805,18 @@ public class PlayerController : MonoBehaviour
         { }
         #endregion
 
+        //if (transform.position.y>yLastReachedPlatform+5&& WallGeneration.Instance.ListaStageGenerati.Count > 6)
+        //{
+        //    for(int i=0; i>=WallGeneration.Instance.ListaStageGenerati.Count-7; i++)
+        //    {
+        //        StageSection twall = WallGeneration.Instance.ListaStageGenerati[i];
+        //        Destroy(twall);
+        //    }
+        //    WallGeneration.Instance.ListaStageGenerati.RemoveRange(0, WallGeneration.Instance.ListaStageGenerati.Count-6);
+
+        //    //foreach(StageSection stage in WallGeneration.Instance.ListaStageGenerati)
+        //}
+
         #region reycast test
         //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
         //{
