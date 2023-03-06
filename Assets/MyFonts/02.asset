@@ -1806,7 +1806,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _FaceTex:
-        m_Texture: {fileID: 2800000, guid: 95ff4631905159b4c97231680957fdd6, type: 3}
+        m_Texture: {fileID: 2800000, guid: 4db60a65be3e3914391245550e2bd4bf, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:

@@ -381,7 +381,7 @@ TextureImporter:
       213: -3299202918059221898
     second: idle_62
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -441,6 +441,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -480,6 +481,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: Android
+    maxTextureSize: 4096
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 1
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 4096
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1827,8 +1840,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      idle_42: 3838556530734163676
       idle_46: -5438464607267775908
+      idle_38: 532023552575573989
       idle_33: -1574576503455686002
       idle_53: -5243070509038418389
       idle_59: 516610896262579559
@@ -1885,11 +1898,11 @@ TextureImporter:
       idle_9: 5667770778836351527
       idle_35: -7207429827535173402
       idle_25: -2151818530499332596
-      idle_38: 532023552575573989
+      idle_42: 3838556530734163676
       idle_18: 5896261190451672117
       idle_22: -3185995270805410201
-      idle_44: 168846979551174993
       idle_26: 3051071556821484571
+      idle_44: 168846979551174993
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
