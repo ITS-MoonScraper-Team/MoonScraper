@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
     public float maxFuel=100f;
     public float fuelPerSecond = 49f;
     [Header("MOVEMENT MODES")]
-    public bool joystickControl;
+    public static bool joystickControl=true;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
     public bool joystickYaxisInverted/*= true*/;

@@ -12,7 +12,7 @@ public class SoundManager : MonoBehaviour
     public static bool AudioON;
     public static bool MenuAudioON;
     public static AudioClip jetpack, playerDeathSound, landing, mainMenuOST;
-    static AudioSource AudioSrc;
+    public static AudioSource AudioSrc;
     public AudioSource BackgroundAudio;
     //public AudioSource BackMenuAudio;
     public Button MenuAudioButton;
@@ -40,8 +40,10 @@ public class SoundManager : MonoBehaviour
         mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
         AudioSrc = GetComponent<AudioSource>();
         AudioSrc.enabled = true;
-        AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-        AudioButton.GetComponent<Image>().color = Color.green;
+        AudioText.text = "audio ON";
+        //AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
+        //AudioButton.GetComponent<Image>().color = Color.green;
+        AudioButton.image.color = Color.green;
 
         //if (SceneManager.GetActiveScene().buildIndex == 0)
 

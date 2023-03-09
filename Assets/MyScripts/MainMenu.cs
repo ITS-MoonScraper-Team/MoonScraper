@@ -5,17 +5,18 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using TMPro;
+using DG.Tweening;
 
 public class MainMenu : MonoBehaviour
 {
     public static MainMenu InstanceMenu;
 
+    public Animator menuAnimator;
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
     public TMP_Text lifeMeterTXT;
     public Slider maxLivesSlider;
-    //public TMP_Text title12;
-    //public TMP_Text title2;
+    //private string animationName;
     //public Material titleMat;
     private int livesMax;
     public int LivesMax
@@ -26,6 +27,12 @@ public class MainMenu : MonoBehaviour
         InstanceMenu = this;
     }
     public void PlayGame()
+    {
+        //animationName = "PlayCircleAniamtion";
+        menuAnimator.enabled=true;
+        Invoke("LoadScene", .5f);
+    }
+    private void LoadScene()
     {
         //get Scenes to play from builder
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1/*,parameterers */);
