@@ -19,7 +19,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
     void Awake()
     {
-        if (AxisOrientation.instance != null)
+        if (SoundManager.instance != null)
         {
             Destroy(gameObject);
 

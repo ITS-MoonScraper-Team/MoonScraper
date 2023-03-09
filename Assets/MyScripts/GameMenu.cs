@@ -30,9 +30,9 @@ public class GameMenu : MonoBehaviour
     }
     public void Pause()
     {
-        pauseMenuUI.SetActive(true);
+        //pauseMenuUI.SetActive(true);
         //pauseMenuUI.GetComponent<Animator>().enabled = true;
-        pauseMenuAnimator.enabled = true;
+        //pauseMenuAnimator.enabled = true;
 
         Time.timeScale = 0f;
         PlayerController.joystickControl = false;
@@ -42,7 +42,7 @@ public class GameMenu : MonoBehaviour
     }
     public void Resume()
     {
-        pauseMenuUI.SetActive(false);
+        //pauseMenuUI.SetActive(false);
         Time.timeScale = 1f;
         PlayerController.joystickControl=true;
         GameIsPaused = false;

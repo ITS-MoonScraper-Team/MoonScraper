@@ -7,10 +7,10 @@ using Unity.VisualScripting;
 using Unity.Burst.CompilerServices;
 using System;
 using TMPro;
-using System.Xml.Schema;
-using JetBrains.Annotations;
-using System.Runtime.CompilerServices;
 using DG.Tweening;
+//using System.Xml.Schema;
+//using JetBrains.Annotations;
+//using System.Runtime.CompilerServices;
 //using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
@@ -127,8 +127,8 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         //instance = this;
-        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted!=null? AxisOrientation.instance.XAxisInverted:true;
-        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted != null ? AxisOrientation.instance.YAxisInverted : true;
+        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
+        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
     }
 
     void Start()
