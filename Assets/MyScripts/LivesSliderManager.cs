@@ -6,17 +6,19 @@ using UnityEngine.UI;
 
 public class LivesSliderManager : MonoBehaviour
 {
-    private Slider livesSlider;
-    private TMP_Text livesTxt;
+    public static LivesSliderManager instance;
+    public Slider livesSlider;
+    public TMP_Text livesSliderTxt;
     private Color textStartingColor;
     private Color sliderStartingColor;
     public Image sliderFiller;
 
     private void Awake()
     {
-        livesSlider = GetComponentInParent<Slider>();
-        livesTxt = GetComponent<TMP_Text>();
-        textStartingColor = livesTxt.color;
+        instance = this;
+        //livesSlider = GetComponent<Slider>();
+        //livesSliderTxt = GetComponent<TMP_Text>();
+        textStartingColor = livesSliderTxt.color;
         //sliderFiller=livesSlider.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
         sliderStartingColor = sliderFiller.color;
     }
@@ -28,27 +30,27 @@ public class LivesSliderManager : MonoBehaviour
     }
 
     // Update is called once per frame
-    public void UpdateText(float val)
+    private void UpdateText(float val)
     {
         
         if(livesSlider.value == 1)
         {
-            livesTxt.text = "HC";
-            //livesTxt.fontSize = 60;
-            livesTxt.color = Color.red;
+            livesSliderTxt.text = "HC";
+            //livesSliderTxt.fontSize = 60;
+            livesSliderTxt.color = Color.red;
             
             sliderFiller.color = Color.red;
         }
         else if(livesSlider.value == 11)
         {
-            livesTxt.text = "ETERNAL";
-            livesTxt.color = textStartingColor;
+            livesSliderTxt.text = "ETERNAL";
+            livesSliderTxt.color = textStartingColor;
             sliderFiller.color = sliderStartingColor;
         }
         else
         {
-            livesTxt.text = livesSlider.value.ToString();
-            livesTxt.color= Color.yellow;
+            livesSliderTxt.text = livesSlider.value.ToString();
+            livesSliderTxt.color= Color.yellow;
             sliderFiller.color = sliderStartingColor;
         }
     }

@@ -8,6 +8,9 @@ using TMPro;
 
 public class GameMenu : MonoBehaviour
 {
+    public Slider ingameVolumeSlider;
+    public TMP_Text ingameVolumeSliderText;
+    public Image sliderFiller;
     public static GameMenu instance;
     public bool GameIsPaused = false;
     public GameObject pauseMenuUI;
@@ -18,6 +21,8 @@ public class GameMenu : MonoBehaviour
     {
         instance=this;
     }
+
+    #region PAUSE-RESUME FUNCTIONS
 
     public void CheckPause()
     {
@@ -49,35 +54,64 @@ public class GameMenu : MonoBehaviour
         //pauseMenuAnimator.enabled = false;
 
     }
+    #endregion
+
+    #region BACK TO MAIN
+
     public void BackToMain()
     {
         //get Scenes to play from builder
         Resume();
         SceneManager.LoadScene(0/*,parameterers */);
     }
+    #endregion
 
-
-
-    //private void Awake()
-    //{
-    //    InstanceGameMenu = this;
-    //}
-    // Start is called before the first frame update
     //public void QuitGame()
     //{
     //    Application.Quit();
     //    Debug.Log("QUIT!");
     //}
 
-    //// Start is called before the first frame update
-    //void Start()
-    //{
-        
-    //}
 
-    //// Update is called once per frame
-    //void Update()
-    //{
-        
-    //}
+    void Start()
+    {
+        UpdateVolumeText(SoundManager.instance.volumeIntLvl);
+        ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+    }
+
+    private void UpdateVolumeText(float val)
+    {
+        if (ingameVolumeSlider.value == 0)
+        {
+            ingameVolumeSliderText.text = "OFF";
+            ingameVolumeSliderText.color = Color.white;
+
+            sliderFiller.color = Color.white;
+        }
+        else if (ingameVolumeSlider.value == 100)
+        {
+            ingameVolumeSliderText.text = "MAX";
+            ingameVolumeSliderText.color = Color.red;
+            sliderFiller.color = Color.red;
+        }
+        else
+        {
+            ingameVolumeSliderText.text = ingameVolumeSlider.value.ToString();
+            ingameVolumeSliderText.color = Color.yellow;
+            sliderFiller.color = Color.yellow;
+        }
+    }
+
+
+
+    void Update()
+    {
+        //if (SoundManager.instance.volumeLvl == 100)
+        //{ ingameVolumeSliderText.text = "max"; }
+        //else
+        //{
+        //    ingameVolumeSliderText.text = SoundManager.instance.volumeLvl.ToString();
+        //}
+        //Debug.Log($"Volume {SoundManager.instance.volumeLvl}");
+    }
 }

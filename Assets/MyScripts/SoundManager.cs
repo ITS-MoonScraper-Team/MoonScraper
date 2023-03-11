@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
+    //public Slider volumeSlider;
     public Button AudioButton;
     public TMP_Text AudioText;
     public static bool AudioON;
@@ -16,6 +17,8 @@ public class SoundManager : MonoBehaviour
     public AudioSource BackgroundAudio;
     //public AudioSource BackMenuAudio;
     public Button MenuAudioButton;
+    public int volumeIntLvl;
+    public float volumeLvl;
     public static SoundManager instance;
     void Awake()
     {
@@ -108,6 +111,25 @@ public class SoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        //prende valore dallo slider e assegna alla variabile che aggiorna in game
+
+        volumeLvl= VolumeSliderManager.instance.volumeSlider.value / 100;
+        volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
+        BackgroundAudio.volume = volumeLvl;
+        //BackgroundAudio.volume = GameMenu.instance.ingameVolumeSlider.value/100;
+        //volumeLvl = (int)GameMenu.instance.ingameVolumeSlider.value;
+
+
+
+        //aggiorna text dell'indicatore in game
+
+
+        //if (BackgroundAudio.volume == 1)
+        //{ volumeLvltext.text = "max"; }
+        //else
+        //{
+        //    volumeLvltext.text = volumeLvl.ToString();
+        //}
+        //Debug.Log($"VITE {volumeLvl}");
     }
 }
