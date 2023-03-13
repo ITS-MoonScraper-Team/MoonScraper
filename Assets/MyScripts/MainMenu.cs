@@ -45,21 +45,9 @@ public class MainMenu : MonoBehaviour
     }
     private void Start()
     {
+        //SoundManager.instance.
         //LivesSliderManager.instance.livesSlider.onValueChanged.AddListener(UpdateMaxLives);
     }
-
-    //private void UpdateMaxLives(float val)
-    //{
-    //    LivesMax = (int)maxLivesSlider.value;
-    //    //aggiorna text dell'indicatore in game
-    //    if (LivesMax == 11)
-    //    { lifeMeterTXT.text = "eternal"; }
-    //    else
-    //    {
-    //        lifeMeterTXT.text = LivesMax.ToString();
-    //    }
-    //    Debug.Log($"VITE {LivesMax}");
-    //}
 
     void Update()
     {
@@ -97,4 +85,18 @@ public class MainMenu : MonoBehaviour
     {
         AxisOrientation.instance.SavePlayerSettings();
     }
+
+
+    //private void UpdateMaxLives(float val)
+    //{
+    //    LivesMax = (int)maxLivesSlider.value;
+    //    //aggiorna text dell'indicatore in game
+    //    if (LivesMax == 11)
+    //    { lifeMeterTXT.text = "eternal"; }
+    //    else
+    //    {
+    //        lifeMeterTXT.text = LivesMax.ToString();
+    //    }
+    //    Debug.Log($"VITE {LivesMax}");
+    //}
 }

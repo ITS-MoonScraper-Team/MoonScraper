@@ -50,5 +50,6 @@ public class VolumeSliderManager : MonoBehaviour
             volumeSliderTxt.color = Color.yellow;
             sliderFiller.color = Color.yellow;
         }
+        SoundManager.instance.UpdateVolume(val);
     }
 }

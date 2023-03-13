@@ -15,6 +15,9 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+    private int state = 0;
+
+
     #region |||>>> PLAYER COMPONENTS <<<|||
 
     Rigidbody2D Rigidbody;
@@ -107,7 +110,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |> CONTROL VARIABLES <|
+    #region |||>>> CONTROL VARIABLES <<<|||
 
     private bool inputPressed;
     private bool upPressedDown;
@@ -134,7 +137,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         //GETTING PLAYER COMPONENTS
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         colorCharacter = spriteRenderer.color;
@@ -143,26 +146,27 @@ public class PlayerController : MonoBehaviour
         //trailRenderer = GetComponentInChildren<TrailRenderer>();
         //rectTransform=Handle.GetComponent<RectTransform>();
 
-
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         livesMax = MainMenu.InstanceMenu.LivesMax;
         livesCount = livesMax;  
 
+        //FACING DATA
         leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
 
+        //BASE RESPAWN
+        xRespawn= gameObject.transform.position.x;
+        yRespawn= gameObject.transform.position.y;
+
+        //LIVES CONDITION
         if (livesMax != 11)
         { livesActive = true; }
         else { livesActive = false; }
-
-        xRespawn= gameObject.transform.position.x;
-        yRespawn= gameObject.transform.position.y;
         
         //buttonRestart.onClick.AddListener(RestartGame);
-
     }
 
     #region |||>>> GAME OVER AND RESTART <<<|||
@@ -560,7 +564,6 @@ public class PlayerController : MonoBehaviour
     {
         //DEBUG
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
-        //
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
@@ -704,6 +707,7 @@ public class PlayerController : MonoBehaviour
 
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
             {
+                PlayerAnimator.SetTrigger("Jump");
                 Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
                 remainingFuel -= fuelPerSecond*Time.deltaTime;
                 //Alternativa Velocity:

@@ -72,15 +72,17 @@ public class GameMenu : MonoBehaviour
     //    Debug.Log("QUIT!");
     //}
 
-
     void Start()
     {
         UpdateVolumeText(SoundManager.instance.volumeIntLvl);
+        if (ingameVolumeSlider == null) return;
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
     }
 
+
     private void UpdateVolumeText(float val)
     {
+        if (ingameVolumeSlider == null) return;
         if (ingameVolumeSlider.value == 0)
         {
             ingameVolumeSliderText.text = "OFF";
@@ -101,8 +103,6 @@ public class GameMenu : MonoBehaviour
             sliderFiller.color = Color.yellow;
         }
     }
-
-
 
     void Update()
     {

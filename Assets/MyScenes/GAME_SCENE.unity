@@ -2671,12 +2671,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac3bb4b77e99f340b34bfcc381d864c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioButton: {fileID: 609828529}
-  AudioText: {fileID: 542857910}
-  BackgroundAudio: {fileID: 1870206843}
+  GameAudioButton: {fileID: 0}
   MenuAudioButton: {fileID: 0}
+  GameAudioText: {fileID: 0}
+  MusicSource: {fileID: 0}
   volumeIntLvl: 0
   volumeLvl: 0
+  menuClip: {fileID: 0}
+  gameClip: {fileID: 0}
 --- !u!82 &1149167202
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5191,11 +5193,6 @@ MonoBehaviour:
   GameIsPaused: 0
   pauseMenuUI: {fileID: 2000051572}
   pauseMenuAnimator: {fileID: 2000051575}
---- !u!82 &1870206843 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 7559635407196175758, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}
-  m_PrefabInstance: {fileID: 7559635407812274933}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1878192089
 GameObject:
   m_ObjectHideFlags: 0
@@ -6535,7 +6532,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7559635407196175759, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}

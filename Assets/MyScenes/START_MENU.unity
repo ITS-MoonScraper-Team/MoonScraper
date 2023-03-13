@@ -412,12 +412,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eac3bb4b77e99f340b34bfcc381d864c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AudioButton: {fileID: 0}
-  AudioText: {fileID: 0}
-  BackgroundAudio: {fileID: 1508676224}
-  MenuAudioButton: {fileID: 0}
+  GameAudioButton: {fileID: 0}
+  MenuAudioButton: {fileID: 1516081064}
+  GameAudioText: {fileID: 0}
+  MusicSource: {fileID: 71036966}
   volumeIntLvl: 0
   volumeLvl: 0
+  menuClip: {fileID: 8300000, guid: d5e535b2e7a2f6b4ab61bd211fdfd563, type: 3}
+  gameClip: {fileID: 8300000, guid: f13a0598a1a5e224d978fc27c89b21d2, type: 3}
 --- !u!82 &71036966
 AudioSource:
   m_ObjectHideFlags: 0
@@ -428,7 +430,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: d5e535b2e7a2f6b4ab61bd211fdfd563, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
@@ -1639,7 +1641,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7559635407196175759, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}
@@ -3610,11 +3612,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27dd3a183e88f1947919ff255f585d55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!82 &1508676224 stripped
-AudioSource:
-  m_CorrespondingSourceObject: {fileID: 7559635407196175758, guid: 21723d3e0a07b2a4a99c717cf7db1d00, type: 3}
-  m_PrefabInstance: {fileID: 632588075}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1516081062
 GameObject:
   m_ObjectHideFlags: 0
