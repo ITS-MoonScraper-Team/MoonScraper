@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
 {
     private int state = 0;
 
-
     #region |||>>> PLAYER COMPONENTS <<<|||
 
     Rigidbody2D Rigidbody;
@@ -124,6 +123,7 @@ public class PlayerController : MonoBehaviour
     private bool halfFuel;
     private bool isFalling;
     private bool isAlive =true;
+    private bool HC = false;
 
     #endregion
 
@@ -164,8 +164,18 @@ public class PlayerController : MonoBehaviour
         //LIVES CONDITION
         if (livesMax != 11)
         { livesActive = true; }
-        else { livesActive = false; }
-        
+        else if(livesMax==11)
+        { 
+            livesActive = false;
+            livesText.text = "ETERNAL LIFE";
+        }
+
+        if (livesMax == 1)
+        { 
+            HC = true;
+            livesText.text = "HARDCORE"; 
+        }
+
         //buttonRestart.onClick.AddListener(RestartGame);
     }
 
@@ -635,17 +645,12 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> LIFE AND SCORE COUNT <<<|||
 
-        if (livesCount != 0)
+        if (livesCount != 0&&livesActive&&HC==false)
         {
-            if (livesMax == 11)
-            { livesText.text = "ETERNAL LIFE"; }
-            else if (livesMax == 1)
-            { livesText.text = "HARDCORE"; }
-            else
-            { livesText.text = $"LIVES {livesCount}"; }
+             livesText.text = $"LIVES {livesCount}"; 
         }
-        else
-        { livesText.text = "LIVES 0"; }
+        //else
+        //{ livesText.text = "LIVES 0"; }
 
         scoreText.text = $"SCORE {platformCount}";
         #endregion

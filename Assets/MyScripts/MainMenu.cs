@@ -18,6 +18,9 @@ public class MainMenu : MonoBehaviour
     //public Slider LivesSlider;
     //private string animationName;
     //public Material titleMat;
+    public bool menuAudioON;
+    public float volumeLvl;
+    public int volumeIntLvl;
     private int livesMax;
     public int LivesMax
     { get; set; }
@@ -47,6 +50,7 @@ public class MainMenu : MonoBehaviour
     {
         //SoundManager.instance.
         //LivesSliderManager.instance.livesSlider.onValueChanged.AddListener(UpdateMaxLives);
+        SoundManager.instance.PlayMainMenuMusic();
     }
 
     void Update()
@@ -56,16 +60,30 @@ public class MainMenu : MonoBehaviour
 
         //prende valore dallo slider e assegna alla variabile che aggiorna in game
         LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
-        //aggiorna text dell'indicatore in game
-        if (LivesMax == 11)
-        { lifeMeterTXT.text = "eternal"; }
-        else if(LivesMax==1)
-        { lifeMeterTXT.text = "HARDCORE"; }
-        else
-        {
-            lifeMeterTXT.text = LivesMax.ToString();
-        }
+
         Debug.Log($"VITE {LivesMax}");
+
+
+
+        //prende valore dallo slider e assegna alla variabile che aggiorna in game
+
+        volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
+        volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
+        //BackgroundAudio.volume = volumeLvl;
+
+        //BackgroundAudio.volume = GameMenu.instance.ingameVolumeSlider.value/100;
+        //volumeLvl = (int)GameMenu.instance.ingameVolumeSlider.value;
+
+        //aggiorna text dell'indicatore in game
+
+        //if (BackgroundAudio.volume == 1)
+        //{ volumeLvltext.text = "max"; }
+        //else
+        //{
+        //    volumeLvltext.text = volumeLvl.ToString();
+        //}
+        //Debug.Log($"VITE {volumeLvl}");
+
     }
 
     public void SetXaxisValue(bool xAxisInverted)
@@ -78,6 +96,8 @@ public class MainMenu : MonoBehaviour
     }
     public void SetToggles()
     {
+        //if (xAxisToggle == null) return;
+
         xAxisToggle.isOn = AxisOrientation.instance.XAxisInverted;
         yAxisToggle.isOn = AxisOrientation.instance.YAxisInverted;
     }

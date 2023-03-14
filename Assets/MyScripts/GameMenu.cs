@@ -74,7 +74,8 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        UpdateVolumeText(SoundManager.instance.volumeIntLvl);
+        SoundManager.instance.PlayGameMusic();
+        UpdateVolumeText((float)SoundManager.instance.volumeIntLvl);
         if (ingameVolumeSlider == null) return;
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
     }
@@ -102,6 +103,7 @@ public class GameMenu : MonoBehaviour
             ingameVolumeSliderText.color = Color.yellow;
             sliderFiller.color = Color.yellow;
         }
+            SoundManager.instance.UpdateVolume(val);
     }
 
     void Update()

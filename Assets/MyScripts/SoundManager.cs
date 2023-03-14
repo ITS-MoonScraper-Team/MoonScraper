@@ -11,7 +11,7 @@ public class SoundManager : MonoBehaviour
     public Button GameAudioButton;
     public Button MenuAudioButton;
     public TMP_Text GameAudioText;
-    public AudioSource MusicSource;
+    public static AudioSource MusicSource;
     //public AudioSource BackMenuAudio;
     public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
     public static AudioSource AudioSrc;
@@ -44,9 +44,9 @@ public class SoundManager : MonoBehaviour
     {
         AudioON = true;
         playerDeathSound = Resources.Load < AudioClip > ("playerDeath");
-        mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
-        AudioSrc = GetComponent<AudioSource>();
-        AudioSrc.enabled = true;
+        //mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
+        MusicSource = GetComponent<AudioSource>();
+        //AudioSrc.enabled = true;
         GameAudioText.text = "audio ON";
         GameAudioButton.image.color = Color.green;
 
@@ -61,10 +61,10 @@ public class SoundManager : MonoBehaviour
         switch (clip)
         {
             case "playerDeath":
-            AudioSrc.PlayOneShot(playerDeathSound);
+                MusicSource.PlayOneShot(playerDeathSound);
             break;
             case "mainMenu_OST":
-            AudioSrc.Play();
+                MusicSource.Play();
                 break;
         }
     }
@@ -87,32 +87,13 @@ public class SoundManager : MonoBehaviour
             AudioSrc.enabled = true;
             //GameAudioText.text = "audio ON";
             GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-
             GameAudioButton.GetComponent<Image>().color = Color.green;
-
         }
         
     }
     void Update()
     {
-        //prende valore dallo slider e assegna alla variabile che aggiorna in game
-
-        //volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
-        //volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
-        //BackgroundAudio.volume = volumeLvl;
-
-        //BackgroundAudio.volume = GameMenu.instance.ingameVolumeSlider.value/100;
-        //volumeLvl = (int)GameMenu.instance.ingameVolumeSlider.value;
-
-        //aggiorna text dell'indicatore in game
-
-        //if (BackgroundAudio.volume == 1)
-        //{ volumeLvltext.text = "max"; }
-        //else
-        //{
-        //    volumeLvltext.text = volumeLvl.ToString();
-        //}
-        //Debug.Log($"VITE {volumeLvl}");
+        
     }
 
     public void UpdateVolume(float value) {
@@ -123,11 +104,13 @@ public class SoundManager : MonoBehaviour
 
     public void PlayGameMusic() {
         MusicSource.clip = gameClip;
+        MusicSource.Play();
         //
     }
 
-    public void PlayMainMenuMusic() { 
-    
+    public void PlayMainMenuMusic() {
+        MusicSource.clip = menuClip;
+        MusicSource.Play();
     
     }
     //public void MenuAudioONOFF()
@@ -151,5 +134,4 @@ public class SoundManager : MonoBehaviour
 
     //    }
     //}
-    // Update is called once per frame
 }
