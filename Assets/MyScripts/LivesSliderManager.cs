@@ -26,10 +26,10 @@ public class LivesSliderManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        UpdateText(livesSlider.value);
+       // UpdateText(livesSlider.value);
         livesSlider.onValueChanged.AddListener(UpdateText);
 
-        //livesSlider.value = MainMenu.InstanceMenu.LivesMax;
+        livesSlider.value = (float)MainMenu.InstanceMenu.LivesMax;
     }
 
     // Update is called once per frame
@@ -56,6 +56,5 @@ public class LivesSliderManager : MonoBehaviour
             sliderFiller.color = sliderStartingColor;
         }
         MainMenu.InstanceMenu.UpdateLives(val);
-        //SoundManager.instance.UpdateVolume(val);
     }
 }

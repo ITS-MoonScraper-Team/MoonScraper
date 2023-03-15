@@ -25,13 +25,14 @@ public class VolumeSliderManager : MonoBehaviour
     {
 
         volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+
+        //SISTEMO PERCHE' METTE 0 ALL'INIZIO
         volumeSlider.value = SoundManager.instance.volumeToSlider;
         //UpdateVolumeText(volumeSlider.value);
     }
 
     private void UpdateVolumeText(float val)
     {
-
         if (volumeSlider.value == 0)
         {
             volumeSliderTxt.text = "OFF";

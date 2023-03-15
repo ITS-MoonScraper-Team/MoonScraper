@@ -130,8 +130,11 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         //instance = this;
-        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
-        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
+        if (AxisOrientation.instance != null)
+        {
+            joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
+            joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
+        }
     }
 
     void Start()
@@ -148,8 +151,10 @@ public class PlayerController : MonoBehaviour
 
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
+        //if (MainMenu.InstanceMenu != null)
         livesMax = MainMenu.InstanceMenu.LivesMax;
-        livesCount = livesMax;  
+        livesCount = livesMax;
+        
 
         //FACING DATA
         leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);

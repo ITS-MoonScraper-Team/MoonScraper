@@ -27,7 +27,16 @@ public class MainMenu : MonoBehaviour
 
     private void Awake()
     {
-        InstanceMenu = this;
+        if (MainMenu.InstanceMenu != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            InstanceMenu = this;
+            DontDestroyOnLoad(this);
+        }
+        //BackgroundAudio.playOnAwake=true;
     }
     public void PlayGame()
     {
@@ -90,7 +99,6 @@ public class MainMenu : MonoBehaviour
         //prende valore dallo slider e assegna alla variabile che aggiorna in game
         ///LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
         Debug.Log($"VITE {LivesMax}");
-
 
         //prende valore dallo slider e assegna alla variabile che aggiorna in game
         //METTO NEL SOUND MANAGER-->provato ma non aggiorna lo slder quando torna al main menu
