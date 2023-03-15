@@ -16,23 +16,25 @@ public class LivesSliderManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        textStartingColor = livesSliderTxt.color;
+        sliderStartingColor = sliderFiller.color;
+
         //livesSlider = GetComponent<Slider>();
         //livesSliderTxt = GetComponent<TMP_Text>();
-        textStartingColor = livesSliderTxt.color;
         //sliderFiller=livesSlider.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
-        sliderStartingColor = sliderFiller.color;
     }
     // Start is called before the first frame update
     void Start()
     {
         UpdateText(livesSlider.value);
         livesSlider.onValueChanged.AddListener(UpdateText);
+
+        //livesSlider.value = MainMenu.InstanceMenu.LivesMax;
     }
 
     // Update is called once per frame
     private void UpdateText(float val)
     {
-        
         if(livesSlider.value == 1)
         {
             livesSliderTxt.text = "HC";
@@ -53,5 +55,7 @@ public class LivesSliderManager : MonoBehaviour
             livesSliderTxt.color= Color.yellow;
             sliderFiller.color = sliderStartingColor;
         }
+        MainMenu.InstanceMenu.UpdateLives(val);
+        //SoundManager.instance.UpdateVolume(val);
     }
 }

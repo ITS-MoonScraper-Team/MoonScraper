@@ -53,38 +53,14 @@ public class MainMenu : MonoBehaviour
         SoundManager.instance.PlayMainMenuMusic();
     }
 
-    void Update()
+    public void UpdateLives(float value)
     {
-        //font lightining angle modifica
-        //Debug.Log (lifeMeterTXT.fontMaterial.shader.GetPropertyAttributes(4));
-
         //prende valore dallo slider e assegna alla variabile che aggiorna in game
-        LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
-
-        Debug.Log($"VITE {LivesMax}");
-
-
-
-        //prende valore dallo slider e assegna alla variabile che aggiorna in game
-
-        volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
-        volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
-        //BackgroundAudio.volume = volumeLvl;
-
-        //BackgroundAudio.volume = GameMenu.instance.ingameVolumeSlider.value/100;
-        //volumeLvl = (int)GameMenu.instance.ingameVolumeSlider.value;
-
-        //aggiorna text dell'indicatore in game
-
-        //if (BackgroundAudio.volume == 1)
-        //{ volumeLvltext.text = "max"; }
-        //else
-        //{
-        //    volumeLvltext.text = volumeLvl.ToString();
-        //}
-        //Debug.Log($"VITE {volumeLvl}");
+        LivesMax = (int)value;
+        //LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
 
     }
+
 
     public void SetXaxisValue(bool xAxisInverted)
     {
@@ -106,6 +82,22 @@ public class MainMenu : MonoBehaviour
         AxisOrientation.instance.SavePlayerSettings();
     }
 
+    void Update()
+    {
+        //font lightining angle modifica
+        //Debug.Log (lifeMeterTXT.fontMaterial.shader.GetPropertyAttributes(4));
+
+        //prende valore dallo slider e assegna alla variabile che aggiorna in game
+        ///LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
+        Debug.Log($"VITE {LivesMax}");
+
+
+        //prende valore dallo slider e assegna alla variabile che aggiorna in game
+        //METTO NEL SOUND MANAGER-->provato ma non aggiorna lo slder quando torna al main menu
+        ///volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
+        ///volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
+
+    }
 
     //private void UpdateMaxLives(float val)
     //{

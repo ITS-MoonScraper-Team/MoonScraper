@@ -11,11 +11,11 @@ public class GameMenu : MonoBehaviour
     public Slider ingameVolumeSlider;
     public TMP_Text ingameVolumeSliderText;
     public Image sliderFiller;
-    public static GameMenu instance;
-    public bool GameIsPaused = false;
     public GameObject pauseMenuUI;
     public Animator pauseMenuAnimator;
-    //public static GameMenu InstanceGameMenu;
+    public bool GameIsPaused = false;
+
+    public static GameMenu instance;
 
     private void Awake()
     {

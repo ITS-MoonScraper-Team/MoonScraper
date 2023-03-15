@@ -2674,8 +2674,7 @@ MonoBehaviour:
   GameAudioButton: {fileID: 0}
   MenuAudioButton: {fileID: 0}
   GameAudioText: {fileID: 0}
-  MusicSource: {fileID: 0}
-  volumeIntLvl: 0
+  volumeToSlider: 100
   volumeLvl: 0
   menuClip: {fileID: 0}
   gameClip: {fileID: 0}
@@ -6543,6 +6542,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5010859565514566761, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: m_SortingOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 8955911963742077089, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
       propertyPath: startingStage
       value: 
