@@ -48,6 +48,8 @@ public class AxisOrientation : MonoBehaviour
     {
         
     }
+
+    //SAVE CALLED ON BACK BUTTON IN MAIN MENU
     public void SavePlayerSettings()
     {
         int xValue = XAxisInverted ? 1 : 0;

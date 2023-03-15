@@ -23,8 +23,10 @@ public class VolumeSliderManager : MonoBehaviour
     }
     void Start()
     {
-        UpdateVolumeText(volumeSlider.value);
+
         volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+        volumeSlider.value = SoundManager.instance.volumeToSlider;
+        //UpdateVolumeText(volumeSlider.value);
     }
 
     private void UpdateVolumeText(float val)

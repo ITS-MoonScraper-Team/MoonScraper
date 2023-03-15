@@ -75,9 +75,11 @@ public class GameMenu : MonoBehaviour
     void Start()
     {
         SoundManager.instance.PlayGameMusic();
-        UpdateVolumeText((float)SoundManager.instance.volumeIntLvl);
-        if (ingameVolumeSlider == null) return;
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+
+        if (ingameVolumeSlider == null) return;
+        ingameVolumeSlider.value=SoundManager.instance.volumeToSlider;
+        //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
 
 

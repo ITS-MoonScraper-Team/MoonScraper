@@ -18,7 +18,7 @@ public class SoundManager : MonoBehaviour
 
     public static bool AudioON;
     public static bool MenuAudioON;
-    public int volumeIntLvl;
+    public float volumeToSlider=100f;
     public float volumeLvl;
 
     public static SoundManager instance;
@@ -89,7 +89,6 @@ public class SoundManager : MonoBehaviour
             GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
             GameAudioButton.GetComponent<Image>().color = Color.green;
         }
-        
     }
     void Update()
     {
@@ -97,8 +96,10 @@ public class SoundManager : MonoBehaviour
     }
 
     public void UpdateVolume(float value) {
+        //variabile che memorizza volume che appare sullo slider tra le scene (intero ma float)
+        volumeToSlider = value;
+
         volumeLvl = value / 100f;
-        volumeIntLvl = (int)value;
         MusicSource.volume = volumeLvl;
     }
 

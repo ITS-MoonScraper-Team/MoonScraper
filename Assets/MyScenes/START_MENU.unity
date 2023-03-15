@@ -415,8 +415,7 @@ MonoBehaviour:
   GameAudioButton: {fileID: 0}
   MenuAudioButton: {fileID: 0}
   GameAudioText: {fileID: 0}
-  MusicSource: {fileID: 71036966}
-  volumeIntLvl: 0
+  volumeToSlider: 0
   volumeLvl: 0
   menuClip: {fileID: 8300000, guid: d5e535b2e7a2f6b4ab61bd211fdfd563, type: 3}
   gameClip: {fileID: 8300000, guid: f13a0598a1a5e224d978fc27c89b21d2, type: 3}
@@ -1662,7 +1661,7 @@ GameObject:
   - component: {fileID: 643961627}
   - component: {fileID: 643961628}
   m_Layer: 5
-  m_Name: Slider
+  m_Name: VolumeSlider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
