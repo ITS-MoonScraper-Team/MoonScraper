@@ -6,6 +6,7 @@ TagManager:
   tags:
   - walls
   - platform
+  - soundManager
   layers:
   - Default
   - TransparentFX
@@ -16,7 +17,7 @@ TagManager:
   - Ground
   - Player
   - Platforms
-  - 
+  - jumper
   - 
   - 
   - 
