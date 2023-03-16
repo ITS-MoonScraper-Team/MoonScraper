@@ -36,6 +36,7 @@ public class SoundManager : MonoBehaviour
             instance = this;
             DontDestroyOnLoad(this);
         }
+        LoadPlayerSettings();
         //BackgroundAudio.playOnAwake=true;
     }
 
@@ -113,6 +114,33 @@ public class SoundManager : MonoBehaviour
         MusicSource.Play();
     
     }
+
+    public void SavePlayerSettings()
+    {
+        int volSlider = volumeToSlider;
+        float volLvl = volumeLvl;
+        PlayerPrefs.SetInt("volumeToSlider", volSlider);
+        PlayerPrefs.SetFloat("volumeLvl", volLvl);
+        PlayerPrefs.Save();
+        Debug.Log("saved date");
+    }
+    public void LoadPlayerSettings()
+    {
+        if (PlayerPrefs.HasKey("volumeLvl"))
+        {
+            int volSlider = PlayerPrefs.GetInt("volumeToSlider");
+            volumeToSlider = volSlider;
+        }
+        if (PlayerPrefs.HasKey("yAxisInverted"))
+        {
+            float volLvl = PlayerPrefs.GetFloat("volumeLvl");
+            volumeLvl = volLvl;
+
+        }
+        Debug.Log("loaded data");
+    }
+
+
     void Update()
     {
         

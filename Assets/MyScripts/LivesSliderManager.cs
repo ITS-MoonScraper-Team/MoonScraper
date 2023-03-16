@@ -29,7 +29,7 @@ public class LivesSliderManager : MonoBehaviour
        // UpdateText(livesSlider.value);
         livesSlider.onValueChanged.AddListener(UpdateText);
 
-        livesSlider.value = (float)MainMenu.InstanceMenu.LivesMax;
+        livesSlider.value = MainMenu.InstanceMenu.LivesMax;
     }
 
     // Update is called once per frame

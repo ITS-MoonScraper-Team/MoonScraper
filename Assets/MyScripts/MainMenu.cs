@@ -89,6 +89,7 @@ public class MainMenu : MonoBehaviour
     public void SavePlayerSettingsOnBack()
     {
         AxisOrientation.instance.SavePlayerSettings();
+        SoundManager.instance.SavePlayerSettings();
     }
 
     void Update()
