@@ -15,7 +15,7 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
-    private int state = 0;
+    //private int state = 0;
 
     #region |||>>> PLAYER COMPONENTS <<<|||
 
@@ -135,6 +135,11 @@ public class PlayerController : MonoBehaviour
             joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
             joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
         }
+        else
+        {
+            joystickXaxisInverted=true;
+            joystickYaxisInverted=true;
+        }
     }
 
     void Start()
@@ -167,19 +172,22 @@ public class PlayerController : MonoBehaviour
         yRespawn= gameObject.transform.position.y;
 
         //LIVES CONDITION
-        if (livesMax != 11)
-        { livesActive = true; }
-        else if(livesMax==11)
+        if(livesMax==11)
         { 
             livesActive = false;
             livesText.text = "ETERNAL LIFE";
         }
-
-        if (livesMax == 1)
+        else if (livesMax != 11)
         { 
-            HC = true;
-            livesText.text = "HARDCORE"; 
+            livesActive = true; 
+            if (livesMax == 1)
+            { 
+                HC = true;
+                livesText.text = "HARDCORE"; 
+            }
+
         }
+
 
         //buttonRestart.onClick.AddListener(RestartGame);
     }
@@ -648,10 +656,13 @@ public class PlayerController : MonoBehaviour
         { remainingFuel = maxFuel; }
         #endregion
 
+
+        //SISTEMO TEXT VITE INGAME..ORA FUNZIA(17/03)
         #region |||>>> LIFE AND SCORE COUNT <<<|||
 
-        if (livesCount != 0&&livesActive&&HC==false)
+        if (livesCount != 0)
         {
+            if(livesActive ==true&& HC == false)
              livesText.text = $"LIVES {livesCount}"; 
         }
         //else

@@ -7,6 +7,8 @@ using UnityEngine.UI;
 public class AxisOrientation : MonoBehaviour
 {
     public static AxisOrientation instance;
+    public Toggle xAxisToggle;
+    public Toggle yAxisToggle;
 
     private bool xAxisInverted=true;
     public bool XAxisInverted
@@ -41,12 +43,27 @@ public class AxisOrientation : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        if (xAxisToggle != null && yAxisToggle != null)
+        {
+            if (!xAxisInverted)
+                xAxisToggle.GetComponentInChildren<Image>().color = Color.red;
+            else
+            {
+                xAxisToggle.GetComponentInChildren<Image>().color = Color.green;
+            }
+            if (!yAxisInverted)
+                yAxisToggle.GetComponentInChildren<Image>().color = Color.red;
+            else
+            {
+                yAxisToggle.GetComponentInChildren<Image>().color = Color.green;
+            }
+        }
     }
 
     //SAVE CALLED ON BACK BUTTON IN MAIN MENU

@@ -57,4 +57,7 @@ public class LivesSliderManager : MonoBehaviour
         }
         MainMenu.InstanceMenu.UpdateLives(val);
     }
+
+
+
 }

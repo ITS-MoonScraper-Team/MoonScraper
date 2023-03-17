@@ -18,8 +18,10 @@ public class SoundManager : MonoBehaviour
 
     public static bool AudioON;
     public static bool MenuAudioON;
-    public int volumeToSlider;
-    public float volumeLvl;
+    private int volumeToSlider;
+    public int VolumeToSlider { get; set; }
+    private float volumeLvl;
+    public float VolumeLvl { get; set; }
 
     public static SoundManager instance;
 
@@ -48,9 +50,11 @@ public class SoundManager : MonoBehaviour
         //mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
         MusicSource = GetComponent<AudioSource>();
         //AudioSrc.enabled = true;
-        GameAudioText.text = "audio ON";
-        GameAudioButton.image.color = Color.green;
-
+        if (GameAudioButton != null)
+        {
+            GameAudioText.text = "audio ON";
+            GameAudioButton.image.color = Color.green;
+        }
         //AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
         //AudioButton.GetComponent<Image>().color = Color.green;
         //if (SceneManager.GetActiveScene().buildIndex == 0)
@@ -97,10 +101,10 @@ public class SoundManager : MonoBehaviour
         ///prende valore dallo slider e assegna alla variabile che aggiorna in game
 
         //variabile che memorizza volume che appare sullo slider tra le scene (intero ma float)
-        volumeToSlider = (int)value;
+        VolumeToSlider = (int)value;
 
-        volumeLvl = value / 100f;
-        MusicSource.volume = volumeLvl;
+        VolumeLvl = value / 100f;
+        MusicSource.volume = VolumeLvl;
     }
 
     public void PlayGameMusic() {
@@ -117,8 +121,8 @@ public class SoundManager : MonoBehaviour
 
     public void SavePlayerSettings()
     {
-        int volSlider = volumeToSlider;
-        float volLvl = volumeLvl;
+        int volSlider = VolumeToSlider;
+        float volLvl = VolumeLvl;
         PlayerPrefs.SetInt("volumeToSlider", volSlider);
         PlayerPrefs.SetFloat("volumeLvl", volLvl);
         PlayerPrefs.Save();
@@ -126,15 +130,15 @@ public class SoundManager : MonoBehaviour
     }
     public void LoadPlayerSettings()
     {
-        if (PlayerPrefs.HasKey("volumeLvl"))
+        if (PlayerPrefs.HasKey("volumeToSlider"))
         {
             int volSlider = PlayerPrefs.GetInt("volumeToSlider");
-            volumeToSlider = volSlider;
+            VolumeToSlider = volSlider;
         }
-        if (PlayerPrefs.HasKey("yAxisInverted"))
+        if (PlayerPrefs.HasKey("volumeLvl"))
         {
             float volLvl = PlayerPrefs.GetFloat("volumeLvl");
-            volumeLvl = volLvl;
+            VolumeLvl = volLvl;
 
         }
         Debug.Log("loaded data");

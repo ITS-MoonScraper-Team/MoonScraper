@@ -78,7 +78,7 @@ public class GameMenu : MonoBehaviour
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
 
         if (ingameVolumeSlider == null) return;
-        ingameVolumeSlider.value=SoundManager.instance.volumeToSlider;
+        ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
 

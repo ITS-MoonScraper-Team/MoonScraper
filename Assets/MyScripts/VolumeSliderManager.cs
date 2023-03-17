@@ -27,7 +27,7 @@ public class VolumeSliderManager : MonoBehaviour
         volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
 
         //SISTEMO PERCHE' METTE 0 ALL'INIZIO
-        volumeSlider.value = SoundManager.instance.volumeToSlider;
+        volumeSlider.value = SoundManager.instance.VolumeToSlider;
         //UpdateVolumeText(volumeSlider.value);
     }
 
