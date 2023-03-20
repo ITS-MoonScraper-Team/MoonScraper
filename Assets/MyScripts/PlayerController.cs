@@ -328,7 +328,7 @@ public class PlayerController : MonoBehaviour
 
         gameObject.SetActive(false);
         //if(SoundManager.AudioON)
-        SoundManager.PlaySound("playerDeath");
+        SoundManager.instance.PlaySound("playerDeath");
         GameObject explosion = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
         //explosion.Emit(60);
         Destroy(explosion, .4f);

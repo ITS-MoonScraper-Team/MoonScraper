@@ -64,7 +64,8 @@ public class MainMenu : MonoBehaviour
     {
         //SoundManager.instance.
         //LivesSliderManager.instance.livesSlider.onValueChanged.AddListener(UpdateMaxLives);
-        SoundManager.instance.PlayMainMenuMusic();
+        SoundManager.instance.PlaySound("mainMenu_OST");
+        //SoundManager.instance.PlayMainMenuMusic();
     }
 
     public void UpdateLives(float value)

@@ -12,20 +12,20 @@ public class SoundManager : MonoBehaviour
     public Button MenuAudioButton;
     public TMP_Text GameAudioText;
     public static AudioSource MusicSource;
-    //public AudioSource BackMenuAudio;
-    public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
-    public static AudioSource AudioSrc;
+    //public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
+    //public static AudioSource AudioSrc;
 
     public static bool AudioON;
-    public static bool MenuAudioON;
+    //public static bool MenuAudioON;
     private int volumeToSlider;
     public int VolumeToSlider { get; set; }
+
     private float volumeLvl;
     public float VolumeLvl { get; set; }
 
     public static SoundManager instance;
 
-    [SerializeField] private AudioClip menuClip, gameClip;
+    [SerializeField] private AudioClip menuClip, gameClip, playerDeathClip;
 
     void Awake()
     {
@@ -46,41 +46,73 @@ public class SoundManager : MonoBehaviour
     void Start()
     {
         AudioON = true;
-        playerDeathSound = Resources.Load < AudioClip > ("playerDeath");
+        //LOAD RESOURCES DRIVER METHOD
+        //playerDeathSound = Resources.Load < AudioClip > ("playerDeath");
         //mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
-        MusicSource = GetComponent<AudioSource>();
         //AudioSrc.enabled = true;
+
+        MusicSource = GetComponent<AudioSource>();
         if (GameAudioButton != null)
         {
             GameAudioText.text = "audio ON";
             GameAudioButton.image.color = Color.green;
         }
-        //AudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-        //AudioButton.GetComponent<Image>().color = Color.green;
-        //if (SceneManager.GetActiveScene().buildIndex == 0)
-
     }
 
-    public static void PlaySound(string clip)
+    public void PlaySound(string clip)
     {
         switch (clip)
         {
             case "playerDeath":
-                MusicSource.PlayOneShot(playerDeathSound);
-            break;
+                //MusicSource.clip = gameClip;
+                MusicSource.PlayOneShot(playerDeathClip);
+                break;
             case "mainMenu_OST":
+                MusicSource.clip =menuClip;
                 MusicSource.Play();
                 break;
+            case "inGame_OST":
+                MusicSource.clip = gameClip;
+                MusicSource.Play();
+                break;
+                //case "inGame_OST":
+                //    MusicSource.PlayOneShot(playerDeathSound);
+                //    break;
+                //case "playerDeath":
+                //    MusicSource.PlayOneShot(playerDeathSound);
+                //    break;
         }
     }
+
+    public void UpdateVolume(float value) {
+
+        ///prende valore dallo slider e assegna alla variabile che aggiorna in game
+
+        //variabile che memorizza volume che appare sullo slider tra le scene
+        VolumeToSlider = (int)value;
+        //volume tra 0 e 1 (float)
+        VolumeLvl = value / 100f;
+        MusicSource.volume = VolumeLvl;
+    }
+
+    //public void PlayGameMusic() {
+    //    MusicSource.clip = gameClip;
+    //    MusicSource.Play();
+    //}
+
+    //public void PlayMainMenuMusic() {
+    //    MusicSource.clip = menuClip;
+    //    MusicSource.Play();
+    //}
+
     public void AudioONOFF()
     {
         if (AudioON)
         {
             AudioON = false;
-            //AudioText.text = "audio OFF";
             MusicSource.Stop();
-            AudioSrc.enabled = false;
+            //AudioSrc.enabled = false;
+            //AudioText.text = "audio OFF";
             //GameAudioText.text = "audio OFF";
             GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
             GameAudioButton.GetComponent<Image>().color = Color.red;
@@ -89,34 +121,11 @@ public class SoundManager : MonoBehaviour
         {
             AudioON = true;
             MusicSource.Play();
-            AudioSrc.enabled = true;
+            //AudioSrc.enabled = true;
             //GameAudioText.text = "audio ON";
             GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
             GameAudioButton.GetComponent<Image>().color = Color.green;
         }
-    }
-
-    public void UpdateVolume(float value) {
-
-        ///prende valore dallo slider e assegna alla variabile che aggiorna in game
-
-        //variabile che memorizza volume che appare sullo slider tra le scene (intero ma float)
-        VolumeToSlider = (int)value;
-
-        VolumeLvl = value / 100f;
-        MusicSource.volume = VolumeLvl;
-    }
-
-    public void PlayGameMusic() {
-        MusicSource.clip = gameClip;
-        MusicSource.Play();
-        //
-    }
-
-    public void PlayMainMenuMusic() {
-        MusicSource.clip = menuClip;
-        MusicSource.Play();
-    
     }
 
     public void SavePlayerSettings()
@@ -143,7 +152,6 @@ public class SoundManager : MonoBehaviour
         }
         Debug.Log("loaded data");
     }
-
 
     void Update()
     {

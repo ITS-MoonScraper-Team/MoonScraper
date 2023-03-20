@@ -74,7 +74,7 @@ public class GameMenu : MonoBehaviour
 
     void Start()
     {
-        SoundManager.instance.PlayGameMusic();
+        SoundManager.instance.PlaySound("inGame_OST");
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
 
         if (ingameVolumeSlider == null) return;
