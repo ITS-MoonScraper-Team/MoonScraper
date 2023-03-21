@@ -46,6 +46,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         //animationName = "PlayCircleAniamtion";
+        SoundManager.instance.PlaySound("okClick");
         menuAnimator.enabled=true;
         Invoke("LoadScene", .5f);
     }

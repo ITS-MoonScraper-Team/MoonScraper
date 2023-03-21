@@ -418,6 +418,8 @@ MonoBehaviour:
   menuClip: {fileID: 8300000, guid: d5e535b2e7a2f6b4ab61bd211fdfd563, type: 3}
   gameClip: {fileID: 8300000, guid: f13a0598a1a5e224d978fc27c89b21d2, type: 3}
   playerDeathClip: {fileID: 8300000, guid: 996001608fbee1d489689860d269dc14, type: 3}
+  okClick: {fileID: 8300000, guid: d64c1011a9e90714b8101f2b2424139b, type: 3}
+  backClick: {fileID: 8300000, guid: 3c7909f8fc7b2634caa8cc43efdacec6, type: 3}
 --- !u!82 &71036966
 AudioSource:
   m_ObjectHideFlags: 0
@@ -1251,6 +1253,8 @@ MonoBehaviour:
   menuClip: {fileID: 0}
   gameClip: {fileID: 0}
   playerDeathClip: {fileID: 0}
+  okClick: {fileID: 0}
+  backClick: {fileID: 0}
 --- !u!1 &512186797
 GameObject:
   m_ObjectHideFlags: 0
@@ -4182,7 +4186,19 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 2
+        m_CallState: 1
+      - m_Target: {fileID: 71036965}
+        m_TargetAssemblyTypeName: SoundManager, Assembly-CSharp
+        m_MethodName: PlayOkClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: okClick
+          m_BoolArgument: 0
+        m_CallState: 1
 --- !u!114 &1516081065
 MonoBehaviour:
   m_ObjectHideFlags: 0

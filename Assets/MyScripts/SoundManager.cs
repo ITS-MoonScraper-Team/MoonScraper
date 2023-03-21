@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Animations;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -25,7 +26,7 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager instance;
 
-    [SerializeField] private AudioClip menuClip, gameClip, playerDeathClip;
+    [SerializeField] private AudioClip menuClip, gameClip, playerDeathClip,okClick, backClick;
 
     void Awake()
     {
@@ -75,6 +76,14 @@ public class SoundManager : MonoBehaviour
                 MusicSource.clip = gameClip;
                 MusicSource.Play();
                 break;
+            case "okClick":
+                MusicSource.clip = okClick;
+                MusicSource.PlayOneShot(okClick);
+                break;
+            case "backClick":
+                MusicSource.clip = backClick;
+                MusicSource.PlayOneShot(backClick);
+                break;
                 //case "inGame_OST":
                 //    MusicSource.PlayOneShot(playerDeathSound);
                 //    break;
@@ -93,6 +102,10 @@ public class SoundManager : MonoBehaviour
         //volume tra 0 e 1 (float)
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
+    }
+    public void PlayOkClick()
+    {
+        MusicSource.PlayOneShot(okClick);
     }
 
     //public void PlayGameMusic() {
