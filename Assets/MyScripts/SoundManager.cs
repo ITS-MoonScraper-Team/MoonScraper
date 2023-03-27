@@ -8,9 +8,8 @@ using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
-    //public Slider volumeSlider;
     public Button GameAudioButton;
-    public Button MenuAudioButton;
+    //public Button MenuAudioButton;
     public TMP_Text GameAudioText;
     public static AudioSource MusicSource;
     //public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
@@ -26,6 +25,7 @@ public class SoundManager : MonoBehaviour
 
     public static SoundManager instance;
 
+    //AUDIO CLIPS
     [SerializeField] private AudioClip menuClip, gameClip, playerDeathClip,okClick, backClick;
 
     void Awake()
@@ -40,10 +40,8 @@ public class SoundManager : MonoBehaviour
             DontDestroyOnLoad(this);
         }
         LoadPlayerSettings();
-        //BackgroundAudio.playOnAwake=true;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         AudioON = true;
@@ -65,7 +63,6 @@ public class SoundManager : MonoBehaviour
         switch (clip)
         {
             case "playerDeath":
-                //MusicSource.clip = gameClip;
                 MusicSource.PlayOneShot(playerDeathClip);
                 break;
             case "mainMenu_OST":
@@ -77,11 +74,9 @@ public class SoundManager : MonoBehaviour
                 MusicSource.Play();
                 break;
             case "okClick":
-                MusicSource.clip = okClick;
                 MusicSource.PlayOneShot(okClick);
                 break;
             case "backClick":
-                MusicSource.clip = backClick;
                 MusicSource.PlayOneShot(backClick);
                 break;
                 //case "inGame_OST":
@@ -95,11 +90,12 @@ public class SoundManager : MonoBehaviour
 
     public void UpdateVolume(float value) {
 
-        ///prende valore dallo slider e assegna alla variabile che aggiorna in game
+        //prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
-        //variabile che memorizza volume che appare sullo slider tra le scene
+        //volume che appare sullo slider
         VolumeToSlider = (int)value;
-        //volume tra 0 e 1 (float)
+
+        //volume effettivo tra 0 e 1 (float)
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
     }
@@ -107,16 +103,6 @@ public class SoundManager : MonoBehaviour
     {
         MusicSource.PlayOneShot(okClick);
     }
-
-    //public void PlayGameMusic() {
-    //    MusicSource.clip = gameClip;
-    //    MusicSource.Play();
-    //}
-
-    //public void PlayMainMenuMusic() {
-    //    MusicSource.clip = menuClip;
-    //    MusicSource.Play();
-    //}
 
     public void AudioONOFF()
     {

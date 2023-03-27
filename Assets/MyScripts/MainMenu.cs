@@ -16,15 +16,15 @@ public class MainMenu : MonoBehaviour
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
     public TMP_Text lifeMeterTXT;
-    //public Slider LivesSlider;
-    //private string animationName;
     public Material titleMat;
-    public Shader titleShader;
     public bool menuAudioON;
+    //public Slider LivesSlider;
     //public float volumeLvl;
     //public int volumeIntLvl;
 
-    private bool lightAngleLooping = false;
+    //private string animationName;
+    //private bool lightAngleLooping = false;
+
     private int livesMax;
     public int LivesMax
     { get; set; }
@@ -40,9 +40,17 @@ public class MainMenu : MonoBehaviour
             InstanceMenu = this;
             DontDestroyOnLoad(this);
         }
-        LoadPlayerSettings();
-        //BackgroundAudio.playOnAwake=true;
+        LoadPlayerLivesSettings();
     }
+
+    private void Start()
+    {
+        SoundManager.instance.PlaySound("mainMenu_OST");
+        StartCoroutine(LightAngleVariationCoroutine());
+    }
+
+    #region <<<GAME BUTTON FUNCTIONS>>>
+
     public void PlayGame()
     {
         //animationName = "PlayCircleAniamtion";
@@ -61,29 +69,35 @@ public class MainMenu : MonoBehaviour
         Application.Quit();
         Debug.Log("QUIT!");
     }
-    private void Start()
+    #endregion
+
+    #region <<<BUOTTON SFX PLAY FUNCTIONS>>>
+
+    public void PlayOptionsButtonSound()
     {
-        //SoundManager.instance.
-        //LivesSliderManager.instance.livesSlider.onValueChanged.AddListener(UpdateMaxLives);
-        SoundManager.instance.PlaySound("mainMenu_OST");
-        //SoundManager.instance.PlayMainMenuMusic();
+        SoundManager.instance.PlaySound("okClick");
     }
-
-    public void UpdateLives(float value)
+    public void PlayBackButtonSound()
     {
-        //prende valore dallo slider e assegna alla variabile che aggiorna in game
-        LivesMax = (int)value;
-        //LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
-
+        SoundManager.instance.PlaySound("backClick");
     }
+    #endregion
 
+    /// <fix>
+    ///suona anche allo start..BOH!!
+    /// </fix>
+    #region <<<AXIS TOGGLES>>> 
 
     public void SetXaxisValue(bool xAxisInverted)
     {
+        ///suona anche allo start..BOH!!
+        //PlayBackButtonSound();
         AxisOrientation.instance.XAxisInverted = xAxisInverted;
+
     }
     public void SetYaxisValue(bool yAxisInverted)
     {
+        //PlayBackButtonSound();
         AxisOrientation.instance.YAxisInverted = yAxisInverted;
     }
     public void SetToggles()
@@ -93,26 +107,42 @@ public class MainMenu : MonoBehaviour
         xAxisToggle.isOn = AxisOrientation.instance.XAxisInverted;
         yAxisToggle.isOn = AxisOrientation.instance.YAxisInverted;
     }
+    #endregion
+
+    /// <fix>
+    /// save generale non funziona
+    /// </fix>
+    #region <<<SAVE ALL>>>
+
     public void SavePlayerSettingsOnBack()
     {
         //SaveLoadPrefs.instance.SavePlayerLivesSettings();
         //SaveLoadPrefs.instance.SavePlayerAxisSettings();
         //SaveLoadPrefs.instance.SavePlayerVolumeSettings();
 
-        SavePlayerSettings();
+        SavePlayerLivesSettings();
         AxisOrientation.instance.SavePlayerSettings();
         SoundManager.instance.SavePlayerSettings();
     }
+    #endregion
 
+    #region <<<UPDATE-SAVE-LOAD LIVES>>>
 
-    public void SavePlayerSettings()
+    public void UpdateLives(float value)
+    {
+        //prende valore dallo slider e aggiorna la variabile che passa le vite in game
+        LivesMax = (int)value;
+    }
+
+    public void SavePlayerLivesSettings()
     {
         int livesMaxSet = LivesMax;
         PlayerPrefs.SetInt("LivesMax", livesMaxSet);
         PlayerPrefs.Save();
         Debug.Log("saved date");
     }
-    public void LoadPlayerSettings()
+
+    public void LoadPlayerLivesSettings()
     {
         if (PlayerPrefs.HasKey("LivesMax"))
         {
@@ -122,57 +152,32 @@ public class MainMenu : MonoBehaviour
        
         Debug.Log("loaded data");
     }
+    #endregion
 
-    //IEnumerator LightAngleVariationCoroutine()
-    //{
-    //    lightAngleLooping = true;
-    //    //titleMat.SetFloat("_LightAngle", Random.Range(.1f, 6f));
+    #region <<Title Effects Coroutine>>
+    IEnumerator LightAngleVariationCoroutine()
+    {
+        while (true)
+        {
+            //lightAngleLooping = true;
+            //titleMat.SetFloat("_LightAngle", Random.Range(.1f, 6f));
 
-    //    titleMat.DOFloat(1f, "_LightAngle", 1.2f);
-    //    yield return new WaitForSeconds(.2f);
+            titleMat.DOFloat(1f, "_LightAngle", 1.2f);
+            yield return new WaitForSeconds(.2f);
 
-    //    titleMat.DOFloat(5.2f, "_LightAngle", .6f);
-    //    yield return new WaitForSeconds(.2f);
+            titleMat.DOFloat(5.2f, "_LightAngle", .6f);
+            yield return new WaitForSeconds(.2f);
+        }
 
-        
-    //    //titleMat.SetFloat("_LightAngle", 6.2f); /*(6.25f, "_LightAngle", 1.2f)*/
-    //    //yield return new WaitForSeconds(.2f);
-
-    //    //titleMat.SetFloat("_LightAngle", 5.2f); //(5.2f, "_LightAngle", 1.2f);
-    //    //yield return new WaitForSeconds(.2f);
-
-    //    //titleMat.SetFloat("_LightAngle", 1f); //7(1f, "_LightAngle", .6f);
-    //    //yield return new WaitForSeconds(.2f);
-
-    //    //titleMat.SetFloat("_LightAngle", 0f); //(0f, "_LightAngle", 1.2f);
-    //    //yield return new WaitForSeconds(.2f);
-
-    //    lightAngleLooping = false;
-
-    //    //yield return null;
-    //}
+        //lightAngleLooping = false;
+    }
+    #endregion
 
     void Update()
     {
-        //titleShader.GetComponent<Renderer>().sharedMaterial.SetFloat("_LightAngle", Random.Range(.1f, 6f ));
-        //titleMat.shader = Shader.Find("TextMeshPro/Distance Field");
-
+        #region <DEBUG>
         //FUNZIA!!
-        titleMat.SetFloat("_LightAngle", Random.Range(.1f, 6f));
-        
-        //float lightAngleLoop=3f;
-        //float lightAngleTimer=0;
-        //lightAngleTimer+= Time.deltaTime;
-        if(lightAngleLooping==false)
-        {
-            //lightAngleLooping = true;
-            //StartCoroutine(LightAngleVariationCoroutine());
-            //CALL COROUTINE ANGLE VARIATION
-            //nella coroutine setta lightAngleLooping false
-        }
-        else
-        { }
-
+        //titleMat.SetFloat("_LightAngle", Random.Range(.1f, 6f));
 
         //font material shader - lightining angle modifica--> PROPRIETIES INDEX (16)
         string[] shaderz = new string[10];
@@ -184,25 +189,10 @@ public class MainMenu : MonoBehaviour
         }
         Debug.LogWarning($"LIGHT ANGLE {shaderz[6]}");
 
-
         //prende valore dallo slider e assegna alla variabile che aggiorna in game
-        ///LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
-        //prende valore dallo slider e assegna alla variabile che aggiorna in game
-        //METTO NEL SOUND MANAGER-->provato ma non aggiorna lo slder quando torna al main menu
-        ///volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
-        ///volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
+        /// LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
+        /// volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
+        /// volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
+        #endregion
     }
-
-    //private void UpdateMaxLives(float val)
-    //{
-    //    LivesMax = (int)maxLivesSlider.value;
-    //    //aggiorna text dell'indicatore in game
-    //    if (LivesMax == 11)
-    //    { lifeMeterTXT.text = "eternal"; }
-    //    else
-    //    {
-    //        lifeMeterTXT.text = LivesMax.ToString();
-    //    }
-    //    Debug.Log($"VITE {LivesMax}");
-    //}
 }

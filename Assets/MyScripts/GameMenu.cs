@@ -111,12 +111,6 @@ public class GameMenu : MonoBehaviour
 
     void Update()
     {
-        //if (SoundManager.instance.volumeLvl == 100)
-        //{ ingameVolumeSliderText.text = "max"; }
-        //else
-        //{
-        //    ingameVolumeSliderText.text = SoundManager.instance.volumeLvl.ToString();
-        //}
-        //Debug.Log($"Volume {SoundManager.instance.volumeLvl}");
+        
     }
 }

@@ -43,6 +43,7 @@ public class PlayerController : MonoBehaviour
     public TMP_Text livesText;
     public TMP_Text deadText;
     public TMP_Text outOfFuelText;
+    public TMP_Text hiScoreText;
     public GameObject ExplosionTemplate;
     public Image FuelCircleProgression;
     public Animator PlayerAnimator;
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>>> PROGRAM VARIABLES <<<|||
+    #region |||>>> PLAYER VARIABLES <<<|||
 
     private Sprite directionLeftSprite;
     private Sprite directionRightSprite;
@@ -97,6 +98,8 @@ public class PlayerController : MonoBehaviour
     private float yMinReachable=0;
     private int livesCount;
     private int livesMax;
+    private int maxScoreToSave;
+    private int oldMaxScore;
     private int platformCount=0;
     private enum Index
     {
@@ -105,7 +108,7 @@ public class PlayerController : MonoBehaviour
         GONE_TOO_LOW = 2
     }
     private Index deathMessage;
-    public static PlayerController instance;
+    //public static PlayerController instance;
 
     #endregion
 
@@ -140,6 +143,7 @@ public class PlayerController : MonoBehaviour
             joystickXaxisInverted=true;
             joystickYaxisInverted=true;
         }
+        LoadHighScore();
     }
 
     void Start()
@@ -161,7 +165,7 @@ public class PlayerController : MonoBehaviour
         livesCount = livesMax;
         
 
-        //FACING DATA
+        //DIRECTION
         leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
@@ -185,11 +189,7 @@ public class PlayerController : MonoBehaviour
                 HC = true;
                 livesText.text = "HARDCORE"; 
             }
-
         }
-
-
-        //buttonRestart.onClick.AddListener(RestartGame);
     }
 
     #region |||>>> GAME OVER AND RESTART <<<|||
@@ -583,10 +583,28 @@ public class PlayerController : MonoBehaviour
     //    Destroy(gameObject);
     //}
 
+    private void SaveHighScore()
+    {
+        maxScoreToSave = platformCount;
+        //oldMaxScore = maxScoreToSave;
+        PlayerPrefs.SetInt("maxScore", maxScoreToSave);
+        PlayerPrefs.Save();
+    }
+    private void LoadHighScore()
+    {
+        if (PlayerPrefs.HasKey("maxScore"))
+        {
+            //VALORE DA MOSTRARE A TXT COME HI SCORE
+            oldMaxScore = PlayerPrefs.GetInt("maxScore");
+            hiScoreText.text = $"ALL TIME\nHI-SCORE:\n{oldMaxScore.ToString()}";
+        }
+    }
+
     void Update()
     {
         //DEBUG
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
+        Debug.LogWarning($"HISCORE {oldMaxScore}");
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
@@ -656,7 +674,6 @@ public class PlayerController : MonoBehaviour
         { remainingFuel = maxFuel; }
         #endregion
 
-
         //SISTEMO TEXT VITE INGAME..ORA FUNZIA(17/03)
         #region |||>>> LIFE AND SCORE COUNT <<<|||
 
@@ -669,6 +686,14 @@ public class PlayerController : MonoBehaviour
         //{ livesText.text = "LIVES 0"; }
 
         scoreText.text = $"SCORE {platformCount}";
+
+        if (platformCount > oldMaxScore)
+        {
+            SaveHighScore();
+            LoadHighScore();
+            //hiScoreText.text = $"HI-SCORE: {oldMaxScore.ToString()}";
+
+        }
         #endregion
 
         //if (isOnGround)
@@ -715,6 +740,7 @@ public class PlayerController : MonoBehaviour
         {
             //VERTICAL MOVEMENT
             if (joystickYaxisCondition || joystick.Horizontal != 0)
+                //playerState=inAir;
             { 
                 Trail.SetActive(true);
                 gameObject.transform.GetChild(2).gameObject.SetActive(true);
@@ -729,8 +755,10 @@ public class PlayerController : MonoBehaviour
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
             {
                 PlayerAnimator.SetTrigger("Jump");
+
                 Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
                 remainingFuel -= fuelPerSecond*Time.deltaTime;
+
                 //Alternativa Velocity:
                 //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
 
@@ -744,9 +772,6 @@ public class PlayerController : MonoBehaviour
             }
             else 
             {  }
-
-            //Check Facing
-            
 
             //HORIZONTAL MOVEMENT
             if (joystick.Horizontal != 0)

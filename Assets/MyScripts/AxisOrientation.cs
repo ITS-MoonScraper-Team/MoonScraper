@@ -1,6 +1,7 @@
 using Newtonsoft.Json.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,6 +10,8 @@ public class AxisOrientation : MonoBehaviour
     public static AxisOrientation instance;
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
+    private Image xImage;
+    private Image yImage;
 
     private bool xAxisInverted=true;
     public bool XAxisInverted
@@ -34,34 +37,34 @@ public class AxisOrientation : MonoBehaviour
         else
         {
             instance = this;
+
+            ///non mette img rossa del toggle dopo aver richiamato la scena!!
+            xImage= xAxisToggle.GetComponentInChildren<Image>();
+            yImage = yAxisToggle.GetComponentInChildren<Image>();
+            LoadPlayerSettings();
+
             DontDestroyOnLoad(this);
         }
-
-        LoadPlayerSettings();
-
     }
-    // Start is called before the first frame update
     void Start()
     {
-        
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (xAxisToggle != null && yAxisToggle != null)
         {
             if (!xAxisInverted)
-                xAxisToggle.GetComponentInChildren<Image>().color = Color.red;
+                xImage.color = Color.red;
             else
             {
-                xAxisToggle.GetComponentInChildren<Image>().color = Color.green;
+                xImage.color = Color.green;
             }
             if (!yAxisInverted)
-                yAxisToggle.GetComponentInChildren<Image>().color = Color.red;
+                yImage.color = Color.red;
             else
             {
-                yAxisToggle.GetComponentInChildren<Image>().color = Color.green;
+                yImage.color = Color.green;
             }
         }
     }
@@ -76,6 +79,7 @@ public class AxisOrientation : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("saved date");
     }
+
     public void LoadPlayerSettings()
     {
         if(PlayerPrefs.HasKey("xAxisInverted"))

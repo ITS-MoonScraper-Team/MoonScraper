@@ -8,12 +8,12 @@ using UnityEngine.UI;
 
 public class VolumeSliderManager : MonoBehaviour
 {
+    public static VolumeSliderManager instance;
     public Slider volumeSlider;
     public TMP_Text volumeSliderTxt;
+    public Image sliderFiller;
     private Color textStartingColor;
     private Color sliderStartingColor;
-    public Image sliderFiller;
-    public static VolumeSliderManager instance;
 
     private void Awake()
     {
@@ -23,16 +23,14 @@ public class VolumeSliderManager : MonoBehaviour
     }
     void Start()
     {
-
         volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
-
         //SISTEMO PERCHE' METTE 0 ALL'INIZIO
         volumeSlider.value = SoundManager.instance.VolumeToSlider;
-        //UpdateVolumeText(volumeSlider.value);
     }
 
     private void UpdateVolumeText(float val)
     {
+        SoundManager.instance.PlaySound("backClick");
         if (volumeSlider.value == 0)
         {
             volumeSliderTxt.text = "OFF";
