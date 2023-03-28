@@ -640,9 +640,10 @@ public class PlayerController : MonoBehaviour
         fuelMeter.text = $"FUEL {(int)remainingFuel}";
         fuelSlider.value = remainingFuel / maxFuel;
         //setta livello fuel del serbatoio nuovo
-        FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
+        //FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
+        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel, (1 - remainingFuel / maxFuel) * 1f);
 
-        if(remainingFuel<1)
+        if (remainingFuel<1)
         { Invoke("DestroyTrail", 0.2f); }
 
         //FUEL WARNS
