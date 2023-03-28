@@ -3,38 +3,39 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
+using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
+using static UnityEditor.ShaderData;
+using static UnityEditor.UIElements.ToolbarMenu;
+using UnityEngine.Rendering;
 
 public class WallGeneration : MonoBehaviour
 {
-    Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
     //SpriteRenderer spriteRenderer;
 
-    public StageSection startingStage;
+    //POOL VARIABLES
+    public List<StageSection> activeStageList;
+    public List<StageSection> stagePool;
+
     public GameObject backGroundStart;
-    public GameObject[] stageWalls;
-    public GameObject[] backGround;
+    public StageSection startingStage;
     public PlatformBehaviour startingPlatform;
-    //public Camera MainCamera;
+    public GameObject[] backGround;
+    public GameObject[] stageWalls;
     //public Sprite[] spriteArray;
 
-    private bool firstStagePassed = false;
-    private bool stageDone = true;
     private List<GameObject> listaBackGround = new List<GameObject>();
+    public List<GameObject> ListaBackGround { get; set; }
 
     private List<StageSection> listaStageGenerati = new List<StageSection>();
-    public List<StageSection> ListaStageGenerati
-    {
-        get { return listaStageGenerati; }
-        set { listaStageGenerati = value; }
-    }
+    public List<StageSection> ListaStageGenerati { get; set; }
 
     private List<PlatformBehaviour> listaPlatforms = new List<PlatformBehaviour>();
-    public List<PlatformBehaviour> ListaPlatforms
-    {
-        get { return listaPlatforms; }
-        set { listaPlatforms = value; }
-    }
+    public List<PlatformBehaviour> ListaPlatforms { get; set; }
+
+    //CONTROL VARIABLES
+    private bool firstStagePassed = false;
+    private bool stageDone = false;
 
     public static WallGeneration Instance;
 
@@ -45,64 +46,165 @@ public class WallGeneration : MonoBehaviour
 
     void Start()
     {
-        Rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
+
         ListaStageGenerati = new List<StageSection>();
         ListaStageGenerati.Add(startingStage);
-        listaBackGround.Add(backGroundStart);
-        startingPlatform.index = PlatformBehaviour.Index.MAI_TOCCATA;
+
         ListaPlatforms = new List<PlatformBehaviour>();
         ListaPlatforms.Add(startingPlatform);
+        startingPlatform.index = PlatformBehaviour.Index.MAI_TOCCATA;
         //startingPlatform.absoluteNumber = 1;
 
-        //var platformsList = new List<(GameObject platform, int[] platformStatusIndex)>();
-        //var georgeEmail = platformsList[1].platformStatusIndex[0];
-        //var people = new List<Person>();
+        listaBackGround.Add(backGroundStart);
+
     }
-
-    void Update()
+    void Update() 
     {
-       
-        //GENERAZIONE SECONDO STAGE
-        ///SISTEMO LOGICA STARTINGSTAGE - BOOL STAGE PASSED
-        if ((ListaStageGenerati[0].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed == false)
-        {
-            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
-            StageSection newStageSection = newStage.GetComponent<StageSection>();
-            ListaStageGenerati.Add(newStageSection);
-            listaBackGround.Add( Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            ListaPlatforms.Add(newStageSection.platform);
+        ///<summary>
+        ///-genera e assegna 5/10 stage (o platform) random in poolList.
+        ///-ne prendi uno alla volta, lo passi alla lista ListaStageGenerati e li metti in game.
+        ///-quando rimangono meno di 5/10 (oppure a 0),
+        ///ne genera uno random (oppure se a 0 nuovi 5 / 10) dalle 12 varianti di prefab.
+        ///
+        ///-se ci sono più di 5/10 in gioco elimina ultimo
+        ///-opure assegni random stage + plat quando viene istanziato alla ListaStage
+        /// </summary>
 
-            firstStagePassed = true;
-        }
+        #region <<< GENERA STAGE >>>
 
         //GENERAZIONE ENDLESS STAGE
-        ///SISTEMO LOGICA BOOL STAGEDONE
-        if ((ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && firstStagePassed==true)
-        { stageDone = false; }
-        if (stageDone == false)
+        if ((ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && stageDone==false)
         {
-            GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y + 11f, 0), Quaternion.identity);
-            StageSection newStageSection = newStage.GetComponent<StageSection>();
-            ListaStageGenerati.Add( newStageSection);
-            listaBackGround.Add(Instantiate(backGround[0], new Vector3(-2.3f, listaBackGround[listaBackGround.Count-1].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-            ListaPlatforms.Add(newStageSection.platform);
             stageDone = true;
-      
+
+            InstanceNewObjects();
         }
-
-        #region destroyExcessTest
-        //if (listaStageGenerati.Count > 6)
-        //{
-        //    for (int i = 0; i < listaStageGenerati.Count-7; i++)
-        //    {
-        //        StageSection twalls = listaStageGenerati[i];
-                
-
-        //        Destroy(twalls.gameObject);
-        //    }
-        //}
         #endregion
 
+        #region <<< RIMUOVE STAGE IN ECCESSO >>>
+
+        if (ListaStageGenerati.Count>5)
+        {
+            StageSection stageToPool = ListaStageGenerati[0];
+            PutBackInPool(stageToPool);
+        }
+        #endregion
+
+        #region OLD generation
+        //OLD
+        //if ((ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && stageDone == false /*firstStagePassed==true*/)
+        //{ stageDone = false; }
+        //if (stageDone == false)
+        //    GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
+        //    StageSection newStageSection = newStage.GetComponent<StageSection>();
+        //    ListaStageGenerati.Add(newStageSection);
+        //    ListaPlatforms.Add(newStageSection.platform);
+        //    listaBackGround.Add( Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
+        //    stageDone = true;
+        //}
+        #endregion
     }
+
+    #region <<< INSTANCE FUNCTIONS >>>
+
+    public void InstanceNewObjects()
+    {
+        //stageDone = true;
+
+        InstanceStageSectionAndPlatform();
+
+        if (listaBackGround[listaBackGround.Count - 1].transform.position.y - capsuleCollider.bounds.max.y < 20f)
+            InstanceBackground();
+
+        stageDone = false;
+    }
+
+    public void InstanceStageSectionAndPlatform()
+    {
+        GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)],
+            new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y + 11f, 0), Quaternion.identity);
+        StageSection newStageSection = newStage.GetComponent<StageSection>();
+        ListaStageGenerati.Add(newStageSection);
+        ListaPlatforms.Add(newStageSection.platform);
+    }
+
+    public void InstanceBackground()
+    {
+        listaBackGround.Add(Instantiate(backGround[0],
+                new Vector3(-2.3f, listaBackGround[listaBackGround.Count - 1].transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
+    }
+    #endregion
+
+    #region <<< REMOVE FUNCTIONS (BACK TO POOL) >>>
+
+    public void PutBackInPool(StageSection poolObject)
+    {
+        //rimuove background da sotto se abbastanza distante da player
+        if (poolObject.transform.position.y - listaBackGround[0].transform.position.y > 15f)
+            RemoveBackground(listaBackGround[0]);
+
+        //rimuove stageSection
+        if (ListaStageGenerati.Contains(poolObject))
+        {
+            RemoveStageSection(poolObject);
+        }
+    }
+    public void RemoveStageSection(StageSection poolObject)
+    {
+        //stagePool.Add(poolObject);
+        ListaStageGenerati.Remove(poolObject);
+        //poolObject.gameObject.SetActive(false);
+        Destroy(poolObject.gameObject);
+    }
+    public void RemoveBackground(GameObject backgroundObject)
+    {
+        if (listaBackGround.Contains(backgroundObject))
+        {
+            listaBackGround.Remove(backgroundObject);
+            Destroy(backgroundObject.gameObject);
+        }
+    }
+    #endregion
+
+    #region <<<Eventuali POOL FUNCTIONS>>>
+    public StageSection GetFromPool()
+    {
+        //se ho oggetti nella pool
+        if (stagePool.Count > 0)
+        {
+            //mi salvo l'oggetto da prendere
+            StageSection poolStageChosen = stagePool[0];
+
+            //lo rimuovo dalla pool
+            stagePool.RemoveAt(0);
+
+            //lo aggiungo alla lista degli oggetti attivi
+            activeStageList.Add(poolStageChosen);
+
+            //ne restituisco l'istanza al giocatore
+            return poolStageChosen;
+        }
+        else
+        {
+            //la pool è vuota
+            //TO DO creare un nuovo oggetto, da restituire al giocartore
+            return null;
+        }
+    }
+
+    public void PlacePlatform()
+    {
+        StageSection stage = GetFromPool();
+
+        //posiziona la piattaf a destra dell'ultima in active platform
+        //platform.transform.localScale = new Vector3(UnityEngine.Random.Range(10, 30), 1, 1);
+        //platform.transform.position = lastPlatformPos
+        //+ Vector3.right * UnityEngine.Random.Range(5, 10)
+        //+ Vector3.up * UnityEngine.Random.Range(-3, 3)
+        //+ Vector3.right * platform.transform.localScale.x / 2;
+        stage.gameObject.SetActive(true);
+    }
+    #endregion
+
 }
