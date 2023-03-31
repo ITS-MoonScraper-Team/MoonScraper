@@ -54,7 +54,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         //animationName = "PlayCircleAniamtion";
-        SoundManager.instance.PlaySound("okClick");
+        SFXsoundManager.instance.PlaySound("okClick");
         menuAnimator.enabled=true;
         Invoke("LoadScene", .5f);
     }
@@ -75,11 +75,11 @@ public class MainMenu : MonoBehaviour
 
     public void PlayOptionsButtonSound()
     {
-        SoundManager.instance.PlaySound("okClick");
+        SFXsoundManager.instance.PlaySound("okClick");
     }
     public void PlayBackButtonSound()
     {
-        SoundManager.instance.PlaySound("backClick");
+        SFXsoundManager.instance.PlaySound("backClick");
     }
     #endregion
 

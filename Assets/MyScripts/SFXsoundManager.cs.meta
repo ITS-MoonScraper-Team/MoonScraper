@@ -1,0 +1,17 @@
+fileFormatVersion: 2
+guid: 9ea2c3b00ea05c34cb8a8a7cfa437ca6
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - GameSFXAudioButton: {instanceID: 0}
+  - GameSFXAudioText: {instanceID: 0}
+  - playerDeathClip: {fileID: 8300000, guid: 996001608fbee1d489689860d269dc14, type: 3}
+  - okClick: {fileID: 8300000, guid: d64c1011a9e90714b8101f2b2424139b, type: 3}
+  - backClick: {fileID: 8300000, guid: 3c7909f8fc7b2634caa8cc43efdacec6, type: 3}
+  - jetpackPropulsion: {fileID: 8300000, guid: 095e8bdf592dcb94888b2d024606396d, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

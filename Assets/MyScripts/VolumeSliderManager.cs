@@ -30,7 +30,7 @@ public class VolumeSliderManager : MonoBehaviour
 
     private void UpdateVolumeText(float val)
     {
-        SoundManager.instance.PlaySound("backClick");
+        SFXsoundManager.instance.PlaySound("backClick");
         if (volumeSlider.value == 0)
         {
             volumeSliderTxt.text = "OFF";

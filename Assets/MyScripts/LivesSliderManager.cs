@@ -31,7 +31,7 @@ public class LivesSliderManager : MonoBehaviour
     // Update is called once per frame
     private void UpdateText(float val)
     {
-        SoundManager.instance.PlaySound("backClick");
+        SFXsoundManager.instance.PlaySound("backClick");
         if(livesSlider.value == 1)
         {
             livesSliderTxt.text = "HC";

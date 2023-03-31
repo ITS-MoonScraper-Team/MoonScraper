@@ -164,7 +164,6 @@ public class PlayerController : MonoBehaviour
         livesMax = MainMenu.InstanceMenu.LivesMax;
         livesCount = livesMax;
         
-
         //DIRECTION
         leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
@@ -328,7 +327,7 @@ public class PlayerController : MonoBehaviour
 
         gameObject.SetActive(false);
         //if(SoundManager.AudioON)
-        SoundManager.instance.PlaySound("playerDeath");
+        SFXsoundManager.instance.PlaySound("playerDeath");
         GameObject explosion = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
         //explosion.Emit(60);
         Destroy(explosion, .4f);
@@ -336,9 +335,7 @@ public class PlayerController : MonoBehaviour
         if (livesActive == true)
         {
             livesCount--;
-            //controllo particella da codice
         }
-
     }
 
     private string DeathMessageType()
@@ -357,7 +354,7 @@ public class PlayerController : MonoBehaviour
             {
                 outOfFuelText.gameObject.SetActive(true);
             }
-                condition = "SetPlayerActive";
+            condition = "SetPlayerActive";
         }
         return condition;
     }
@@ -412,6 +409,8 @@ public class PlayerController : MonoBehaviour
     private void NewPlatformReached(PlatformBehaviour collidedPlat)
     {
         //PLAYER VARIABLES UPDATE: Fuel refill, platform score +1, minima Y raggiungibile
+        FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
+
         remainingFuel = maxFuel;
         platformCount++;
         yMinReachable = collidedPlat.transform.position.y;
@@ -582,6 +581,7 @@ public class PlayerController : MonoBehaviour
     //{
     //    Destroy(gameObject);
     //}
+    #region |||>>> SAVE HIGH SCORE <<<|||
 
     private void SaveHighScore()
     {
@@ -596,8 +596,14 @@ public class PlayerController : MonoBehaviour
         {
             //VALORE DA MOSTRARE A TXT COME HI SCORE
             oldMaxScore = PlayerPrefs.GetInt("maxScore");
-            hiScoreText.text = $"ALL TIME\nHI-SCORE:\n{oldMaxScore.ToString()}";
+            hiScoreText.text = $"HI-SCORE:{oldMaxScore.ToString()}";
         }
+    }
+    #endregion
+
+    private void StopSFXplaying()
+    {
+        SFXsoundManager.sfxSource.Stop();
     }
 
     void Update()
@@ -637,14 +643,17 @@ public class PlayerController : MonoBehaviour
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         //indicatore fuel vecchio
-        fuelMeter.text = $"FUEL {(int)remainingFuel}";
-        fuelSlider.value = remainingFuel / maxFuel;
+        //fuelMeter.text = $"FUEL {(int)remainingFuel}";
+        //fuelSlider.value = remainingFuel / maxFuel;
         //setta livello fuel del serbatoio nuovo
         //FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
-        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel, (1 - remainingFuel / maxFuel) * 1f);
+        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel,.1f) /*(1 - remainingFuel / maxFuel) * 1f)*/;
 
         if (remainingFuel<1)
-        { Invoke("DestroyTrail", 0.2f); }
+        {   Invoke("DestroyTrail", 0.2f);
+            Invoke("StopSFXplaying", 0.1f);
+        
+        }
 
         //FUEL WARNS
         if (remainingFuel > maxFuel/2)
@@ -704,6 +713,7 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> JOYSYICK AXIS ORIENTATION <<<|||
 
+        //Y AXIS
         if (joystickYaxisInverted)
         {
             if (joystick.Vertical < 0)
@@ -719,6 +729,7 @@ public class PlayerController : MonoBehaviour
             { joystickYaxisCondition = false; }
         }
 
+        //X AXIS
         if (joystickXaxisInverted)
         {
             if (joystick.Horizontal > 0)
@@ -745,16 +756,21 @@ public class PlayerController : MonoBehaviour
             { 
                 Trail.SetActive(true);
                 gameObject.transform.GetChild(2).gameObject.SetActive(true);
-                
             }
             else
             {
-               Invoke( "DestroyTrail", 0.3f);
-               Invoke("DestroyParticleFX", 0.6f);
+                Invoke("StopSFXplaying",.1f);
+                //SFXsoundManager.MusicSource2.Stop();
+
+                Invoke( "DestroyTrail", 0.2f);
+                Invoke("DestroyParticleFX", 0.5f);
             }
 
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
             {
+                if(SFXsoundManager.sfxSource.isPlaying==false)
+                SFXsoundManager.instance.PlaySound("jetPackProp");
+
                 PlayerAnimator.SetTrigger("Jump");
 
                 Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
@@ -769,7 +785,6 @@ public class PlayerController : MonoBehaviour
                 //    string animationName = "playerAnimation_JUMP";
                 //    PlayerAnimator.Play(animationName);
                 //}
-
             }
             else 
             {  }
@@ -777,7 +792,30 @@ public class PlayerController : MonoBehaviour
             //HORIZONTAL MOVEMENT
             if (joystick.Horizontal != 0)
             {
-                #region old xAxis
+
+                if (joystickXaxisCondition/*posizFacing > 0*/)
+                {
+                    transform.localScale= leftFacingVector;
+                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                    ChangeSprite(directionLeftSprite);
+
+                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
+                    //ChangeAnimationRight();
+                }
+                if (!joystickXaxisCondition/*posizFacing < 0*/)
+                {
+                    transform.localScale= rightFacingVector;
+                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                    ChangeSprite(directionRightSprite);
+                }
+            }
+        }
+        else
+        {
+        }
+
+        #region old xAxis
                 //if (joystickXaxisInverted)
                 //{
                 //    directionLeftSprite = spriteArray[0];
@@ -818,26 +856,6 @@ public class PlayerController : MonoBehaviour
                 //}
                 #endregion
 
-                if (joystickXaxisCondition/*posizFacing > 0*/)
-                {
-                    transform.localScale= leftFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionLeftSprite);
-
-                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    //ChangeAnimationRight();
-                }
-                if (!joystickXaxisCondition/*posizFacing < 0*/)
-                {
-                    transform.localScale= rightFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionRightSprite);
-                }
-            }
-        }
-        else
-        { }
         #endregion
 
         #region |||>>> DEATH BELOW LAST PLAT <<<|||
@@ -854,45 +872,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         { }
-        #endregion
-
-        //if (transform.position.y>yLastReachedPlatform+5&& WallGeneration.Instance.ListaStageGenerati.Count > 6)
-        //{
-        //    for(int i=0; i>=WallGeneration.Instance.ListaStageGenerati.Count-7; i++)
-        //    {
-        //        StageSection twall = WallGeneration.Instance.ListaStageGenerati[i];
-        //        Destroy(twall);
-        //    }
-        //    WallGeneration.Instance.ListaStageGenerati.RemoveRange(0, WallGeneration.Instance.ListaStageGenerati.Count-6);
-
-        //    //foreach(StageSection stage in WallGeneration.Instance.ListaStageGenerati)
-        //}
-
-        #region reycast test
-        //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
-        //{
-        //    hit.collider.GetComponent<WallGeneration>().method();
-        //}
-
-        //RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-        //if (hit.collider != null)
-        //{
-        //    Debug.Log("Sono a terra.");
-        //}
-
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.1f, 6);
-        //if (hit)
-        //{
-        //    hit.collider.IsTouchingLayers(3);
-        //}
-
-        //RaycastHit2D hitz = Physics2D.Raycast(capsuleCollider.bounds.size, Vector2.one, 0.1f);
-        ////if (hitz.collider != null)
-
-        //    if (hitz.collider != null&& Rigidbody.velocity.magnitude>10)
-        //{
-        //    this.gameObject.SetActive(false);
-        //}
         #endregion
 
     }
@@ -1031,6 +1010,33 @@ public class PlayerController : MonoBehaviour
         }
         else
         { spacePressed = false; }
+        #endregion
+
+        #region reycast test
+        //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
+        //{
+        //    hit.collider.GetComponent<WallGeneration>().method();
+        //}
+
+        //RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+        //if (hit.collider != null)
+        //{
+        //    Debug.Log("Sono a terra.");
+        //}
+
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.1f, 6);
+        //if (hit)
+        //{
+        //    hit.collider.IsTouchingLayers(3);
+        //}
+
+        //RaycastHit2D hitz = Physics2D.Raycast(capsuleCollider.bounds.size, Vector2.one, 0.1f);
+        ////if (hitz.collider != null)
+
+        //    if (hitz.collider != null&& Rigidbody.velocity.magnitude>10)
+        //{
+        //    this.gameObject.SetActive(false);
+        //}
         #endregion
     }
 

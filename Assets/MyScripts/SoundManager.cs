@@ -26,7 +26,7 @@ public class SoundManager : MonoBehaviour
     public static SoundManager instance;
 
     //AUDIO CLIPS
-    [SerializeField] private AudioClip menuClip, gameClip, playerDeathClip,okClick, backClick;
+    [SerializeField] private AudioClip menuClip, gameClip/*, playerDeathClip,okClick, backClick, jetpackPropulsion*/;
 
     void Awake()
     {
@@ -62,9 +62,9 @@ public class SoundManager : MonoBehaviour
     {
         switch (clip)
         {
-            case "playerDeath":
-                MusicSource.PlayOneShot(playerDeathClip);
-                break;
+            //case "playerDeath":
+            //    MusicSource.PlayOneShot(playerDeathClip);
+            //    break;
             case "mainMenu_OST":
                 MusicSource.clip =menuClip;
                 MusicSource.Play();
@@ -73,12 +73,16 @@ public class SoundManager : MonoBehaviour
                 MusicSource.clip = gameClip;
                 MusicSource.Play();
                 break;
-            case "okClick":
-                MusicSource.PlayOneShot(okClick);
-                break;
-            case "backClick":
-                MusicSource.PlayOneShot(backClick);
-                break;
+            //case "okClick":
+            //    MusicSource.PlayOneShot(okClick);
+            //    break;
+            //case "backClick":
+            //    MusicSource.PlayOneShot(backClick);
+            //    break;
+            //case "jetPackProp":
+            //    MusicSource.clip = jetpackPropulsion;
+            //    MusicSource.Play();
+            //    break;
                 //case "inGame_OST":
                 //    MusicSource.PlayOneShot(playerDeathSound);
                 //    break;
@@ -98,10 +102,6 @@ public class SoundManager : MonoBehaviour
         //volume effettivo tra 0 e 1 (float)
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
-    }
-    public void PlayOkClick()
-    {
-        MusicSource.PlayOneShot(okClick);
     }
 
     public void AudioONOFF()
