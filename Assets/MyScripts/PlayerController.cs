@@ -361,6 +361,8 @@ public class PlayerController : MonoBehaviour
 
         //Disattiva player
         gameObject.SetActive(false);
+        if(SFXsoundManager.instance.sfxSourceJetpack.isPlaying==true)
+        Invoke("StopSFXplaying", 0.05f);
 
         //Sound e graphic FX MORTE
         //if(SoundManager.AudioON)
@@ -598,7 +600,7 @@ public class PlayerController : MonoBehaviour
     #region ||>> STOP PLAYING MUSIC <<||
     private void StopSFXplaying()
     {
-        SFXsoundManager.sfxSource.Stop();
+        SFXsoundManager.instance.sfxSourceJetpack.Stop();
     }
     #endregion
 
@@ -752,7 +754,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 Invoke("StopSFXplaying",.1f);
-                //SFXsoundManager.MusicSource2.Stop();
+                //SFXsoundManager.instance.sfxSourceJetpack.Stop();
 
                 Invoke( "DestroyTrail", 0.2f);
                 Invoke("DestroyParticleFX", 0.5f);
@@ -761,7 +763,7 @@ public class PlayerController : MonoBehaviour
             //VERTICAL MOVEMENT
             if (joystickYaxisCondition /*joystick.Vertical < 0*/)
             {
-                if(SFXsoundManager.sfxSource.isPlaying==false)
+                if(SFXsoundManager.instance.sfxSourceJetpack.isPlaying==false)
                 SFXsoundManager.instance.PlaySound("jetPackProp");
 
                 PlayerAnimator.SetTrigger("Jump");

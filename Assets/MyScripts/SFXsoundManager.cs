@@ -15,8 +15,8 @@ public class SFXsoundManager : MonoBehaviour
     public Button GameSFXAudioButton;
     //public Button MenuAudioButton;
     public TMP_Text GameSFXAudioText;
-    public static AudioSource MusicSource2;
-    public static AudioSource sfxSource;
+    public static AudioSource sfxSource1;
+    public AudioSource sfxSourceJetpack;
     public static bool AudioON;
     //public static bool MenuAudioON;
 
@@ -49,8 +49,8 @@ public class SFXsoundManager : MonoBehaviour
 
     void Start()
     {
-        sfxSource = GetComponentInChildren<AudioSource>();
-        MusicSource2 = GetComponent<AudioSource>();
+        //sfxSourceJetpack = GetComponentInChildren<AudioSource>();
+        sfxSource1 = GetComponent<AudioSource>();
 
         
     }
@@ -67,17 +67,17 @@ public class SFXsoundManager : MonoBehaviour
         switch (clip)
         {
             case "playerDeath":
-                MusicSource2.PlayOneShot(playerDeathClip);
+                sfxSource1.PlayOneShot(playerDeathClip);
                 break;
             case "okClick":
-                MusicSource2.PlayOneShot(okClick);
+                sfxSource1.PlayOneShot(okClick);
                 break;
             case "backClick":
-                MusicSource2.PlayOneShot(backClick);
+                sfxSource1.PlayOneShot(backClick);
                 break;
             case "jetPackProp":
-                sfxSource.clip = jetpackPropulsion;
-                sfxSource.Play();
+                sfxSourceJetpack.clip = jetpackPropulsion;
+                sfxSourceJetpack.Play();
                 break;
         }
     }
@@ -93,7 +93,8 @@ public class SFXsoundManager : MonoBehaviour
 
         //volume effettivo tra 0 e 1 (float)
         SFXVolumeLvl = value / 100f;
-        MusicSource2.volume = SFXVolumeLvl;
+        sfxSource1.volume = SFXVolumeLvl;
+        sfxSourceJetpack.volume = SFXVolumeLvl;
 
         PlaySound("backClick");
     }

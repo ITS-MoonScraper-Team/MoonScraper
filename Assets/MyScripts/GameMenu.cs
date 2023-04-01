@@ -90,7 +90,9 @@ public class GameMenu : MonoBehaviour
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
 
-
+    /// <summary>
+    /// NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
+    /// </summary>
     //UPDATE VOLUME SLIDER IN GAME e SOUNDMANAGER
     private void UpdateVolumeText(float val)
     {

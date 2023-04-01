@@ -1280,6 +1280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   GameSFXAudioButton: {fileID: 0}
   GameSFXAudioText: {fileID: 0}
+  sfxSourceJetpack: {fileID: 972673525}
   playerDeathClip: {fileID: 8300000, guid: 996001608fbee1d489689860d269dc14, type: 3}
   okClick: {fileID: 8300000, guid: d64c1011a9e90714b8101f2b2424139b, type: 3}
   backClick: {fileID: 8300000, guid: 3c7909f8fc7b2634caa8cc43efdacec6, type: 3}
