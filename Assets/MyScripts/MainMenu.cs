@@ -18,6 +18,7 @@ public class MainMenu : MonoBehaviour
     public TMP_Text lifeMeterTXT;
     public Material titleMat;
     public bool menuAudioON;
+    public bool easyMode = false;
     //public Slider LivesSlider;
     //public float volumeLvl;
     //public int volumeIntLvl;
@@ -45,6 +46,7 @@ public class MainMenu : MonoBehaviour
 
     private void Start()
     {
+        //Screen.SetResolution(1080, 1920, true);
         SoundManager.instance.PlaySound("mainMenu_OST");
         StartCoroutine(LightAngleVariationCoroutine());
     }

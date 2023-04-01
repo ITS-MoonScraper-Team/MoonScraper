@@ -7,6 +7,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3180098807627735080, guid: 7e66b66d4dd2aba48bcdffea74030069, type: 3}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3648307823990485874, guid: 7e66b66d4dd2aba48bcdffea74030069, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 5641088114664336554, guid: 7e66b66d4dd2aba48bcdffea74030069, type: 3}
       propertyPath: m_Name
       value: STAGE_RIGHT_PLAT Variant 3

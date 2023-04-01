@@ -11,6 +11,9 @@ public class GameMenu : MonoBehaviour
     public Slider ingameVolumeSlider;
     public TMP_Text ingameVolumeSliderText;
     public Image sliderFiller;
+    public Slider ingameSFXVolumeSlider;
+    public TMP_Text ingameSFXVolumeSliderText;
+    public Image SFXsliderFiller;
     public GameObject pauseMenuUI;
     public Animator pauseMenuAnimator;
     public bool GameIsPaused = false;
@@ -76,10 +79,14 @@ public class GameMenu : MonoBehaviour
     {
         SoundManager.instance.PlaySound("inGame_OST");
 
-        if (ingameVolumeSlider == null) return;
+        if (ingameVolumeSlider == null) 
+            return;
 
         ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
         ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
+
+        ingameSFXVolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
+        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
 
@@ -107,7 +114,36 @@ public class GameMenu : MonoBehaviour
             ingameVolumeSliderText.color = Color.yellow;
             sliderFiller.color = Color.yellow;
         }
-            SoundManager.instance.UpdateVolume(val);
+        SoundManager.instance.UpdateVolume(val);
+        //SFXsoundManager.instance.PlaySound("backClick");
+
+    }
+
+    private void UpdateSFXVolumeText(float val)
+    {
+        if (ingameSFXVolumeSlider == null) return;
+        if (ingameSFXVolumeSlider.value == 0)
+        {
+            ingameSFXVolumeSliderText.text = "OFF";
+            ingameSFXVolumeSliderText.color = Color.white;
+
+            SFXsliderFiller.color = Color.white;
+        }
+        else if (ingameSFXVolumeSlider.value == 100)
+        {
+            ingameSFXVolumeSliderText.text = "MAX";
+            ingameSFXVolumeSliderText.color = Color.red;
+            SFXsliderFiller.color = Color.red;
+        }
+        else
+        {
+            ingameSFXVolumeSliderText.text = ingameSFXVolumeSlider.value.ToString();
+            ingameSFXVolumeSliderText.color = Color.yellow;
+            SFXsliderFiller.color = Color.yellow;
+        }
+        SFXsoundManager.instance.UpdateSFXVolume(val);
+        //SFXsoundManager.instance.PlaySound("backClick");
+
     }
 
     void Update()

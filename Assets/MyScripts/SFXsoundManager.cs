@@ -8,26 +8,30 @@ using UnityEngine.SceneManagement;
 
 public class SFXsoundManager : MonoBehaviour
 {
+
+    #region |> VARIABLES <|
+
+    public static SFXsoundManager instance;
     public Button GameSFXAudioButton;
     //public Button MenuAudioButton;
     public TMP_Text GameSFXAudioText;
     public static AudioSource MusicSource2;
     public static AudioSource sfxSource;
-    //public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
-    //public static AudioSource AudioSrc;
-
     public static bool AudioON;
     //public static bool MenuAudioON;
-    private int volumeSFXToSlider;
-    public int VolumeSFXToSlider { get; set; }
 
-    private float volumeSFXLvl;
-    public float VolumeSFXLvl { get; set; }
+    private int SFXvolumeToSlider;
+    public int SFXVolumeToSlider { get; set; }
 
-    public static SFXsoundManager instance;
+    private float SFXvolumeLvl;
+    public float SFXVolumeLvl { get; set; }
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
+
+    #endregion
+
+    #region ||>> INIT <<||
 
     void Awake()
     {
@@ -45,21 +49,18 @@ public class SFXsoundManager : MonoBehaviour
 
     void Start()
     {
-        //AudioON = true;
         sfxSource = GetComponentInChildren<AudioSource>();
         MusicSource2 = GetComponent<AudioSource>();
-        //if (GameAudioButton != null)
-        //{
-        //    GameAudioText.text = "audio ON";
-        //    GameAudioButton.image.color = Color.green;
-        //}
+
+        
     }
+    #endregion
 
     /// <summary>
     /// PROBLEMA:
     /// STOPPA AUDIO DELL'ESPLOSIONE QUANDO STOPPA JETPACK
     /// </summary>
-    /// <param name="clip"></param>
+    #region ||>> PLAY SFX SOUNDS <<||
 
     public void PlaySound(string clip)
     {
@@ -80,7 +81,53 @@ public class SFXsoundManager : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
+    public void UpdateSFXVolume(float value)
+    {
+
+        //prende valore dallo slider e aggiorna la variabile che passa tra le scene
+
+        //volume che appare sullo slider
+        SFXVolumeToSlider = (int)value;
+
+        //volume effettivo tra 0 e 1 (float)
+        SFXVolumeLvl = value / 100f;
+        MusicSource2.volume = SFXVolumeLvl;
+
+        PlaySound("backClick");
+    }
+
+    public void SavePlayerSettings()
+    {
+        int SFXvolSlider = SFXVolumeToSlider;
+        float SFXvolLvl = SFXVolumeLvl;
+        PlayerPrefs.SetInt("SFXVolumeToSlider", SFXvolSlider);
+        PlayerPrefs.SetFloat("SFXVolumeLvl", SFXvolLvl);
+        PlayerPrefs.Save();
+        Debug.Log("saved date");
+    }
+    public void LoadPlayerSettings()
+    {
+        if (PlayerPrefs.HasKey("SFXVolumeToSlider"))
+        {
+            int SFXvolSlider = PlayerPrefs.GetInt("SFXVolumeToSlider");
+            SFXVolumeToSlider = SFXvolSlider;
+        }
+        if (PlayerPrefs.HasKey("SFXVolumeLvl"))
+        {
+            float SFXvolLvl = PlayerPrefs.GetFloat("SFXvolumeLvl");
+            SFXVolumeLvl = SFXvolLvl;
+        }
+        Debug.Log("loaded data");
+    }
+
+    void Update()
+    {
+
+    }
+    
+    #region |>Future Use<|
     public void UpdateVolume(float value)
     {
 
@@ -93,7 +140,6 @@ public class SFXsoundManager : MonoBehaviour
         //VolumeSFXLvl = value / 100f;
         //MusicSource.volume = VolumeSFXLvl;
     }
-
     public void AudioONOFF()
     {
         //if (AudioON)
@@ -116,35 +162,7 @@ public class SFXsoundManager : MonoBehaviour
         //    GameSFXAudioButton.GetComponent<Image>().color = Color.green;
         //}
     }
-
-    public void SavePlayerSettings()
-    {
-        //int volSlider = VolumeSFXToSlider;
-        //float volLvl = VolumeSFXLvl;
-        //PlayerPrefs.SetInt("volumeToSlider", volSlider);
-        //PlayerPrefs.SetFloat("volumeLvl", volLvl);
-        //PlayerPrefs.Save();
-        //Debug.Log("saved date");
-    }
-    public void LoadPlayerSettings()
-    {
-        //if (PlayerPrefs.HasKey("volumeToSlider"))
-        //{
-        //    int volSlider = PlayerPrefs.GetInt("volumeToSlider");
-        //    VolumeSFXToSlider = volSlider;
-        //}
-        //if (PlayerPrefs.HasKey("volumeLvl"))
-        //{
-        //    float volLvl = PlayerPrefs.GetFloat("volumeLvl");
-        //    VolumeSFXLvl = volLvl;
-
-        //}
-        //Debug.Log("loaded data");
-    }
-
-    void Update()
-    {
-
-    }
+   
+    #endregion
 
 }

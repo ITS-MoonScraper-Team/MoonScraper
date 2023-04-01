@@ -8,25 +8,29 @@ using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
+    #region ||>> VARIABLES <<||
+
+    public static SoundManager instance;
     public Button GameAudioButton;
-    //public Button MenuAudioButton;
     public TMP_Text GameAudioText;
     public static AudioSource MusicSource;
     //public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
-    //public static AudioSource AudioSrc;
-
     public static bool AudioON;
-    //public static bool MenuAudioON;
+
     private int volumeToSlider;
     public int VolumeToSlider { get; set; }
 
     private float volumeLvl;
     public float VolumeLvl { get; set; }
 
-    public static SoundManager instance;
+   
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip menuClip, gameClip/*, playerDeathClip,okClick, backClick, jetpackPropulsion*/;
+
+    #endregion
+
+    #region ||>> INIT <<||
 
     void Awake()
     {
@@ -44,11 +48,12 @@ public class SoundManager : MonoBehaviour
 
     void Start()
     {
-        AudioON = true;
         //LOAD RESOURCES DRIVER METHOD
         //playerDeathSound = Resources.Load < AudioClip > ("playerDeath");
         //mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
         //AudioSrc.enabled = true;
+
+        AudioON = true;
 
         MusicSource = GetComponent<AudioSource>();
         if (GameAudioButton != null)
@@ -57,14 +62,14 @@ public class SoundManager : MonoBehaviour
             GameAudioButton.image.color = Color.green;
         }
     }
+    #endregion
+
+    #region ||>> PLAY MUSIC SOUNDS <<||
 
     public void PlaySound(string clip)
     {
         switch (clip)
         {
-            //case "playerDeath":
-            //    MusicSource.PlayOneShot(playerDeathClip);
-            //    break;
             case "mainMenu_OST":
                 MusicSource.clip =menuClip;
                 MusicSource.Play();
@@ -73,26 +78,14 @@ public class SoundManager : MonoBehaviour
                 MusicSource.clip = gameClip;
                 MusicSource.Play();
                 break;
-            //case "okClick":
-            //    MusicSource.PlayOneShot(okClick);
-            //    break;
-            //case "backClick":
-            //    MusicSource.PlayOneShot(backClick);
-            //    break;
-            //case "jetPackProp":
-            //    MusicSource.clip = jetpackPropulsion;
-            //    MusicSource.Play();
-            //    break;
-                //case "inGame_OST":
-                //    MusicSource.PlayOneShot(playerDeathSound);
-                //    break;
-                //case "playerDeath":
-                //    MusicSource.PlayOneShot(playerDeathSound);
-                //    break;
         }
     }
+    #endregion
 
-    public void UpdateVolume(float value) {
+    #region ||>> UPDATE VOLUME SLIDER <<||
+
+    public void UpdateVolume(float value)
+    {
 
         //prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
@@ -102,30 +95,36 @@ public class SoundManager : MonoBehaviour
         //volume effettivo tra 0 e 1 (float)
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
+
+        SFXsoundManager.instance.PlaySound("backClick");
     }
+   
+    #endregion
+
+    #region ||>> AUDIO BUTTON ON/OFF <<||
 
     public void AudioONOFF()
     {
         if (AudioON)
         {
+            //MusicSource.enabled = false;
             AudioON = false;
             MusicSource.Stop();
-            //AudioSrc.enabled = false;
-            //AudioText.text = "audio OFF";
-            //GameAudioText.text = "audio OFF";
-            GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
+            //GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
             GameAudioButton.GetComponent<Image>().color = Color.red;
         }
         else
         {
+            //MusicSource.enabled = true;
             AudioON = true;
             MusicSource.Play();
-            //AudioSrc.enabled = true;
-            //GameAudioText.text = "audio ON";
-            GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
+            //GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
             GameAudioButton.GetComponent<Image>().color = Color.green;
         }
     }
+    #endregion
+
+    #region ||>> SAVE/LOAD VOLUME SETTINGS <<||
 
     public void SavePlayerSettings()
     {
@@ -147,10 +146,10 @@ public class SoundManager : MonoBehaviour
         {
             float volLvl = PlayerPrefs.GetFloat("volumeLvl");
             VolumeLvl = volLvl;
-
         }
         Debug.Log("loaded data");
     }
+    #endregion
 
     void Update()
     {
@@ -178,4 +177,5 @@ public class SoundManager : MonoBehaviour
 
     //    }
     //}
+
 }

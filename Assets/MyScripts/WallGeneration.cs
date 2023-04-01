@@ -3,9 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using UnityEngine;
-using static TMPro.SpriteAssetUtilities.TexturePacker_JsonArray;
-using static UnityEditor.ShaderData;
-using static UnityEditor.UIElements.ToolbarMenu;
 using UnityEngine.Rendering;
 
 public class WallGeneration : MonoBehaviour
