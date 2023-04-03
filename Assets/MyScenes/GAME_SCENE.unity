@@ -637,7 +637,7 @@ RectTransform:
   m_GameObject: {fileID: 278163443}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.48987752, y: 0.64733815, z: 0.46655005}
+  m_LocalScale: {x: 0.5072192, y: 0.67025393, z: 0.48306593}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 787670278}
@@ -646,7 +646,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 315, y: -720}
+  m_AnchoredPosition: {x: 321.7, y: -731.4}
   m_SizeDelta: {x: 169.15, y: 118.64}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &278163445
@@ -1553,6 +1553,7 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 2000051572}
   pauseMenuAnimator: {fileID: 2000051575}
   GameIsPaused: 0
+  backToGameButton: {fileID: 0}
 --- !u!1 &478541571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1618,7 +1619,7 @@ RectTransform:
   m_GameObject: {fileID: 478541571}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.0092729535, y: 0.009370045, z: 0.00872258}
+  m_LocalScale: {x: 0.0090568755, y: 0.008922912, z: 0.00841415}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 933978230}
@@ -1626,7 +1627,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -1.092, y: 4.7611}
+  m_AnchoredPosition: {x: -1.118, y: 4.767}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &501767904
@@ -1686,7 +1687,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 9334044e6e4e78e4b9411c0d857a4a53, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -1706,8 +1707,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 501767904}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.0848, y: 4.2796, z: 0}
-  m_LocalScale: {x: 0.84435195, y: 0.8435502, z: 0.8550399}
+  m_LocalPosition: {x: -1.117, y: 4.768, z: 0}
+  m_LocalScale: {x: 0.8144957, y: 0.79337925, z: 0.8248057}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 933978230}
@@ -2029,7 +2030,7 @@ RectTransform:
   m_GameObject: {fileID: 609828527}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: -0.24749017}
-  m_LocalScale: {x: 1.1140605, y: 1.1569091, z: 0.8569697}
+  m_LocalScale: {x: 1.1246608, y: 1.1978637, z: 0.88730645}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 542857909}
@@ -2038,7 +2039,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 346, y: -636}
+  m_AnchoredPosition: {x: 356, y: -636}
   m_SizeDelta: {x: 106.42, y: 71.776}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &609828529
@@ -3494,8 +3495,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1142184796}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.2685001, y: 4.756516, z: 0}
-  m_LocalScale: {x: 0.09000908, y: 0.09000908, z: 0}
+  m_LocalPosition: {x: -1.297, y: 4.769, z: 0}
+  m_LocalScale: {x: 0.08762578, y: 0.08436721, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 933978230}
@@ -5619,8 +5620,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536495160}
   m_LocalRotation: {x: -0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0848, y: 4.2764, z: 0}
-  m_LocalScale: {x: 0.86800313, y: 0.85633934, z: 0}
+  m_LocalPosition: {x: -1.114, y: 4.767, z: 0}
+  m_LocalScale: {x: 0.83731055, y: 0.80540776, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 933978230}
@@ -8075,6 +8076,7 @@ MonoBehaviour:
   pauseMenuUI: {fileID: 2000051572}
   pauseMenuAnimator: {fileID: 2000051575}
   GameIsPaused: 0
+  backToGameButton: {fileID: 1988454757}
 --- !u!1 &1878192089
 GameObject:
   m_ObjectHideFlags: 0

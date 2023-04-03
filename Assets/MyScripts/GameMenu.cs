@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using TMPro;
+using DG.Tweening;
 
 public class GameMenu : MonoBehaviour
 {
@@ -17,6 +18,8 @@ public class GameMenu : MonoBehaviour
     public GameObject pauseMenuUI;
     public Animator pauseMenuAnimator;
     public bool GameIsPaused = false;
+
+    public Button backToGameButton;
 
     public static GameMenu instance;
 
@@ -63,6 +66,29 @@ public class GameMenu : MonoBehaviour
 
     public void BackToMain()
     {
+        // Handle screen touches.
+        if (Input.touchCount > 0)
+        {
+
+            Touch touch = Input.GetTouch(0);
+            //backToGameButton.image
+
+            if (touch.phase == TouchPhase.Began)
+            {
+                // Halve the size of the cube.
+                backToGameButton.transform.DOScale(Vector3.one * 5f, .15f).SetEase(Ease.InBounce);
+
+                //transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
+            }
+
+            if (touch.phase == TouchPhase.Ended)
+            {
+                // Restore the regular size of the cube.
+                //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+            }
+        }
+
+
         //get Scenes to play from builder
         Resume();
         SceneManager.LoadScene(0/*,parameterers */);
