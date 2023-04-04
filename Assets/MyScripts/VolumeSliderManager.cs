@@ -9,15 +9,16 @@ using UnityEngine.UI;
 public class VolumeSliderManager : MonoBehaviour
 {
     public static VolumeSliderManager instance;
+    
     public Slider volumeSlider;
-    public Slider SFXvolumeSlider;
     public TMP_Text volumeSliderTxt;
-    public TMP_Text SFXvolumeSliderTxt;
-
     public Image sliderFiller;
-    public Image SFXsliderFiller;
     private Color textStartingColor;
     private Color sliderStartingColor;
+
+    public Slider SFXvolumeSlider;
+    public TMP_Text SFXvolumeSliderTxt;
+    public Image SFXsliderFiller;
     private Color SFXtextStartingColor;
     private Color SFXsliderStartingColor;
 
@@ -31,12 +32,12 @@ public class VolumeSliderManager : MonoBehaviour
     }
     void Start()
     {
+        ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
+        ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
         volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
         SFXvolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
-        //SISTEMO PERCHE' METTE 0 ALL'INIZIO
         volumeSlider.value = SoundManager.instance.VolumeToSlider;
         SFXvolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
-
     }
 
     private void UpdateVolumeText(float val)

@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 5010859565514566761}
   - component: {fileID: 2456314785074881463}
   m_Layer: 7
-  m_Name: gfx
+  m_Name: GFX/RENDERER
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -178,7 +178,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 3
   m_Sprite: {fileID: 21300000, guid: 6a74b76caff9f8244bc01c44c452359e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -348,6 +348,7 @@ MonoBehaviour:
   livesText: {fileID: 0}
   deadText: {fileID: 0}
   outOfFuelText: {fileID: 0}
+  hiScoreText: {fileID: 0}
   ExplosionTemplate: {fileID: 5596692101766859356, guid: 3e9b1faafce800743adb9b307861d1d6, type: 3}
   FuelCircleProgression: {fileID: 0}
   PlayerAnimator: {fileID: 2456314785074881463}
@@ -363,7 +364,8 @@ MonoBehaviour:
   joystickXaxisInverted: 1
   deathFallingSpeed: 9
   secretNumber: 0
-  springForce: 500
+  mushroomJumper: 0
+  mushSpringForce: 500
 --- !u!60 &8955911963742077088
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -433,8 +435,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5fe27bde23130934bb24df5c36ea44c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingStage: {fileID: 0}
   backGroundStart: {fileID: 0}
+  startingStage: {fileID: 0}
+  startingPlatform: {fileID: 0}
+  backGround:
+  - {fileID: 562969251924698526, guid: 469ae3a6d30e231418babcaddb4cf614, type: 3}
   stageWalls:
   - {fileID: 6385631170130673218, guid: 53f3ae7d93cbfb94292bca8865f40c8b, type: 3}
   - {fileID: 5641088114664336554, guid: 7e66b66d4dd2aba48bcdffea74030069, type: 3}
@@ -448,9 +453,8 @@ MonoBehaviour:
   - {fileID: 7656212847411084511, guid: d4e6dc4277da2ff4c8bb599ebaec2ecf, type: 3}
   - {fileID: 2677181902104509400, guid: 50435beba38bf77489f8ac9e0918b7c7, type: 3}
   - {fileID: 3678667120091436707, guid: fd8bb0a49925a054e8995faceacf588c, type: 3}
-  backGround:
-  - {fileID: 562969251924698526, guid: 469ae3a6d30e231418babcaddb4cf614, type: 3}
-  startingPlatform: {fileID: 0}
+  activeStageList: []
+  stagePool: []
 --- !u!1 &8955911964559686737
 GameObject:
   m_ObjectHideFlags: 0
@@ -508,7 +512,7 @@ Transform:
   m_GameObject: {fileID: 8955911965215215701}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.68, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 1.053, y: 1.053, z: 1.053}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 8955911963742077115}
@@ -565,7 +569,7 @@ TrailRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 1
-        value: 1
+        value: 0.80373937
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -610,7 +614,7 @@ TrailRenderer:
     textureMode: 0
     shadowBias: 0.5
     generateLightingData: 1
-  m_MinVertexDistance: 0.1
+  m_MinVertexDistance: 0.02
   m_Autodestruct: 0
   m_Emitting: 1
 --- !u!1 &9066258709563265611

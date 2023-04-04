@@ -7,13 +7,15 @@ using UnityEngine.Rendering;
 
 public class WallGeneration : MonoBehaviour
 {
+    #region << VARIABLES >>
+
+    public static WallGeneration Instance;
+
+    //PLAYER COMPONENTS
     CapsuleCollider2D capsuleCollider;
     //SpriteRenderer spriteRenderer;
 
-    //POOL VARIABLES
-    public List<StageSection> activeStageList;
-    public List<StageSection> stagePool;
-
+    //GAME OBJECTS
     public GameObject backGroundStart;
     public StageSection startingStage;
     public PlatformBehaviour startingPlatform;
@@ -21,6 +23,7 @@ public class WallGeneration : MonoBehaviour
     public GameObject[] stageWalls;
     //public Sprite[] spriteArray;
 
+    //ACTIVE OBJECTS LISTS
     private List<GameObject> listaBackGround = new List<GameObject>();
     public List<GameObject> ListaBackGround { get; set; }
 
@@ -34,7 +37,12 @@ public class WallGeneration : MonoBehaviour
     private bool firstStagePassed = false;
     private bool stageDone = false;
 
-    public static WallGeneration Instance;
+    //Future Use - Pool variables
+    public List<StageSection> activeStageList;
+    public List<StageSection> stagePool;
+    #endregion
+
+    #region <<INIT>>
 
     private void Awake()
     {
@@ -43,23 +51,28 @@ public class WallGeneration : MonoBehaviour
 
     void Start()
     {
+        //Get player 2D capsule collider
         capsuleCollider = GetComponent<CapsuleCollider2D>();
 
+        //set stage list
         ListaStageGenerati = new List<StageSection>();
         ListaStageGenerati.Add(startingStage);
 
+        //set platform list
         ListaPlatforms = new List<PlatformBehaviour>();
         ListaPlatforms.Add(startingPlatform);
         startingPlatform.index = PlatformBehaviour.Index.MAI_TOCCATA;
         //startingPlatform.absoluteNumber = 1;
 
+        //set background list
         listaBackGround.Add(backGroundStart);
-
     }
+    #endregion
+
     void Update() 
     {
         ///<summary>
-        ///-genera e assegna 5/10 stage (o platform) random in poolList.
+        ///-genera e assegna 5/10 (scegli tu numero max) stage (o platform) random in poolList.
         ///-ne prendi uno alla volta, lo passi alla lista ListaStageGenerati e li metti in game.
         ///-quando rimangono meno di 5/10 (oppure a 0),
         ///ne genera uno random (oppure se a 0 nuovi 5 / 10) dalle 12 varianti di prefab.
@@ -71,6 +84,7 @@ public class WallGeneration : MonoBehaviour
         #region <<< GENERA STAGE >>>
 
         //GENERAZIONE ENDLESS STAGE
+        //Se il player si avvicina più di 4 unità al lowerbound dell'ultimo stage creato ne istanzia uno nuovo
         if ((ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && stageDone==false)
         {
             stageDone = true;
@@ -147,6 +161,7 @@ public class WallGeneration : MonoBehaviour
             RemoveStageSection(poolObject);
         }
     }
+
     public void RemoveStageSection(StageSection poolObject)
     {
         //stagePool.Add(poolObject);
@@ -154,6 +169,7 @@ public class WallGeneration : MonoBehaviour
         //poolObject.gameObject.SetActive(false);
         Destroy(poolObject.gameObject);
     }
+
     public void RemoveBackground(GameObject backgroundObject)
     {
         if (listaBackGround.Contains(backgroundObject))
@@ -164,7 +180,8 @@ public class WallGeneration : MonoBehaviour
     }
     #endregion
 
-    #region <<<Eventuali POOL FUNCTIONS>>>
+    #region <Future Use: Eventuali POOL/PLACE PLATFORM FUNCTIONS>
+    //UNA CHIAMA L'ALTRA
     public StageSection GetFromPool()
     {
         //se ho oggetti nella pool
@@ -189,10 +206,10 @@ public class WallGeneration : MonoBehaviour
             return null;
         }
     }
-
     public void PlacePlatform()
     {
         StageSection stage = GetFromPool();
+        stage.gameObject.SetActive(true);
 
         //posiziona la piattaf a destra dell'ultima in active platform
         //platform.transform.localScale = new Vector3(UnityEngine.Random.Range(10, 30), 1, 1);
@@ -200,7 +217,6 @@ public class WallGeneration : MonoBehaviour
         //+ Vector3.right * UnityEngine.Random.Range(5, 10)
         //+ Vector3.up * UnityEngine.Random.Range(-3, 3)
         //+ Vector3.right * platform.transform.localScale.x / 2;
-        stage.gameObject.SetActive(true);
     }
     #endregion
 

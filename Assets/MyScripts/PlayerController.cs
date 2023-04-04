@@ -15,8 +15,9 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
+    #region |||>>> VARIABLES <<<|||
 
-    #region |||>>> PLAYER COMPONENTS <<<|||
+    #region ||>> PLAYER COMPONENTS <<||
 
     Rigidbody2D Rigidbody;
     CapsuleCollider2D capsuleCollider;
@@ -24,7 +25,7 @@ public class PlayerController : MonoBehaviour
     Color colorCharacter;
     #endregion
 
-    #region |||>> PUBLIC OBJECTS <<|||
+    #region ||> PUBLIC OBJECTS <<||
 
     public GameObject Player;
     public GameObject Trail;
@@ -51,7 +52,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>> INTERFACE VARIABLES <<|||
+    #region ||> INTERFACE VARIABLES <<||
 
     [Header("FORCE LEVELS")] //BALANCE per piattaf distanti 11: jetForce=25, fromLeftRight=13
     [Tooltip("BALANCE: jetForce = 25, from Left/Right = 13")]
@@ -78,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>>> PLAYER VARIABLES <<<|||
+    #region ||>> PLAYER VARIABLES <<||
 
     private Sprite directionLeftSprite;
     private Sprite directionRightSprite;
@@ -111,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>>> CONTROL VARIABLES <<<|||
+    #region ||>> CONTROL VARIABLES <<||
 
     private bool inputPressed;
     private bool upPressedDown;
@@ -129,11 +130,13 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>>> INIT <<<|||
+    #endregion
+
+    #region ||>> INIT <<||
 
     private void Awake()
     {
-        //instance = this;
+        //SET AXIS ORIENTATION VARIABLE
         if (AxisOrientation.instance != null)
         {
             joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
@@ -144,6 +147,7 @@ public class PlayerController : MonoBehaviour
             joystickXaxisInverted=true;
             joystickYaxisInverted=true;
         }
+
         LoadHighScore();
     }
 
@@ -200,7 +204,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> GAME OVER MESSAGES AND RESTART <<<|||
+    #region ||>> GAME OVER MESSAGES AND RESTART <<||
 
     //RESTART GAME CON SCENE NAME
     public void RestartGame()
@@ -224,7 +228,7 @@ public class PlayerController : MonoBehaviour
 
     #endregion
 
-    #region |||>>> COLLISIONS <<<|||
+    #region ||>> COLLISIONS <<||
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -338,7 +342,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> DEATH LOGIC <<<|||
+    #region ||>> DEATH LOGIC <<||
 
     private string DeathLogic()
     {
@@ -365,7 +369,7 @@ public class PlayerController : MonoBehaviour
         Invoke("StopSFXplaying", 0.05f);
 
         //Sound e graphic FX MORTE
-        //if(SoundManager.AudioON)
+        //if(SoundManager.MusicAudioON)
         SFXsoundManager.instance.PlaySound("playerDeath");
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
@@ -400,7 +404,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> RESPAWN LOGIC <<<|||
+    #region ||>> RESPAWN LOGIC <<||
 
     //Calcola posizione piattaforma respawn
     private void PlayerRespawnCalculator(PlatformBehaviour _collidedPlat)
@@ -447,7 +451,7 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    #region |||>>> NEW PLATFORM UPDATES <<<|||
+    #region ||>> NEW PLATFORM UPDATES <<||
 
     private void NewPlatformReached(PlatformBehaviour collidedPlat)
     {
@@ -495,7 +499,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region |||>>> TRAIL AND PARTICOLE DESTROY <<<|||
+    #region ||>> TRAIL AND PARTICOLE DESTROY <<||
 
     private void DestroyTrail()
     {
@@ -503,30 +507,24 @@ public class PlayerController : MonoBehaviour
     }
     private void DestroyParticleFX()
     {
-        gameObject.transform.GetChild(2).gameObject.SetActive(false);
+        gameObject.transform.GetChild(3).gameObject.SetActive(false);
     }
     #endregion
 
-    #region |||>>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<<|||
+    #region ||>> STOP PLAYING MUSIC <<||
+
+    private void StopJetpackSFXplaying()
+    {
+        SFXsoundManager.instance.sfxSourceJetpack.Stop();
+    }
+    #endregion
+
+    #region ||>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<||
 
     private void ChangeSprite(Sprite _newSprite)
     {
         spriteRenderer.sprite = _newSprite;
     }
-
-    #region changeAnim test
-    //void ChangeAnimationRight()
-    //{
-    //    GetComponentInChildren<GameObject>().SetActive(false);
-    //    //Destroy(playerIdleLeft);
-    //    Instantiate(playerIdleRight, transform);
-    //}
-    //void ChangeAnimationLeft()
-    //{
-    //    Destroy(playerIdleRight);
-    //    Instantiate(playerIdleLeft, transform);
-    //}
-    #endregion
 
     #endregion
 
@@ -572,12 +570,7 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    //void OnBecameInvisible()
-    //{
-    //    Destroy(gameObject);
-    //}
-
-    #region |||>>> SAVE HIGH SCORE <<<|||
+    #region ||>> SAVE HIGH SCORE <<||
 
     private void SaveHighScore()
     {
@@ -597,12 +590,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region ||>> STOP PLAYING MUSIC <<||
-    private void StopSFXplaying()
-    {
-        SFXsoundManager.instance.sfxSourceJetpack.Stop();
-    }
-    #endregion
+    #region ||||>>>> UPDATE FUNCTIONS: JOYSTICK MOVEMENT, LIFE, FUEL CONTROL <<<<||||
 
     void Update()
     {
@@ -610,102 +598,7 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
         Debug.LogWarning($"HISCORE {oldMaxScore}");
 
-        #region ||>> HIGH VELOCITY WARNINGS <<||
-
-        if(Rigidbody.velocity.y>-7)
-        {
-            //spriteRenderer.DOColor(colorCharacter, .05f);
-            if (isFalling)
-            { isFalling = false; }
-            spriteRenderer.color = colorCharacter;
-        }
-
-        if (Rigidbody.velocity.y <= -7.5f&&Rigidbody.velocity.y>-9)
-        {
-            //GetComponent<MeshRenderer>().material = myHitTakenMaterial;
-            //Invoke("SetNormalMaterial", 0.25f);
-            if (!isFalling)
-            {
-                currentWarnColor= Color.yellow;
-                StartCoroutine(VelocityWarnCoroutine());
-            }
-        }
-        if(Rigidbody.velocity.y<-9)
-        {
-            currentWarnColor = Color.red;
-        }
-        #endregion
-
-        #region |||>>> FUEL CONTROL <<<|||
-
-        remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
-
-        //indicatore fuel vecchio
-        //fuelMeter.text = $"FUEL {(int)remainingFuel}";
-        //fuelSlider.value = remainingFuel / maxFuel;
-
-        //Setta livello fuel del serbatoio nuovo
-        //FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
-        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel,.1f) /*(1 - remainingFuel / maxFuel) * 1f)*/;
-
-        if (remainingFuel<1)
-        {   Invoke("DestroyTrail", 0.2f);
-            Invoke("StopSFXplaying", 0.1f);
-        
-        }
-
-        //FUEL WARNS
-        if (remainingFuel > maxFuel/2)
-        {
-            if (halfFuel)
-            { halfFuel = false; }
-            FuelCircleProgression.color = fullFuelColor;
-        }
-
-        if (remainingFuel<=maxFuel/2&&remainingFuel>maxFuel/4)
-        {
-            if (!halfFuel)
-            {
-                currentFuelWarnColor = Color.yellow;
-                StartCoroutine(FuelWarnCoroutine());
-            }
-        }
-        if (remainingFuel < maxFuel/4)
-        {
-            currentFuelWarnColor = Color.red;
-        }
-
-        //FUEL CHEATS
-        if (Input.GetKey(KeyCode.F))
-        { remainingFuel = 100000000; Debug.Log("FUEL " + remainingFuel); }
-
-        if(secretNumber==666)
-        { remainingFuel = maxFuel; }
-        #endregion
-
-        //SISTEMO TEXT VITE INGAME..ORA FUNZIA(17/03)
-        #region |||>>> LIFE AND SCORE COUNT <<<|||
-
-        if (livesCount != 0)
-        {
-            if(livesActive ==true&& HC == false)
-             livesText.text = $"LIVES {livesCount}"; 
-        }
-        //else
-        //{ livesText.text = "LIVES 0"; }
-
-        scoreText.text = $"SCORE {platformCount}";
-
-        if (platformCount > oldMaxScore)
-        {
-            SaveHighScore();
-            LoadHighScore();
-            //hiScoreText.text = $"HI-SCORE: {oldMaxScore.ToString()}";
-        }
-        #endregion
-
-
-        #region |||>>> JOYSYICK AXIS ORIENTATION <<<|||
+        #region ||>> JOYSYICK AXIS ORIENTATION <<||
 
         //Y AXIS
         if (joystickYaxisInverted)
@@ -742,67 +635,83 @@ public class PlayerController : MonoBehaviour
 
         #region |||>>> JOYSTICK MOVEMENT <<<|||
 
-        if (joystickControl&&remainingFuel>0)
+        if (joystickControl)
         {
-            //MOVEMENT EFFECTS
-            if (joystickYaxisCondition || joystick.Horizontal != 0)
-                //playerState=inAir;
-            { 
-                Trail.SetActive(true);
-                gameObject.transform.GetChild(2).gameObject.SetActive(true);
+            if (remainingFuel > 0 && isAlive)
+            {
+                //MOVEMENT EFFECTS
+                if (joystickYaxisCondition || joystick.Horizontal != 0)
+                {
+                    Trail.SetActive(true);
+                    //activate particleFX: cambia uso di Getchild
+                    gameObject.transform.GetChild(3).gameObject.SetActive(true);
+                }
+                else
+                {
+                    Invoke("StopJetpackSFXplaying", .05f);
+                    Invoke("DestroyTrail", 0.2f);
+                    Invoke("DestroyParticleFX", 0.3f);
+                }
+
+                #region ||>> VERTICAL MOVEMENT <<||
+
+                if (joystickYaxisCondition /*joystick.Vertical < 0*/)
+                {
+                    //playerState=inAir;
+
+                    //Play Jetpack sound
+                    if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
+                        SFXsoundManager.instance.PlaySound("jetPackProp");
+
+                    PlayerAnimator.SetTrigger("Jump");
+
+                    //move body
+                    Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                    remainingFuel -= fuelPerSecond * Time.deltaTime;
+
+                    //Alternativa Velocity:
+                    //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+
+                    //if (Rigidbody.velocity.y <.3f && nearGround)
+                    //{
+                    //    PlayerAnimator = GetComponent<Animator>();
+                    //    string animationName = "playerAnimation_JUMP";
+                    //    PlayerAnimator.Play(animationName);
+                    //}
+                }
+                else
+                { }
+                #endregion
+
+                #region ||>> HORIZONTAL MOVEMENT <<||
+
+                if (joystick.Horizontal != 0)
+                {
+
+                    if (joystickXaxisCondition/*posizFacing > 0*/)
+                    {
+                        transform.localScale = leftFacingVector;
+                        Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionLeftSprite);
+
+                        //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
+                        //ChangeAnimationRight();
+                    }
+                    if (!joystickXaxisCondition/*posizFacing < 0*/)
+                    {
+                        transform.localScale = rightFacingVector;
+                        Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionRightSprite);
+                    }
+                }
+                #endregion
+
             }
             else
             {
-                Invoke("StopSFXplaying",.1f);
-                //SFXsoundManager.instance.sfxSourceJetpack.Stop();
-
-                Invoke( "DestroyTrail", 0.2f);
-                Invoke("DestroyParticleFX", 0.5f);
-            }
-
-            //VERTICAL MOVEMENT
-            if (joystickYaxisCondition /*joystick.Vertical < 0*/)
-            {
-                if(SFXsoundManager.instance.sfxSourceJetpack.isPlaying==false)
-                SFXsoundManager.instance.PlaySound("jetPackProp");
-
-                PlayerAnimator.SetTrigger("Jump");
-
-                Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
-                remainingFuel -= fuelPerSecond*Time.deltaTime;
-
-                //Alternativa Velocity:
-                //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
-
-                //if (Rigidbody.velocity.y == .3f && nearGround)
-                //{
-                //    PlayerAnimator = GetComponent<Animator>();
-                //    string animationName = "playerAnimation_JUMP";
-                //    PlayerAnimator.Play(animationName);
-                //}
-            }
-            else 
-            {  }
-
-            //HORIZONTAL MOVEMENT
-            if (joystick.Horizontal != 0)
-            {
-
-                if (joystickXaxisCondition/*posizFacing > 0*/)
-                {
-                    transform.localScale= leftFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionLeftSprite);
-
-                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                    //ChangeAnimationRight();
-                }
-                if (!joystickXaxisCondition/*posizFacing < 0*/)
-                {
-                    transform.localScale= rightFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionRightSprite);
-                }
+                Invoke("StopJetpackSFXplaying", .05f);
+                Invoke("DestroyTrail", 0.2f);
+                Invoke("DestroyParticleFX", 0.3f);
             }
         }
         else
@@ -810,7 +719,7 @@ public class PlayerController : MonoBehaviour
 
         //if (isOnGround)
         //{
-        //    rb.drag = drag;
+        //    rigidbody.drag = drag;
         //}
         #region old xAxis
         //if (joystickXaxisInverted)
@@ -855,7 +764,95 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-        #region |||>>> DEATH BELOW LAST PLAT <<<|||
+        #region ||>> HIGH VELOCITY WARNINGS <<||
+
+        if(Rigidbody.velocity.y>-7)
+        {
+            //spriteRenderer.DOColor(colorCharacter, .05f);
+            if (isFalling)
+            { isFalling = false; }
+            spriteRenderer.color = colorCharacter;
+        }
+
+        if (Rigidbody.velocity.y <= -7.5f&&Rigidbody.velocity.y>-9)
+        {
+            //GetComponent<MeshRenderer>().material = myHitTakenMaterial;
+            //Invoke("SetNormalMaterial", 0.25f);
+            if (!isFalling)
+            {
+                currentWarnColor= Color.yellow;
+                StartCoroutine(VelocityWarnCoroutine());
+            }
+        }
+        if(Rigidbody.velocity.y<-9)
+        {
+            currentWarnColor = Color.red;
+        }
+        #endregion
+
+        #region ||>> FUEL CONTROL <<||
+
+        remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
+
+        //Setta livello fuel del serbatoio nuovo
+        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel,.05f /*(1 - remainingFuel / maxFuel)*/) ;
+        //FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
+
+        //FUEL WARNS
+        if (remainingFuel > maxFuel/2)
+        {
+            if (halfFuel)
+            { halfFuel = false; }
+            FuelCircleProgression.color = fullFuelColor;
+        }
+
+        if (remainingFuel<=maxFuel/2&&remainingFuel>maxFuel/4)
+        {
+            if (!halfFuel)
+            {
+                currentFuelWarnColor = Color.yellow;
+                StartCoroutine(FuelWarnCoroutine());
+            }
+        }
+        if (remainingFuel < maxFuel/4)
+        {
+            currentFuelWarnColor = Color.red;
+        }
+
+        //FUEL CHEATS
+        if (Input.GetKey(KeyCode.F))
+        { remainingFuel = 100000000; Debug.Log("FUEL " + remainingFuel); }
+
+        if(secretNumber==666)
+        { remainingFuel = maxFuel; }
+
+        //indicatore fuel vecchio
+        //fuelMeter.text = $"FUEL {(int)remainingFuel}";
+        //fuelSlider.value = remainingFuel / maxFuel;
+        #endregion
+
+        #region ||>> LIFE AND SCORE COUNT <<||
+
+        ///FIX TEXT VITE INGAME..ORA FUNZIA(17/03)
+        if (livesCount != 0)
+        {
+            if(livesActive ==true&& HC == false)
+             livesText.text = $"LIVES {livesCount}"; 
+        }
+        //else
+        //{ livesText.text = "LIVES 0"; }
+
+        scoreText.text = $"SCORE {platformCount}";
+
+        if (platformCount > oldMaxScore)
+        {
+            SaveHighScore();
+            LoadHighScore();
+            //hiScoreText.text = $"HI-SCORE: {oldMaxScore.ToString()}";
+        }
+        #endregion
+
+        #region ||>> DEATH BELOW LAST PLAT <<||
 
         if (transform.position.y < yMinReachable - 5f && isAlive /*WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA*/)
         {
@@ -873,6 +870,11 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    #endregion
+
+    /// <summary>
+    /// TO FIX AND UPDATE: KEYBOARD MOVEMENT
+    /// </summary>
     void FixedUpdate()
     {
         #region |||>>> KEYBOARD MOVEMENT <<<|||
@@ -1036,6 +1038,11 @@ public class PlayerController : MonoBehaviour
         //}
         #endregion
     }
+
+    //void OnBecameInvisible()
+    //{
+    //    Destroy(gameObject);
+    //}
 
     #region >> syntax info: getting child/parents <<
 

@@ -6,34 +6,86 @@ using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using TMPro;
 using DG.Tweening;
+using UnityEngine.Events;
 
 public class GameMenu : MonoBehaviour
 {
-    public Slider ingameVolumeSlider;
-    public TMP_Text ingameVolumeSliderText;
-    public Image sliderFiller;
-    public Slider ingameSFXVolumeSlider;
-    public TMP_Text ingameSFXVolumeSliderText;
-    public Image SFXsliderFiller;
-    public GameObject pauseMenuUI;
-    public Animator pauseMenuAnimator;
-    public bool GameIsPaused = false;
-
-    public Button backToGameButton;
+    #region VARIABLES
 
     public static GameMenu instance;
 
+    //INGAME MUSIC VOLUME SLIDER
+    public Slider ingameVolumeSlider;
+    public TMP_Text ingameVolumeSliderText;
+    public Image sliderFiller;
+
+    //INGAME SFX VOLUME SLIDER
+    public Slider ingameSFXVolumeSlider;
+    public TMP_Text ingameSFXVolumeSliderText;
+    public Image SFXsliderFiller;
+
+    //INGAME BUTTONS
+    public Button backToGameButton;
+    public Button GameMusicButton;
+
+    //CONTROL VARIABLES
+    public bool GameIsPaused = false;
+    public bool MusicAudioON;
+    //public static bool AudioON2;
+
+    //public GameObject pauseMenuUI;
+    //public Animator pauseMenuAnimator;
+    #endregion
+
+    #region INIT
+
     private void Awake()
     {
+        MusicAudioON=SoundManager.instance.inGameMusicAudioON;
         instance=this;
     }
+
+    void Start()
+    {
+        SoundManager.MusicSource.Stop();
+
+        if (MusicAudioON)
+        {
+            SoundManager.instance.PlaySound("inGame_OST");
+            GameMusicButton.image.color = Color.green;
+        }
+        else
+            GameMusicButton.image.color = Color.red;
+
+        if (ingameVolumeSlider == null) 
+            return;
+
+        ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
+        ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
+        ///
+        ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+        ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
+
+        ingameSFXVolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
+        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
+        //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
+    }
+    #endregion
+
+    #region <BUTTON INTERACTIONS>
 
     #region PAUSE-RESUME FUNCTIONS
 
     public void CheckPause()
     {
+        SFXsoundManager.instance.PlaySound("backClick");
         if (GameIsPaused)
-        { Resume(); }
+        {
+            ///TO FIX
+            //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
+            //Invoke("Resume", 0.5f);
+            Resume();
+        }
         else
         {
             Pause();
@@ -47,17 +99,18 @@ public class GameMenu : MonoBehaviour
 
         Time.timeScale = 0f;
         PlayerController.joystickControl = false;
-        //SoundManager.AudioSrc.volume =.5f;
-        //SoundManager.BackgroundAudio.volume = .5f;
         GameIsPaused=true;  
+        //SoundManager.AudioSrc.volume =.5f;
     }
     public void Resume()
     {
         //pauseMenuUI.SetActive(false);
+        //pauseMenuAnimator.enabled = false;
+
         Time.timeScale = 1f;
         PlayerController.joystickControl=true;
         GameIsPaused = false;
-        //pauseMenuAnimator.enabled = false;
+        //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
 
     }
     #endregion
@@ -66,32 +119,32 @@ public class GameMenu : MonoBehaviour
 
     public void BackToMain()
     {
-        // Handle screen touches.
-        if (Input.touchCount > 0)
-        {
-
-            Touch touch = Input.GetTouch(0);
-            //backToGameButton.image
-
-            if (touch.phase == TouchPhase.Began)
-            {
-                // Halve the size of the cube.
-                backToGameButton.transform.DOScale(Vector3.one * 5f, .15f).SetEase(Ease.InBounce);
-
-                //transform.localScale = new Vector3(0.75f, 0.75f, 0.75f);
-            }
-
-            if (touch.phase == TouchPhase.Ended)
-            {
-                // Restore the regular size of the cube.
-                //transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-            }
-        }
-
-
-        //get Scenes to play from builder
         Resume();
+        //get Scenes to play from builder
         SceneManager.LoadScene(0/*,parameterers */);
+    }
+    #endregion
+
+    #region AUDIO ON/OFF
+
+    public void AudioONOFF()
+    {
+        if (MusicAudioON)
+        {
+            //MusicSource.enabled = false;
+            MusicAudioON = false;
+            SoundManager.instance.inGameMusicAudioON = false;
+            SoundManager.MusicSource.Stop();
+            GameMusicButton.image.color = Color.red;
+        }
+        else
+        {
+            //MusicSource.enabled = true;
+            MusicAudioON = true;
+            SoundManager.instance.inGameMusicAudioON = true;
+            SoundManager.instance.PlaySound("inGame_OST");
+            GameMusicButton.image.color = Color.green;
+        }
     }
     #endregion
 
@@ -101,25 +154,14 @@ public class GameMenu : MonoBehaviour
     //    Debug.Log("QUIT!");
     //}
 
-    void Start()
-    {
-        SoundManager.instance.PlaySound("inGame_OST");
-
-        if (ingameVolumeSlider == null) 
-            return;
-
-        ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
-        ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
-
-        ingameSFXVolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
-        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
-        //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
-    }
+    #endregion
 
     /// <summary>
-    /// NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
+    /// FIXED: NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
     /// </summary>
-    //UPDATE VOLUME SLIDER IN GAME e SOUNDMANAGER
+
+    #region UPDATE VOLUME SLIDER IN GAME e SOUNDMANAGER
+
     private void UpdateVolumeText(float val)
     {
         if (ingameVolumeSlider == null) return;
@@ -173,9 +215,8 @@ public class GameMenu : MonoBehaviour
         //SFXsoundManager.instance.PlaySound("backClick");
 
     }
+    #endregion
 
     void Update()
-    {
-        
-    }
+    { }
 }

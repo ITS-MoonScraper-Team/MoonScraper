@@ -11,22 +11,23 @@ public class SoundManager : MonoBehaviour
     #region ||>> VARIABLES <<||
 
     public static SoundManager instance;
-    public Button GameAudioButton;
-    public TMP_Text GameAudioText;
-    public static AudioSource MusicSource;
-    //public static AudioClip playerDeathSound, jetpack, landing, mainMenuOST;
-    public static bool AudioON;
 
+    //MUSIC AUDIO SOURCES
+    public static AudioSource MusicSource;
+
+    //MUSIC VOLUME VARIABLES
     private int volumeToSlider;
     public int VolumeToSlider { get; set; }
 
     private float volumeLvl;
     public float VolumeLvl { get; set; }
 
-   
+    //INGAME MUSIC CONTROL
+    public bool inGameMusicAudioON;
 
     //AUDIO CLIPS
-    [SerializeField] private AudioClip menuClip, gameClip/*, playerDeathClip,okClick, backClick, jetpackPropulsion*/;
+    [SerializeField] private AudioClip menuClip, gameClip;
+    //public static AudioClip gameClip, menuClip;
 
     #endregion
 
@@ -40,6 +41,11 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
+            ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
+            ///
+            //volumeToSlider = 100;
+            //volumeLvl = 1f;
+            inGameMusicAudioON = true;
             instance = this;
             DontDestroyOnLoad(this);
         }
@@ -53,14 +59,7 @@ public class SoundManager : MonoBehaviour
         //mainMenuOST = Resources.Load<AudioClip>("mainMenu_OST");
         //AudioSrc.enabled = true;
 
-        AudioON = true;
-
         MusicSource = GetComponent<AudioSource>();
-        if (GameAudioButton != null)
-        {
-            GameAudioText.text = "audio ON";
-            GameAudioButton.image.color = Color.green;
-        }
     }
     #endregion
 
@@ -86,8 +85,7 @@ public class SoundManager : MonoBehaviour
 
     public void UpdateVolume(float value)
     {
-
-        //prende valore dallo slider e aggiorna la variabile che passa tra le scene
+        //Prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
         //volume che appare sullo slider
         VolumeToSlider = (int)value;
@@ -99,29 +97,6 @@ public class SoundManager : MonoBehaviour
         SFXsoundManager.instance.PlaySound("backClick");
     }
    
-    #endregion
-
-    #region ||>> AUDIO BUTTON ON/OFF <<||
-
-    public void AudioONOFF()
-    {
-        if (AudioON)
-        {
-            //MusicSource.enabled = false;
-            AudioON = false;
-            MusicSource.Stop();
-            //GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
-            GameAudioButton.GetComponent<Image>().color = Color.red;
-        }
-        else
-        {
-            //MusicSource.enabled = true;
-            AudioON = true;
-            MusicSource.Play();
-            //GameAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-            GameAudioButton.GetComponent<Image>().color = Color.green;
-        }
-    }
     #endregion
 
     #region ||>> SAVE/LOAD VOLUME SETTINGS <<||
@@ -155,27 +130,4 @@ public class SoundManager : MonoBehaviour
     {
         
     }
-
-    //public void MenuAudioONOFF()
-    //{
-    //    if (MenuAudioON)
-    //    {
-    //        MenuAudioON = false;
-    //        //AudioText.text = "audio OFF";
-    //        BackgroundAudio.Stop();
-    //        AudioSrc.enabled = false;
-    //        MenuAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
-    //        MenuAudioButton.GetComponent<Image>().color = Color.red;
-    //    }
-    //    else
-    //    {
-    //        MenuAudioON = true;
-    //        BackgroundAudio.Play();
-    //        AudioSrc.enabled = true;
-    //        MenuAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-    //        MenuAudioButton.GetComponent<Image>().color = Color.green;
-
-    //    }
-    //}
-
 }

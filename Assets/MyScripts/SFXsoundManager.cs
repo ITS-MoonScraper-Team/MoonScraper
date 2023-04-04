@@ -12,14 +12,12 @@ public class SFXsoundManager : MonoBehaviour
     #region |> VARIABLES <|
 
     public static SFXsoundManager instance;
-    public Button GameSFXAudioButton;
-    //public Button MenuAudioButton;
-    public TMP_Text GameSFXAudioText;
+
+    //SFX AUDIO SOURCES
     public static AudioSource sfxSource1;
     public AudioSource sfxSourceJetpack;
-    public static bool AudioON;
-    //public static bool MenuAudioON;
 
+    //SFX VOLUME VARIABLES
     private int SFXvolumeToSlider;
     public int SFXVolumeToSlider { get; set; }
 
@@ -28,6 +26,12 @@ public class SFXsoundManager : MonoBehaviour
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
+
+    //Future use
+    //public static bool SFXgameAudioON;
+    //public static bool SFXMenuAudioON;
+    //public Button MenuSFXAudioButton;
+    //public Button GameSFXAudioButton;
 
     #endregion
 
@@ -51,14 +55,11 @@ public class SFXsoundManager : MonoBehaviour
     {
         //sfxSourceJetpack = GetComponentInChildren<AudioSource>();
         sfxSource1 = GetComponent<AudioSource>();
-
-        
     }
     #endregion
 
     /// <summary>
-    /// PROBLEMA:
-    /// STOPPA AUDIO DELL'ESPLOSIONE QUANDO STOPPA JETPACK
+    /// FIXED: STOPPA AUDIO DELL'ESPLOSIONE QUANDO STOPPA JETPACK
     /// </summary>
     #region ||>> PLAY SFX SOUNDS <<||
 
@@ -83,6 +84,8 @@ public class SFXsoundManager : MonoBehaviour
     }
     #endregion
 
+    #region SFX VOLUME UPDATE
+
     public void UpdateSFXVolume(float value)
     {
 
@@ -98,6 +101,9 @@ public class SFXsoundManager : MonoBehaviour
 
         PlaySound("backClick");
     }
+    #endregion
+
+    #region SAVE/LOAD SFX VOLUME SETTINGS
 
     public void SavePlayerSettings()
     {
@@ -108,6 +114,7 @@ public class SFXsoundManager : MonoBehaviour
         PlayerPrefs.Save();
         Debug.Log("saved date");
     }
+
     public void LoadPlayerSettings()
     {
         if (PlayerPrefs.HasKey("SFXVolumeToSlider"))
@@ -122,48 +129,11 @@ public class SFXsoundManager : MonoBehaviour
         }
         Debug.Log("loaded data");
     }
+    #endregion
 
     void Update()
     {
 
     }
-    
-    #region |>Future Use<|
-    public void UpdateVolume(float value)
-    {
-
-        ////prende valore dallo slider e aggiorna la variabile che passa tra le scene
-
-        ////volume che appare sullo slider
-        //VolumeSFXToSlider = (int)value;
-
-        ////volume effettivo tra 0 e 1 (float)
-        //VolumeSFXLvl = value / 100f;
-        //MusicSource.volume = VolumeSFXLvl;
-    }
-    public void AudioONOFF()
-    {
-        //if (AudioON)
-        //{
-        //    AudioON = false;
-        //    MusicSource.Stop();
-        //    //AudioSrc.enabled = false;
-        //    //AudioText.text = "audio OFF";
-        //    //GameAudioText.text = "audio OFF";
-        //    GameSFXAudioButton.GetComponentInChildren<TMP_Text>().text = "audio OFF";
-        //    GameSFXAudioButton.GetComponent<Image>().color = Color.red;
-        //}
-        //else
-        //{
-        //    AudioON = true;
-        //    MusicSource.Play();
-        //    //AudioSrc.enabled = true;
-        //    //GameAudioText.text = "audio ON";
-        //    GameSFXAudioButton.GetComponentInChildren<TMP_Text>().text = "audio ON";
-        //    GameSFXAudioButton.GetComponent<Image>().color = Color.green;
-        //}
-    }
-   
-    #endregion
 
 }
