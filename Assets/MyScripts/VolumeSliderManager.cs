@@ -65,6 +65,7 @@ public class VolumeSliderManager : MonoBehaviour
         }
         SoundManager.instance.UpdateVolume(val);
     }
+
     private void UpdateSFXVolumeText(float val)
     {
         //SFXsoundManager.instance.PlaySound("backClick");

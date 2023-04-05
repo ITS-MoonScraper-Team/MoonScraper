@@ -12,13 +12,14 @@ public class MainMenu : MonoBehaviour
 {
     public static MainMenu InstanceMenu;
 
+    public Button playButton;
     public Animator menuAnimator;
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
     public TMP_Text lifeMeterTXT;
     public Material titleMat;
     public bool menuAudioON;
-    public bool easyMode = false;
+    public static bool easyMode = false;
     //public Slider LivesSlider;
     //public float volumeLvl;
     //public int volumeIntLvl;
@@ -48,7 +49,8 @@ public class MainMenu : MonoBehaviour
     {
         //Screen.SetResolution(1080, 1920, true);
         SoundManager.instance.PlaySound("mainMenu_OST");
-        StartCoroutine(LightAngleVariationCoroutine());
+        //StartCoroutine(LightAngleVariationCoroutine());
+        //StartCoroutine(ColorChangeCoroutine());
     }
 
     #region <<<GAME BUTTON FUNCTIONS>>>
@@ -73,7 +75,7 @@ public class MainMenu : MonoBehaviour
     }
     #endregion
 
-    #region <<<BUOTTON SFX PLAY FUNCTIONS>>>
+    #region <<<BUTTON SFX PLAY FUNCTIONS>>>
 
     public void PlayOptionsButtonSound()
     {
@@ -86,7 +88,7 @@ public class MainMenu : MonoBehaviour
     #endregion
 
     /// <fix>
-    ///suona anche allo start..BOH!!
+    ///suona anche allo start!!
     /// </fix>
     #region <<<AXIS TOGGLES>>> 
 
@@ -157,6 +159,13 @@ public class MainMenu : MonoBehaviour
     #endregion
 
     #region <<Title Effects Coroutine>>
+
+    private void OnEnable()
+    {
+        StartCoroutine(ColorChangeCoroutine());
+        StartCoroutine(LightAngleVariationCoroutine());
+    }
+
     IEnumerator LightAngleVariationCoroutine()
     {
         while (true)
@@ -170,8 +179,25 @@ public class MainMenu : MonoBehaviour
             titleMat.DOFloat(5.2f, "_LightAngle", .6f);
             yield return new WaitForSeconds(.2f);
         }
-
         //lightAngleLooping = false;
+    }
+
+    private IEnumerator ColorChangeCoroutine()
+    {
+        while (true)
+        {
+            playButton.image.DOColor(new Color(0.85f, 0.7f, 0.7f), .75f);
+            yield return new WaitForSeconds(.2f);
+            playButton.image.DOColor(Color.white, .45f);
+            yield return new WaitForSeconds(.2f);
+            playButton.image.DOColor(new Color(0.85f, 0.7f, 0.7f), .45f);
+            yield return new WaitForSeconds(.2f);
+            playButton.image.DOColor(Color.white, 1.15f);
+            yield return new WaitForSeconds(.8f);
+
+            //myMaterial.DOColor(Color.red, waitTime);
+            //yield return new WaitForSeconds(.5f);
+        }
     }
     #endregion
 
@@ -191,10 +217,6 @@ public class MainMenu : MonoBehaviour
         }
         Debug.LogWarning($"LIGHT ANGLE {shaderz[6]}");
 
-        //prende valore dallo slider e assegna alla variabile che aggiorna in game
-        /// LivesMax = (int)LivesSliderManager.instance.livesSlider.value;
-        /// volumeLvl = VolumeSliderManager.instance.volumeSlider.value / 100f;
-        /// volumeIntLvl = (int)VolumeSliderManager.instance.volumeSlider.value;
         #endregion
     }
 }

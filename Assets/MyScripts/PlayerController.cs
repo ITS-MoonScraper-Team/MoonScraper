@@ -25,33 +25,6 @@ public class PlayerController : MonoBehaviour
     Color colorCharacter;
     #endregion
 
-    #region ||> PUBLIC OBJECTS <<||
-
-    public GameObject Player;
-    public GameObject Trail;
-    public Camera mainCamera;
-    public FixedJoystick joystick;
-    public FloatingJoystick joyFloat;
-    public Sprite[] spriteArray;
-    public Slider fuelSlider;
-    public Button buttonRestart;
-    public TMP_Text fuelMeter;
-    public TMP_Text scoreText;
-    public TMP_Text GameOverText;
-    public TMP_Text livesText;
-    public TMP_Text deadText;
-    public TMP_Text outOfFuelText;
-    public TMP_Text hiScoreText;
-    public GameObject ExplosionTemplate;
-    public Image FuelCircleProgression;
-    public Animator PlayerAnimator;
-    //public Slider maxLivesSlider;
-    //public TrailRenderer trailRenderer;
-    //public GameObject playerIdleLeft;
-    //public GameObject playerIdleRight;
-
-    #endregion
-
     #region ||> INTERFACE VARIABLES <<||
 
     [Header("FORCE LEVELS")] //BALANCE per piattaf distanti 11: jetForce=25, fromLeftRight=13
@@ -73,9 +46,37 @@ public class PlayerController : MonoBehaviour
     [Header("OTHER")]
     [Tooltip("The secret number is,\nthe number of the beast")]
     public float deathFallingSpeed = 9.0f;
-    public int secretNumber;
-    public bool mushroomJumper = false;
     public int mushSpringForce = 500;
+    public static int secretNumber=0;
+    public static bool mushroomJumper = false;
+
+    #endregion
+
+    #region ||> PUBLIC OBJECTS <<||
+
+    [Header("GAME OBJECTS")]
+    public GameObject Player;
+    public GameObject Trail;
+    public Camera mainCamera;
+    public FixedJoystick joystick;
+    public FloatingJoystick joyFloat;
+    public Sprite[] spriteArray;
+    //public Slider fuelSlider;
+    public Button buttonRestart;
+    //public TMP_Text fuelMeter;
+    public TMP_Text scoreText;
+    public TMP_Text GameOverText;
+    public TMP_Text livesText;
+    public TMP_Text deadText;
+    public TMP_Text outOfFuelText;
+    public TMP_Text hiScoreText;
+    public GameObject ExplosionTemplate;
+    public Image FuelCircleProgression;
+    public Animator PlayerAnimator;
+    //public Slider maxLivesSlider;
+    //public TrailRenderer trailRenderer;
+    //public GameObject playerIdleLeft;
+    //public GameObject playerIdleRight;
 
     #endregion
 
@@ -165,7 +166,7 @@ public class PlayerController : MonoBehaviour
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         //if (MainMenu.InstanceMenu != null)
-        livesMax = MainMenu.InstanceMenu.LivesMax;
+        livesMax = MainMenu.InstanceMenu ? MainMenu.InstanceMenu.LivesMax:11;
         livesCount = livesMax;
         
         //SPRITE DIRECTION
@@ -194,12 +195,11 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        //MUSHROOM JUMPER ò_ò
-        if (mushroomJumper)
-        {
-            WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
-            WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
-        }
+        ////MUSHROOM JUMPER ò_ò
+        //if (mushroomJumper)
+        //{
+        //    ActivateJumper();
+        //}
 
     }
     #endregion
@@ -244,26 +244,32 @@ public class PlayerController : MonoBehaviour
         //(TO ACTIVATE: attiva bool mushroomJumper che attiva polygon collider del fungo e collider del jumper sul prefab)
         if (collision.gameObject.layer == 9)
         {
-            Rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse);
+            //fine benza
+            if (remainingFuel < 1)
+            {
+                isAlive = false;
+                deathMessage = Index.OUT_OF_FUEL;
+                Invoke(DeathLogic(), deathTimeDuration);
+            }
+            else
+            { Rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
         }
 
         //wall collision
         if (collision.gameObject.layer == 3)
         {
-            if (MainMenu.InstanceMenu.easyMode == false||(MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f))
+            
+            if (MainMenu.easyMode==false || Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
+            //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
             {
-                //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
-                {
-                    isAlive = false;
-                    deathMessage = Index.DEAD;
-                    Invoke(DeathLogic(), deathTimeDuration);
-                }
+                isAlive = false;
+                deathMessage = Index.DEAD;
+                Invoke(DeathLogic(), deathTimeDuration);
             }
             else
-            {
-                //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
+            { }
+            //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
 
-            }
         }
         
         //PLATFORM COLLISION
@@ -365,12 +371,13 @@ public class PlayerController : MonoBehaviour
 
         //Disattiva player
         gameObject.SetActive(false);
-        if(SFXsoundManager.instance.sfxSourceJetpack.isPlaying==true)
+        if(SFXsoundManager.instance?.sfxSourceJetpack.isPlaying==true)
         Invoke("StopSFXplaying", 0.05f);
 
         //Sound e graphic FX MORTE
-        //if(SoundManager.MusicAudioON)
+        if(SoundManager.instance)
         SFXsoundManager.instance.PlaySound("playerDeath");
+
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
         Destroy(explosion, .4f);
@@ -499,23 +506,28 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region ||>> TRAIL AND PARTICOLE DESTROY <<||
+    #region ||>> KILL JETPACK EFFECTS (trail, particle, sound) <<||
+
+    private void KillJetpackEffects()
+    {
+        Invoke("StopJetpackSFXplaying", .05f);
+        Invoke("DestroyTrail", 0.2f);
+        Invoke("DestroyParticleFX", 0.5f);
+    }
 
     private void DestroyTrail()
     {
         Trail.SetActive(false);
     }
+
     private void DestroyParticleFX()
     {
         gameObject.transform.GetChild(3).gameObject.SetActive(false);
     }
-    #endregion
-
-    #region ||>> STOP PLAYING MUSIC <<||
 
     private void StopJetpackSFXplaying()
     {
-        SFXsoundManager.instance.sfxSourceJetpack.Stop();
+        SFXsoundManager.instance?.sfxSourceJetpack.Stop();
     }
     #endregion
 
@@ -568,6 +580,20 @@ public class PlayerController : MonoBehaviour
     //    yield return new WaitForSeconds(.05f);
     //    spriteRenderer.DOColor(colorCharacter, .05f);
     //}
+    #endregion
+
+    #region |> ACTIVATE-DEACTIVATE MUSHROOM JUMPER <|
+
+    private void ActivateJumper()
+    {
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
+    }
+    private void DeactivateJumper()
+    {
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+    }
     #endregion
 
     #region ||>> SAVE HIGH SCORE <<||
@@ -648,9 +674,7 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
-                    Invoke("StopJetpackSFXplaying", .05f);
-                    Invoke("DestroyTrail", 0.2f);
-                    Invoke("DestroyParticleFX", 0.3f);
+                    KillJetpackEffects();
                 }
 
                 #region ||>> VERTICAL MOVEMENT <<||
@@ -660,8 +684,9 @@ public class PlayerController : MonoBehaviour
                     //playerState=inAir;
 
                     //Play Jetpack sound
-                    if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
-                        SFXsoundManager.instance.PlaySound("jetPackProp");
+                    if (SFXsoundManager.instance)
+                        if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
+                            SFXsoundManager.instance.PlaySound("jetPackProp");
 
                     PlayerAnimator.SetTrigger("Jump");
 
@@ -709,9 +734,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                Invoke("StopJetpackSFXplaying", .05f);
-                Invoke("DestroyTrail", 0.2f);
-                Invoke("DestroyParticleFX", 0.3f);
+                KillJetpackEffects();
             }
         }
         else
@@ -862,15 +885,26 @@ public class PlayerController : MonoBehaviour
             isAlive = false;
             deathMessage = Index.DEAD;
             Invoke(DeathLogic(), deathTimeDuration/*/2*/);
-
         }
         else
         { }
         #endregion
 
+        #region |> MUSHROOM JUMPER ò_ò <|
+        //MUSHROOM JUMPER ò_ò
+        if (mushroomJumper)
+        {
+            ActivateJumper();
+        }
+        else
+        {
+            DeactivateJumper();
+        }
+        #endregion
     }
 
     #endregion
+
 
     /// <summary>
     /// TO FIX AND UPDATE: KEYBOARD MOVEMENT

@@ -24,6 +24,7 @@ public class SoundManager : MonoBehaviour
 
     //INGAME MUSIC CONTROL
     public bool inGameMusicAudioON;
+    //public int volSlider = 100;
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip menuClip, gameClip;

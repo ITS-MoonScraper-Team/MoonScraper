@@ -41,12 +41,17 @@ public class GameMenu : MonoBehaviour
 
     private void Awake()
     {
-        MusicAudioON=SoundManager.instance.inGameMusicAudioON;
+        if (SoundManager.instance)
+            MusicAudioON = SoundManager.instance.inGameMusicAudioON;
+        //else
+        //    MusicAudioON = true;
+
         instance=this;
     }
 
     void Start()
     {
+        if(SoundManager.MusicSource)
         SoundManager.MusicSource.Stop();
 
         if (MusicAudioON)

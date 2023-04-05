@@ -8,7 +8,6 @@ using UnityEngine.SceneManagement;
 
 public class SFXsoundManager : MonoBehaviour
 {
-
     #region |> VARIABLES <|
 
     public static SFXsoundManager instance;
@@ -135,5 +134,4 @@ public class SFXsoundManager : MonoBehaviour
     {
 
     }
-
 }
