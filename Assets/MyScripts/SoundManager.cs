@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 public class SoundManager : MonoBehaviour
 {
-    #region ||>> VARIABLES <<||
+    #region <VARIABLES>
 
     public static SoundManager instance;
 
@@ -32,7 +32,7 @@ public class SoundManager : MonoBehaviour
 
     #endregion
 
-    #region ||>> INIT <<||
+    #region <INIT>
 
     void Awake()
     {
@@ -64,7 +64,7 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region ||>> PLAY MUSIC SOUNDS <<||
+    #region <PLAY MUSIC SOUNDS>
 
     public void PlaySound(string clip)
     {
@@ -82,7 +82,7 @@ public class SoundManager : MonoBehaviour
     }
     #endregion
 
-    #region ||>> UPDATE VOLUME SLIDER <<||
+    #region <MUSIC VOLUME UPDATE>
 
     public void UpdateVolume(float value)
     {
@@ -90,7 +90,6 @@ public class SoundManager : MonoBehaviour
 
         //volume che appare sullo slider
         VolumeToSlider = (int)value;
-
         //volume effettivo tra 0 e 1 (float)
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
@@ -100,7 +99,7 @@ public class SoundManager : MonoBehaviour
    
     #endregion
 
-    #region ||>> SAVE/LOAD VOLUME SETTINGS <<||
+    #region <SAVE/LOAD VOLUME SETTINGS>
 
     public void SavePlayerSettings()
     {

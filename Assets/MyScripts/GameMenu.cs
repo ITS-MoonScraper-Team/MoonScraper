@@ -10,7 +10,7 @@ using UnityEngine.Events;
 
 public class GameMenu : MonoBehaviour
 {
-    #region VARIABLES
+    #region <VARIABLES>
 
     public static GameMenu instance;
 
@@ -37,7 +37,7 @@ public class GameMenu : MonoBehaviour
     //public Animator pauseMenuAnimator;
     #endregion
 
-    #region INIT
+    #region <INIT>
 
     private void Awake()
     {
@@ -68,18 +68,18 @@ public class GameMenu : MonoBehaviour
         ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
         ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
         ///
-        ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
+        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
         ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
 
-        ingameSFXVolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
+        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
         ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
     #endregion
 
-    #region <BUTTON INTERACTIONS>
+    #region <<BUTTON INTERACTIONS>>
 
-    #region PAUSE-RESUME FUNCTIONS
+    #region <PAUSE-RESUME FUNCTIONS>
 
     public void CheckPause()
     {
@@ -120,7 +120,7 @@ public class GameMenu : MonoBehaviour
     }
     #endregion
 
-    #region BACK TO MAIN
+    #region <BACK TO MAIN>
 
     public void BackToMain()
     {
@@ -130,7 +130,7 @@ public class GameMenu : MonoBehaviour
     }
     #endregion
 
-    #region AUDIO ON/OFF
+    #region <AUDIO ON/OFF>
 
     public void AudioONOFF()
     {
@@ -158,67 +158,45 @@ public class GameMenu : MonoBehaviour
     //    Application.Quit();
     //    Debug.Log("QUIT!");
     //}
-
     #endregion
 
-    /// <summary>
+    #region <VOLUME SLIDERS UPDATES>
+
     /// FIXED: NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
-    /// </summary>
 
-    #region UPDATE VOLUME SLIDER IN GAME e SOUNDMANAGER
-
-    private void UpdateVolumeText(float val)
+    private void MusicVolumeSliderUpdate(float val)
     {
-        if (ingameVolumeSlider == null) return;
-        if (ingameVolumeSlider.value == 0)
-        {
-            ingameVolumeSliderText.text = "OFF";
-            ingameVolumeSliderText.color = Color.white;
-
-            sliderFiller.color = Color.white;
-        }
-        else if (ingameVolumeSlider.value == 100)
-        {
-            ingameVolumeSliderText.text = "MAX";
-            ingameVolumeSliderText.color = Color.red;
-            sliderFiller.color = Color.red;
-        }
-        else
-        {
-            ingameVolumeSliderText.text = ingameVolumeSlider.value.ToString();
-            ingameVolumeSliderText.color = Color.yellow;
-            sliderFiller.color = Color.yellow;
-        }
         SoundManager.instance.UpdateVolume(val);
-        //SFXsoundManager.instance.PlaySound("backClick");
-
+        UpdateSliderText(val, ingameVolumeSlider, sliderFiller);
     }
-
-    private void UpdateSFXVolumeText(float val)
+    private void SFXVolumeSliderUpdate(float val)
     {
-        if (ingameSFXVolumeSlider == null) return;
-        if (ingameSFXVolumeSlider.value == 0)
-        {
-            ingameSFXVolumeSliderText.text = "OFF";
-            ingameSFXVolumeSliderText.color = Color.white;
+        SFXsoundManager.instance.UpdateSFXVolume(val);
+        UpdateSliderText(val, ingameSFXVolumeSlider, SFXsliderFiller);
+    }
+    private void UpdateSliderText(float val, Slider slide, Image fill)
+    {
+        if (slide == null) return;
 
-            SFXsliderFiller.color = Color.white;
-        }
-        else if (ingameSFXVolumeSlider.value == 100)
+        if (slide.value == 0)
         {
-            ingameSFXVolumeSliderText.text = "MAX";
-            ingameSFXVolumeSliderText.color = Color.red;
-            SFXsliderFiller.color = Color.red;
+            slide.GetComponentInChildren<TMP_Text>().text = "OFF";
+            //volumeSliderTxt.fontSize = 60;
+            slide.GetComponentInChildren<TMP_Text>().color = Color.white;
+            fill.color = Color.white;
+        }
+        else if (slide.value == 100)
+        {
+            slide.GetComponentInChildren<TMP_Text>().text = "MAX";
+            slide.GetComponentInChildren<TMP_Text>().color = Color.red;
+            fill.color = Color.red;
         }
         else
         {
-            ingameSFXVolumeSliderText.text = ingameSFXVolumeSlider.value.ToString();
-            ingameSFXVolumeSliderText.color = Color.yellow;
-            SFXsliderFiller.color = Color.yellow;
+            slide.GetComponentInChildren<TMP_Text>().text = slide.value.ToString();
+            slide.GetComponentInChildren<TMP_Text>().color = Color.yellow;
+            fill.color = Color.yellow;
         }
-        SFXsoundManager.instance.UpdateSFXVolume(val);
-        //SFXsoundManager.instance.PlaySound("backClick");
-
     }
     #endregion
 

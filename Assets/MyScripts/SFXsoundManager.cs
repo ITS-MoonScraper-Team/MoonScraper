@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement;
 
 public class SFXsoundManager : MonoBehaviour
 {
-    #region |> VARIABLES <|
+    #region <VARIABLES>
 
     public static SFXsoundManager instance;
 
@@ -34,7 +34,7 @@ public class SFXsoundManager : MonoBehaviour
 
     #endregion
 
-    #region ||>> INIT <<||
+    #region <INIT>
 
     void Awake()
     {
@@ -60,7 +60,7 @@ public class SFXsoundManager : MonoBehaviour
     /// <summary>
     /// FIXED: STOPPA AUDIO DELL'ESPLOSIONE QUANDO STOPPA JETPACK
     /// </summary>
-    #region ||>> PLAY SFX SOUNDS <<||
+    #region <PLAY SFX SOUNDS>
 
     public void PlaySound(string clip)
     {
@@ -83,16 +83,14 @@ public class SFXsoundManager : MonoBehaviour
     }
     #endregion
 
-    #region SFX VOLUME UPDATE
+    #region <SFX VOLUME UPDATE>
 
     public void UpdateSFXVolume(float value)
     {
-
         //prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
         //volume che appare sullo slider
         SFXVolumeToSlider = (int)value;
-
         //volume effettivo tra 0 e 1 (float)
         SFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
@@ -102,7 +100,7 @@ public class SFXsoundManager : MonoBehaviour
     }
     #endregion
 
-    #region SAVE/LOAD SFX VOLUME SETTINGS
+    #region <SAVE/LOAD SFX VOLUME SETTINGS>
 
     public void SavePlayerSettings()
     {

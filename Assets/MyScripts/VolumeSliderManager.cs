@@ -2,93 +2,144 @@ using JetBrains.Annotations;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class VolumeSliderManager : MonoBehaviour
 {
+    #region <VARIABLES>
+
     public static VolumeSliderManager instance;
     
     public Slider volumeSlider;
     public TMP_Text volumeSliderTxt;
     public Image sliderFiller;
-    private Color textStartingColor;
-    private Color sliderStartingColor;
 
     public Slider SFXvolumeSlider;
     public TMP_Text SFXvolumeSliderTxt;
     public Image SFXsliderFiller;
-    private Color SFXtextStartingColor;
-    private Color SFXsliderStartingColor;
+
+    private int firstTimeStart = 0;
+    #endregion
+
+    #region <INIT>
 
     private void Awake()
     {
+        Debug.LogWarning($"preload {firstTimeStart}");
+        LoadPlayerSettings();
+        Debug.LogWarning($"post {firstTimeStart}");
+
         instance = this;
-        textStartingColor = volumeSliderTxt.color;
-        sliderStartingColor = sliderFiller.color;
-        SFXtextStartingColor = SFXvolumeSliderTxt.color;
-        SFXsliderStartingColor = SFXsliderFiller.color;
     }
     void Start()
     {
         ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
-        ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
-        volumeSlider.onValueChanged.AddListener(UpdateVolumeText);
-        SFXvolumeSlider.onValueChanged.AddListener(UpdateSFXVolumeText);
-        volumeSlider.value = SoundManager.instance.VolumeToSlider;
-        SFXvolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
-    }
+        ///FIXED(?): METTE 0 LA PRIMA VOLTA ALL'AVVIO
+        volumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
+        SFXvolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
 
-    private void UpdateVolumeText(float val)
-    {
-        //SFXsoundManager.instance.PlaySound("backClick");
-        if (volumeSlider.value == 0)
+        if (firstTimeStart == 0)
         {
-            volumeSliderTxt.text = "OFF";
-            //volumeSliderTxt.fontSize = 60;
-            volumeSliderTxt.color = Color.white;
-
-            sliderFiller.color = Color.white;
-        }
-        else if (volumeSlider.value == 100)
-        {
-            volumeSliderTxt.text = "MAX";
-            volumeSliderTxt.color = Color.red;
-            sliderFiller.color = Color.red;
+            volumeSlider.value = 100f;
+            SFXvolumeSlider.value = 100f;
+            firstTimeStart++;
         }
         else
         {
-            volumeSliderTxt.text = volumeSlider.value.ToString();
-            volumeSliderTxt.color = Color.yellow;
-            sliderFiller.color = Color.yellow;
+            volumeSlider.value = SoundManager.instance.VolumeToSlider;
+            SFXvolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         }
+
+        SavePlayerSettings();
+    }
+    #endregion
+
+    #region <VOLUME SLIDERS UPDATES>
+
+    private void MusicVolumeSliderUpdate(float val)
+    {
         SoundManager.instance.UpdateVolume(val);
+        UpdateSliderText(val, volumeSlider, sliderFiller);
+    }
+    private void SFXVolumeSliderUpdate(float val)
+    {
+        SFXsoundManager.instance.UpdateSFXVolume(val);
+        UpdateSliderText(val, SFXvolumeSlider, SFXsliderFiller);
     }
 
-    private void UpdateSFXVolumeText(float val)
+    private void UpdateSliderText(float val, Slider slide, Image fill)
     {
-        //SFXsoundManager.instance.PlaySound("backClick");
-        if (SFXvolumeSlider.value == 0)
+        if (slide.value == 0)
         {
-            SFXvolumeSliderTxt.text = "OFF";
+            slide.GetComponentInChildren<TMP_Text>().text = "OFF";
             //volumeSliderTxt.fontSize = 60;
-            SFXvolumeSliderTxt.color = Color.white;
-
-            SFXsliderFiller.color = Color.white;
+            slide.GetComponentInChildren<TMP_Text>().color = Color.white;
+            fill.color = Color.white;
         }
-        else if (SFXvolumeSlider.value == 100)
+        else if (slide.value == 100)
         {
-            SFXvolumeSliderTxt.text = "MAX";
-            SFXvolumeSliderTxt.color = Color.red;
-            SFXsliderFiller.color = Color.red;
+            slide.GetComponentInChildren<TMP_Text>().text = "MAX";
+            slide.GetComponentInChildren<TMP_Text>().color = Color.red;
+            fill.color = Color.red;
         }
         else
         {
-            SFXvolumeSliderTxt.text = SFXvolumeSlider.value.ToString();
-            SFXvolumeSliderTxt.color = Color.yellow;
-            SFXsliderFiller.color = Color.yellow;
+            slide.GetComponentInChildren<TMP_Text>().text = slide.value.ToString();
+            slide.GetComponentInChildren<TMP_Text>().color = Color.yellow;
+            fill.color = Color.yellow;
         }
-        SFXsoundManager.instance.UpdateSFXVolume(val);
     }
+    #endregion
+
+    #region <FIRST START CHECK>
+
+    public void SavePlayerSettings()
+    {
+        int firstTime = firstTimeStart;
+        
+        PlayerPrefs.SetInt("firstTime", firstTime);
+        PlayerPrefs.Save();
+        Debug.Log("saved date");
+    }
+
+    public void LoadPlayerSettings()
+    {
+        if (PlayerPrefs.HasKey("firstTime"))
+        {
+            int firstTime = PlayerPrefs.GetInt("firstTime");
+            firstTimeStart = firstTime;
+        }
+        Debug.Log("loaded data");
+    }
+    #endregion
+
+    private void OnDestroy()
+    {
+    }
+
+    //private void UpdateSFXVolumeText(float val)
+    //{
+    //    if (SFXvolumeSlider.value == 0)
+    //    {
+    //        SFXvolumeSliderTxt.text = "OFF";
+    //        //volumeSliderTxt.fontSize = 60;
+    //        SFXvolumeSliderTxt.color = Color.white;
+    //        SFXsliderFiller.color = Color.white;
+    //    }
+    //    else if (SFXvolumeSlider.value == 100)
+    //    {
+    //        SFXvolumeSliderTxt.text = "MAX";
+    //        SFXvolumeSliderTxt.color = Color.red;
+    //        SFXsliderFiller.color = Color.red;
+    //    }
+    //    else
+    //    {
+    //        SFXvolumeSliderTxt.text = SFXvolumeSlider.value.ToString();
+    //        SFXvolumeSliderTxt.color = Color.yellow;
+    //        SFXsliderFiller.color = Color.yellow;
+    //    }
+    //}
 }

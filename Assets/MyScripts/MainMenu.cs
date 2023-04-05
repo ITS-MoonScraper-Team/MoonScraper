@@ -127,6 +127,7 @@ public class MainMenu : MonoBehaviour
         SavePlayerLivesSettings();
         AxisOrientation.instance.SavePlayerSettings();
         SoundManager.instance.SavePlayerSettings();
+        SFXsoundManager.instance.SavePlayerSettings();
     }
     #endregion
 
