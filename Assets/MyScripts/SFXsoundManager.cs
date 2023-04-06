@@ -95,7 +95,9 @@ public class SFXsoundManager : MonoBehaviour
         SFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
+    }
 
+    public void PlayUpdateSFXSound() {
         PlaySound("backClick");
     }
     #endregion

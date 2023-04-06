@@ -69,9 +69,11 @@ public class GameMenu : MonoBehaviour
         ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
         ///
         ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
+        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
         ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
 
         ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
+        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderSFX);
         ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
@@ -169,10 +171,18 @@ public class GameMenu : MonoBehaviour
         SoundManager.instance.UpdateVolume(val);
         UpdateSliderText(val, ingameVolumeSlider, sliderFiller);
     }
+
+    private void MusicVolumeSliderSFX(float val) {
+        SoundManager.instance.PlayUpdateVolumeSound();
+    }
     private void SFXVolumeSliderUpdate(float val)
     {
         SFXsoundManager.instance.UpdateSFXVolume(val);
         UpdateSliderText(val, ingameSFXVolumeSlider, SFXsliderFiller);
+    }
+    private void SFXVolumeSliderSFX(float val)
+    {
+        SFXsoundManager.instance.PlayUpdateSFXSound();
     }
     private void UpdateSliderText(float val, Slider slide, Image fill)
     {

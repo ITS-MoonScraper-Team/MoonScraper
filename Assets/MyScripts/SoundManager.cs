@@ -94,6 +94,10 @@ public class SoundManager : MonoBehaviour
         VolumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
 
+    }
+
+    public void PlayUpdateVolumeSound()
+    {
         SFXsoundManager.instance.PlaySound("backClick");
     }
    

@@ -36,8 +36,9 @@ public class VolumeSliderManager : MonoBehaviour
     }
     void Start()
     {
-        ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
+        ///FIXED(?): RIPRODUCE RUMORE BACKCLICK ALLO START
         ///FIXED(?): METTE 0 LA PRIMA VOLTA ALL'AVVIO
+
         volumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
         SFXvolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
 
@@ -53,23 +54,41 @@ public class VolumeSliderManager : MonoBehaviour
             SFXvolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         }
 
+        volumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
+        SFXvolumeSlider.onValueChanged.AddListener(SFXVolumeSliderSFX);
+
         SavePlayerSettings();
     }
     #endregion
 
-    #region <VOLUME SLIDERS UPDATES>
+    #region <<VOLUME SLIDERS UPDATES>>
 
+    #region <SET SLIDERS VOLUME>
     private void MusicVolumeSliderUpdate(float val)
     {
         SoundManager.instance.UpdateVolume(val);
         UpdateSliderText(val, volumeSlider, sliderFiller);
     }
+
     private void SFXVolumeSliderUpdate(float val)
     {
         SFXsoundManager.instance.UpdateSFXVolume(val);
         UpdateSliderText(val, SFXvolumeSlider, SFXsliderFiller);
     }
+    #endregion
 
+    #region <PLAY SLIDERS SFX>
+    private void MusicVolumeSliderSFX(float val) {
+        SoundManager.instance.PlayUpdateVolumeSound();
+    }
+
+    private void SFXVolumeSliderSFX(float val)
+    {
+        SFXsoundManager.instance.PlayUpdateSFXSound();
+    }
+    #endregion
+
+    #region <SET SLIDERS TEXT>
     private void UpdateSliderText(float val, Slider slide, Image fill)
     {
         if (slide.value == 0)
@@ -92,6 +111,7 @@ public class VolumeSliderManager : MonoBehaviour
             fill.color = Color.yellow;
         }
     }
+    #endregion
     #endregion
 
     #region <FIRST START CHECK>
