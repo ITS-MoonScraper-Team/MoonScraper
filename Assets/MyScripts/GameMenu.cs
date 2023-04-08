@@ -69,12 +69,14 @@ public class GameMenu : MonoBehaviour
         ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
         ///
         ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
-        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
+        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
+
+        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
 
-        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
+        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
         ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderSFX);
-        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
+
         //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
     #endregion
@@ -85,7 +87,7 @@ public class GameMenu : MonoBehaviour
 
     public void CheckPause()
     {
-        SFXsoundManager.instance.PlaySound("backClick");
+        SFXsoundManager.instance.PlaySound("okClick");
         if (GameIsPaused)
         {
             ///TO FIX

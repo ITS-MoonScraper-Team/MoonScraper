@@ -209,6 +209,7 @@ public class PlayerController : MonoBehaviour
     //RESTART GAME CON SCENE NAME
     public void RestartGame()
     {
+
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
