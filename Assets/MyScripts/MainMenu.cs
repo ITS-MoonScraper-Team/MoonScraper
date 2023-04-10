@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour
     public void PlayGame()
     {
         //animationName = "PlayCircleAniamtion";
-        SFXsoundManager.instance.PlaySound("okClick");
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
         menuAnimator.enabled=true;
         Invoke("LoadScene", .5f);
     }
@@ -68,46 +68,66 @@ public class MainMenu : MonoBehaviour
         menuAnimator.enabled = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1/*,parameterers */);
     }
+    public  void OpenOptions()
+    {
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
+        SetToggles();
+    }
+    public void BackFromOptions()
+    {
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
+        SavePlayerSettingsOnBackFromOptions();
+
+    }
     public void QuitGame()
     {
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
         Application.Quit();
         Debug.Log("QUIT!");
     }
     #endregion
 
-    #region <<<BUTTON SFX PLAY FUNCTIONS>>>
+    //#region <<<BUTTON SFX PLAY FUNCTIONS>>>
 
-    public void PlayOptionsButtonSound()
-    {
-        SFXsoundManager.instance.PlaySound("okClick");
-    }
-    public void PlayBackButtonSound()
-    {
-        SFXsoundManager.instance.PlaySound("backClick");
-    }
-    #endregion
+    //public void PlayOptionsButtonSound()
+    //{
+    //    SFXsoundManager.instance.PlaySound("okClick");
+    //}
+    //public void PlayBackButtonSound()
+    //{
+    //    SFXsoundManager.instance.PlaySound("backClick");
+    //}
+    //#endregion
 
     /// <fix>
-    ///suona anche allo start!!
+    ///suona anche allo start--FIXED
     /// </fix>
     #region <<<AXIS TOGGLES>>> 
 
+    //SETTA VALORE DEI TOGGLES ALLO SCRIPT ASSI QUANDO CI INTERAGISCI
     public void SetXaxisValue(bool xAxisInverted)
     {
-        ///suona anche allo start..BOH!!
-        //PlayBackButtonSound();
+        SFXsoundManager.instance.PlaySettingsSFXSound();
         AxisOrientation.instance.XAxisInverted = xAxisInverted;
-
+        if (xAxisInverted)
+            xAxisToggle.image.color = Color.green;
+        else
+            xAxisToggle.image.color = Color.red;
     }
     public void SetYaxisValue(bool yAxisInverted)
     {
-        //PlayBackButtonSound();
+        SFXsoundManager.instance.PlaySettingsSFXSound();
         AxisOrientation.instance.YAxisInverted = yAxisInverted;
+        if (yAxisInverted)
+            yAxisToggle.image.color = Color.green;
+        else
+            yAxisToggle.image.color = Color.red;
     }
+
+    //SETTA VALORE DELLO SCRIPT ASSI AI TOGGLES QUANDO APRI OPZIONI
     public void SetToggles()
     {
         //if (xAxisToggle == null) return;
-
         xAxisToggle.isOn = AxisOrientation.instance.XAxisInverted;
         yAxisToggle.isOn = AxisOrientation.instance.YAxisInverted;
     }
@@ -118,7 +138,7 @@ public class MainMenu : MonoBehaviour
     /// </fix>
     #region <<<SAVE ALL>>>
 
-    public void SavePlayerSettingsOnBack()
+    public void SavePlayerSettingsOnBackFromOptions()
     {
         //SaveLoadPrefs.instance.SavePlayerLivesSettings();
         //SaveLoadPrefs.instance.SavePlayerAxisSettings();
@@ -128,6 +148,7 @@ public class MainMenu : MonoBehaviour
         AxisOrientation.instance.SavePlayerSettings();
         SoundManager.instance.SavePlayerSettings();
         SFXsoundManager.instance.SavePlayerSettings();
+        LivesSliderManager.instance.SavePlayerSettings();
     }
     #endregion
 
@@ -185,6 +206,7 @@ public class MainMenu : MonoBehaviour
 
     private IEnumerator ColorChangeCoroutine()
     {
+        //PLAY BUTTON HEART PULSATION
         while (true)
         {
             playButton.image.DOColor(new Color(0.85f, 0.7f, 0.7f), .75f);

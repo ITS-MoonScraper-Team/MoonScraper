@@ -21,7 +21,8 @@ public class VolumeSliderManager : MonoBehaviour
     public TMP_Text SFXvolumeSliderTxt;
     public Image SFXsliderFiller;
 
-    private int firstTimeStart = 0;
+    public int firstTimeStart = 0;
+    //public int FirstTimeStart { get; set; }
     #endregion
 
     #region <INIT>
@@ -44,12 +45,15 @@ public class VolumeSliderManager : MonoBehaviour
 
         if (firstTimeStart == 0)
         {
-            volumeSlider.value = 100f;
-            SFXvolumeSlider.value = 100f;
+            MusicVolumeSliderUpdate(100f);
+            SFXVolumeSliderUpdate(100f);
+            //volumeSlider.value = 1f;
+            //SFXvolumeSlider.value = 1f;
             firstTimeStart++;
         }
         else
         {
+
             volumeSlider.value = SoundManager.instance.VolumeToSlider;
             SFXvolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
         }
@@ -63,7 +67,7 @@ public class VolumeSliderManager : MonoBehaviour
 
     #region <<VOLUME SLIDERS UPDATES>>
 
-    #region <SET SLIDERS VOLUME>
+    #region <SET VOLUME SLIDERS>
     private void MusicVolumeSliderUpdate(float val)
     {
         SoundManager.instance.UpdateVolume(val);
@@ -78,13 +82,14 @@ public class VolumeSliderManager : MonoBehaviour
     #endregion
 
     #region <PLAY SLIDERS SFX>
-    private void MusicVolumeSliderSFX(float val) {
-        SoundManager.instance.PlayUpdateVolumeSound();
+    private void MusicVolumeSliderSFX(float val) 
+    {
+        SFXsoundManager.instance.PlaySettingsSFXSound();
     }
 
     private void SFXVolumeSliderSFX(float val)
     {
-        SFXsoundManager.instance.PlayUpdateSFXSound();
+        SFXsoundManager.instance.PlaySettingsSFXSound();
     }
     #endregion
 

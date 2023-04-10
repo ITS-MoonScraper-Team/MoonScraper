@@ -36,11 +36,11 @@ public class AxisOrientation : MonoBehaviour
         }
         else
         {
-            instance = this;
-
-            ///non mette img rossa del toggle dopo aver richiamato la scena!!
             xImage= xAxisToggle.GetComponentInChildren<Image>();
             yImage = yAxisToggle.GetComponentInChildren<Image>();
+            instance = this;
+
+            ///non mette img rossa del toggle dopo aver richiamato la scena--fixed
             LoadPlayerSettings();
 
             DontDestroyOnLoad(this);
@@ -50,26 +50,27 @@ public class AxisOrientation : MonoBehaviour
     {
     }
 
-    void Update()
-    {
-        if (xAxisToggle != null && yAxisToggle != null)
-        {
-            if (!xAxisInverted)
-                xImage.color = Color.red;
-            else
-            {
-                xImage.color = Color.green;
-            }
-            if (!yAxisInverted)
-                yImage.color = Color.red;
-            else
-            {
-                yImage.color = Color.green;
-            }
-        }
-    }
+    //void Update()
+    //{
+    //    if (xAxisToggle != null && yAxisToggle != null)
+    //    {
+    //        if (!xAxisInverted)
+    //            xImage.color = Color.red;
+    //        else
+    //        {
+    //            xImage.color = Color.green;
+    //        }
+    //        if (!yAxisInverted)
+    //            yImage.color = Color.red;
+    //        else
+    //        {
+    //            yImage.color = Color.green;
+    //        }
+    //    }
+    //}
 
     //SAVE CALLED ON BACK BUTTON IN MAIN MENU
+
     public void SavePlayerSettings()
     {
         int xValue = XAxisInverted ? 1 : 0;

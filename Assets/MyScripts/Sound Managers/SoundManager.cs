@@ -96,10 +96,10 @@ public class SoundManager : MonoBehaviour
 
     }
 
-    public void PlayUpdateVolumeSound()
-    {
-        SFXsoundManager.instance.PlaySound("backClick");
-    }
+    //public void PlayUpdateVolumeSound()
+    //{
+    //    SFXsoundManager.instance.PlaySound("backClick");
+    //}
    
     #endregion
 

@@ -81,6 +81,25 @@ public class SFXsoundManager : MonoBehaviour
                 break;
         }
     }
+
+    public void PlaySettingsSFXSound() 
+    {
+        PlaySound("backClick");
+    }
+
+    public void PlayOKButtonSFXSound()
+    {
+        PlaySound("okClick");
+    }
+
+    public void PlayDeathSound()
+    {
+        PlaySound("playerDeath");
+    }
+    public void PlayJetpackPropulsion()
+    {
+        PlaySound("jetPackProp");
+    }
     #endregion
 
     #region <SFX VOLUME UPDATE>
@@ -95,10 +114,6 @@ public class SFXsoundManager : MonoBehaviour
         SFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
-    }
-
-    public void PlayUpdateSFXSound() {
-        PlaySound("backClick");
     }
     #endregion
 

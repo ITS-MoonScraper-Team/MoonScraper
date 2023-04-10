@@ -322,7 +322,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 52, y: -363}
+  m_AnchoredPosition: {x: 60, y: -362}
   m_SizeDelta: {x: 53.47, y: 52.29}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &41174278
@@ -2610,6 +2610,7 @@ MonoBehaviour:
   SFXvolumeSlider: {fileID: 859819081}
   SFXvolumeSliderTxt: {fileID: 1120224947}
   SFXsliderFiller: {fileID: 1149673913}
+  firstTimeStart: 0
 --- !u!114 &849491956
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2625,6 +2626,7 @@ MonoBehaviour:
   livesSlider: {fileID: 987849759}
   livesSliderTxt: {fileID: 1693867417}
   sliderFiller: {fileID: 599186135}
+  firstTimeStart: 0
 --- !u!1 &859819079
 GameObject:
   m_ObjectHideFlags: 0
@@ -3124,7 +3126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.78823537, g: 0.9607844, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -3586,7 +3588,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.81777894, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 1, b: 0, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -4083,7 +4085,7 @@ Transform:
   m_GameObject: {fileID: 1358701266}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -12, y: -47.524742, z: 82.22222}
-  m_LocalScale: {x: 110.76977, y: 110.76977, z: 110.76977}
+  m_LocalScale: {x: 131.47885, y: 131.47885, z: 131.47885}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1401543762}
@@ -4192,9 +4194,9 @@ MonoBehaviour:
   m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 800, y: 1650}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 1
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -4430,19 +4432,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 849491954}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: SetToggles
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 849491954}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: PlayOptionsButtonSound
+        m_MethodName: OpenOptions
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5118,19 +5108,7 @@ MonoBehaviour:
         m_CallState: 1
       - m_Target: {fileID: 849491954}
         m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: SavePlayerSettingsOnBack
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 1
-      - m_Target: {fileID: 849491954}
-        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
-        m_MethodName: PlayBackButtonSound
+        m_MethodName: BackFromOptions
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5933,7 +5911,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -8.299999, y: 29.8}
+  m_AnchoredPosition: {x: -7.200001, y: 25.8}
   m_SizeDelta: {x: 241.16998, y: 3.1500015}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2422704757038715574

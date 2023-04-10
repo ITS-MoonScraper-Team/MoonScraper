@@ -65,19 +65,20 @@ public class GameMenu : MonoBehaviour
         if (ingameVolumeSlider == null) 
             return;
 
-        ///TO FIX: RIPRODUCE RUMORE BACKCLICK ALLO START
-        ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
-        ///
+        ///FIXED: METTE 0 LA PRIMA VOLTA ALL'AVVIO
+        ///FIXED: RIPRODUCE RUMORE BACKCLICK ALLO START
+
+        //Aggiunge listener solo per volume update, così non riproduce SFX all'avvio
         ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
         ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
 
+        //Update inziale
         ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
-        ingameVolumeSlider.value=SoundManager.instance.VolumeToSlider;
+        ingameVolumeSlider.value = SoundManager.instance.VolumeToSlider;
 
+        //Aggiunge listener anche per gli SFX all'update
         ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
         ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderSFX);
-
-        //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
     }
     #endregion
 
@@ -92,7 +93,7 @@ public class GameMenu : MonoBehaviour
         {
             ///TO FIX
             //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
-            //Invoke("Resume", 0.5f);
+            //Invoke("Resume", 0.2f);
             Resume();
         }
         else
@@ -128,6 +129,7 @@ public class GameMenu : MonoBehaviour
 
     public void BackToMain()
     {
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
         Resume();
         //get Scenes to play from builder
         SceneManager.LoadScene(0/*,parameterers */);
@@ -153,39 +155,41 @@ public class GameMenu : MonoBehaviour
             SoundManager.instance.inGameMusicAudioON = true;
             SoundManager.instance.PlaySound("inGame_OST");
             GameMusicButton.image.color = Color.green;
+
+
         }
     }
     #endregion
 
-    //public void QuitGame()
-    //{
-    //    Application.Quit();
-    //    Debug.Log("QUIT!");
-    //}
     #endregion
 
     #region <VOLUME SLIDERS UPDATES>
 
     /// FIXED: NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
 
+    //SET VOLUME SLIDERS
     private void MusicVolumeSliderUpdate(float val)
     {
         SoundManager.instance.UpdateVolume(val);
         UpdateSliderText(val, ingameVolumeSlider, sliderFiller);
-    }
-
-    private void MusicVolumeSliderSFX(float val) {
-        SoundManager.instance.PlayUpdateVolumeSound();
     }
     private void SFXVolumeSliderUpdate(float val)
     {
         SFXsoundManager.instance.UpdateSFXVolume(val);
         UpdateSliderText(val, ingameSFXVolumeSlider, SFXsliderFiller);
     }
+
+    //PLAY SLIDER SFX
+    private void MusicVolumeSliderSFX(float val) 
+    {
+        SFXsoundManager.instance.PlaySettingsSFXSound();
+    }
     private void SFXVolumeSliderSFX(float val)
     {
-        SFXsoundManager.instance.PlayUpdateSFXSound();
+        SFXsoundManager.instance.PlaySettingsSFXSound();
     }
+
+    //SET SLIDER TEXT
     private void UpdateSliderText(float val, Slider slide, Image fill)
     {
         if (slide == null) return;

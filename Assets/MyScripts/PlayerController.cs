@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         //if (MainMenu.InstanceMenu != null)
-        livesMax = MainMenu.InstanceMenu ? MainMenu.InstanceMenu.LivesMax:11;
+        livesMax = MainMenu.InstanceMenu.LivesMax!=null ? MainMenu.InstanceMenu.LivesMax:11;
         livesCount = livesMax;
         
         //SPRITE DIRECTION
@@ -377,7 +377,7 @@ public class PlayerController : MonoBehaviour
 
         //Sound e graphic FX MORTE
         if(SoundManager.instance)
-        SFXsoundManager.instance.PlaySound("playerDeath");
+        SFXsoundManager.instance.PlayDeathSound();
 
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
@@ -687,7 +687,7 @@ public class PlayerController : MonoBehaviour
                     //Play Jetpack sound
                     if (SFXsoundManager.instance)
                         if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
-                            SFXsoundManager.instance.PlaySound("jetPackProp");
+                            SFXsoundManager.instance.PlayJetpackPropulsion();
 
                     PlayerAnimator.SetTrigger("Jump");
 
