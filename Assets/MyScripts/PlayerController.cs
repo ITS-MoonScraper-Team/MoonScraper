@@ -126,22 +126,31 @@ public class PlayerController : MonoBehaviour
     private bool livesActive;
     private bool halfFuel;
     private bool isFalling;
+    private bool isGrounded=true;
     private bool isAlive =true;
+    private bool isJumping = false;
+    private bool isLanding = false;
     private bool HC = false;
+    public float minJumpDelay;
+    private float minJumpDelayCounter;
+    public float minLandDelay;
+    private float minLandDelayCounter;
+    private bool isNearGround=false;
 
-    #endregion
+
+#endregion
 
     #endregion
 
     #region ||>> INIT <<||
 
-    private void Awake()
+private void Awake()
     {
         //SET AXIS ORIENTATION VARIABLE
         if (AxisOrientation.instance != null)
         {
             joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
-            joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
+            joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/*!= null ? AxisOrientation.instance.YAxisInverted : true*/;
         }
         else
         {
@@ -625,6 +634,34 @@ public class PlayerController : MonoBehaviour
         Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
         Debug.LogWarning($"HISCORE {oldMaxScore}");
 
+        #region <JUMP DELAY COUNTER>
+        if (minJumpDelayCounter < 0)
+            minJumpDelayCounter = 0;
+        else
+        {
+            minJumpDelayCounter-=Time.deltaTime;
+        }
+        #endregion
+
+        #region <LANDING TEST ANIMATION>
+        //if (minLandDelayCounter < 0)
+        //    minLandDelayCounter = 0;
+        //else
+        //{
+        //    minLandDelayCounter -= Time.deltaTime;
+        //}
+
+        //if (isNearGround && minLandDelayCounter <= 0)
+        //{
+        //    if (!isGrounded)
+        //    {
+        //        PlayerAnimator.SetTrigger("Landing");
+        //        minLandDelayCounter = minLandDelay;
+        //        isNearGround = false;
+        //    }
+        //}
+        #endregion
+
         #region ||>> JOYSYICK AXIS ORIENTATION <<||
 
         //Y AXIS
@@ -689,11 +726,22 @@ public class PlayerController : MonoBehaviour
                         if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
                             SFXsoundManager.instance.PlayJetpackPropulsion();
 
-                    PlayerAnimator.SetTrigger("Jump");
+                    //PLAY JUMP ANIMATION
+                    if (isGrounded)
+                    {
+                        if (!isJumping&&minJumpDelayCounter<=0)
+                        {
+                            PlayerAnimator.SetTrigger("Jump");
+                            //Debug.LogError("triggerjumpanimation");
+                            isJumping = true;
+                            minJumpDelayCounter = minJumpDelay;
+                        }
+                        //isGrounded = false;
+                    }
 
                     //move body
                     Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
-                    remainingFuel -= fuelPerSecond * Time.deltaTime;
+                    remainingFuel -= fuelPerSecond/2 * Time.deltaTime;
 
                     //Alternativa Velocity:
                     //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
@@ -713,6 +761,7 @@ public class PlayerController : MonoBehaviour
 
                 if (joystick.Horizontal != 0)
                 {
+                    remainingFuel -= fuelPerSecond/2 * Time.deltaTime;
 
                     if (joystickXaxisCondition/*posizFacing > 0*/)
                     {
@@ -912,8 +961,43 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void FixedUpdate()
     {
+
+        #region <IS_GROUNDED CONTROL>
+        RaycastHit2D ground = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+        if (ground.collider != null)
+        {
+            Debug.Log("Sono a terra.");
+            Debug.Log($"{ground.collider.gameObject.name}");
+            isGrounded = true;
+            isJumping = false;
+            //Rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+        else
+        {
+            isGrounded = false;
+        }
+        #endregion
+
+        #region <LANDING CONDITION TEST>
+        //if (isJumping && !isNearGround)
+        //{
+        //    RaycastHit2D landing = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.4f);
+        //    if (landing.collider != null)
+        //    {
+        //        //isLanding = true;
+        //        isNearGround = true;
+        //        //PlayerAnimator.SetTrigger("Landing");
+        //        //minLandDelayCounter = minLandDelay;
+        //    }
+        //    else
+        //    {
+        //        isNearGround = false;
+        //    }
+
+        //}
+        #endregion
+
         #region |||>>> KEYBOARD MOVEMENT <<<|||
-        
         // ||>> KEYBOARD LEFT <<||
         if (Input.GetKey(KeyCode.LeftArrow))
         {
