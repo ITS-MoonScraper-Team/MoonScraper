@@ -19,7 +19,7 @@ namespace DG.Tweening
 
         #region Rigidbody
 
-        /// <summary>Tweens a Rigidbody's position to the given value.
+        /// <summary>Tweens a rigidbody's position to the given value.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
@@ -30,7 +30,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Rigidbody's X position to the given value.
+        /// <summary>Tweens a rigidbody's X position to the given value.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
@@ -41,7 +41,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Rigidbody's Y position to the given value.
+        /// <summary>Tweens a rigidbody's Y position to the given value.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
@@ -52,7 +52,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Rigidbody's Z position to the given value.
+        /// <summary>Tweens a rigidbody's Z position to the given value.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         /// <param name="snapping">If TRUE the tween will smoothly snap all values to integers</param>
@@ -63,7 +63,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Rigidbody's rotation to the given value.
+        /// <summary>Tweens a rigidbody's rotation to the given value.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param><param name="duration">The duration of the tween</param>
         /// <param name="mode">Rotation mode</param>
@@ -75,7 +75,7 @@ namespace DG.Tweening
             return t;
         }
 
-        /// <summary>Tweens a Rigidbody's rotation so that it will look towards the given position.
+        /// <summary>Tweens a rigidbody's rotation so that it will look towards the given position.
         /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="towards">The position to look at</param><param name="duration">The duration of the tween</param>
         /// <param name="axisConstraint">Eventual axis constraint for the rotation</param>
@@ -91,9 +91,9 @@ namespace DG.Tweening
 
         #region Special
 
-        /// <summary>Tweens a Rigidbody's position to the given value, while also applying a jump effect along the Y axis.
+        /// <summary>Tweens a rigidbody's position to the given value, while also applying a jump effect along the Y axis.
         /// Returns a Sequence instead of a Tweener.
-        /// Also stores the Rigidbody as the tween's target so it can be used for filtered operations</summary>
+        /// Also stores the rigidbody as the tween's target so it can be used for filtered operations</summary>
         /// <param name="endValue">The end value to reach</param>
         /// <param name="jumpPower">Power of the jump (the max height of the jump is represented by this plus the final Y offset)</param>
         /// <param name="numJumps">Total number of jumps</param>
@@ -128,8 +128,8 @@ namespace DG.Tweening
             return s;
         }
 
-        /// <summary>Tweens a Rigidbody's position through the given path waypoints, using the chosen path algorithm.
-        /// Also stores the Rigidbody as the tween's target so it can be used for filtered operations.
+        /// <summary>Tweens a rigidbody's position through the given path waypoints, using the chosen path algorithm.
+        /// Also stores the rigidbody as the tween's target so it can be used for filtered operations.
         /// <para>NOTE: to tween a rigidbody correctly it should be set to kinematic at least while being tweened.</para>
         /// <para>BEWARE: doesn't work on Windows Phone store (waiting for Unity to fix their own bug).
         /// If you plan to publish there you should use a regular transform.DOPath.</para></summary>
@@ -153,8 +153,8 @@ namespace DG.Tweening
             t.plugOptions.mode = pathMode;
             return t;
         }
-        /// <summary>Tweens a Rigidbody's localPosition through the given path waypoints, using the chosen path algorithm.
-        /// Also stores the Rigidbody as the tween's target so it can be used for filtered operations
+        /// <summary>Tweens a rigidbody's localPosition through the given path waypoints, using the chosen path algorithm.
+        /// Also stores the rigidbody as the tween's target so it can be used for filtered operations
         /// <para>NOTE: to tween a rigidbody correctly it should be set to kinematic at least while being tweened.</para>
         /// <para>BEWARE: doesn't work on Windows Phone store (waiting for Unity to fix their own bug).
         /// If you plan to publish there you should use a regular transform.DOLocalPath.</para></summary>
