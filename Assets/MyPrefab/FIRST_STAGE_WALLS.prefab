@@ -469,6 +469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platform: {fileID: 1988038867}
+  lowerCollider: {fileID: 0}
 --- !u!1 &2251112386529757413
 GameObject:
   m_ObjectHideFlags: 0

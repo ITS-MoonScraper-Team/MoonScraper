@@ -5,29 +5,97 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Unity.VisualScripting;
 using TMPro;
+using DG.Tweening;
+using UnityEngine.Events;
 
 public class GameMenu : MonoBehaviour
 {
-    public Slider ingameVolumeSlider;
-    public TMP_Text ingameVolumeSliderText;
-    public Image sliderFiller;
-    public GameObject pauseMenuUI;
-    public Animator pauseMenuAnimator;
-    public bool GameIsPaused = false;
+    #region <VARIABLES>
 
     public static GameMenu instance;
 
+    //INGAME MUSIC VOLUME SLIDER
+    public Slider ingameVolumeSlider;
+    public TMP_Text ingameVolumeSliderText;
+    public Image sliderFiller;
+
+    //INGAME SFX VOLUME SLIDER
+    public Slider ingameSFXVolumeSlider;
+    public TMP_Text ingameSFXVolumeSliderText;
+    public Image SFXsliderFiller;
+
+    //INGAME BUTTONS
+    public Button backToGameButton;
+    public Button GameMusicButton;
+
+    //CONTROL VARIABLES
+    public bool GameIsPaused = false;
+    public bool MusicAudioON;
+    //public static bool AudioON2;
+
+    //public GameObject pauseMenuUI;
+    //public Animator pauseMenuAnimator;
+    #endregion
+
+    #region <INIT>
+
     private void Awake()
     {
+        if (SoundManager.instance)
+            MusicAudioON = SoundManager.instance.inGameMusicAudioON;
+        //else
+        //    MusicAudioON = true;
+
         instance=this;
     }
 
-    #region PAUSE-RESUME FUNCTIONS
+    void Start()
+    {
+        if(SoundManager.MusicSource)
+        SoundManager.MusicSource.Stop();
+
+        if (MusicAudioON)
+        {
+            SoundManager.instance.PlaySound("inGame_OST");
+            GameMusicButton.image.color = Color.green;
+        }
+        else
+            GameMusicButton.image.color = Color.red;
+
+        if (ingameVolumeSlider == null) 
+            return;
+
+        ///FIXED: METTE 0 LA PRIMA VOLTA ALL'AVVIO
+        ///FIXED: RIPRODUCE RUMORE BACKCLICK ALLO START
+
+        //Aggiunge listener solo per volume update, così non riproduce SFX all'avvio
+        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
+        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
+
+        //Update inziale
+        ingameSFXVolumeSlider.value = SFXsoundManager.instance.SFXVolumeToSlider;
+        ingameVolumeSlider.value = SoundManager.instance.VolumeToSlider;
+
+        //Aggiunge listener anche per gli SFX all'update
+        ingameVolumeSlider.onValueChanged.AddListener(MusicVolumeSliderSFX);
+        ingameSFXVolumeSlider.onValueChanged.AddListener(SFXVolumeSliderSFX);
+    }
+    #endregion
+
+    #region <<BUTTON INTERACTIONS>>
+
+    #region <PAUSE-RESUME FUNCTIONS>
 
     public void CheckPause()
     {
+        SFXsoundManager.instance.PlaySound("okClick");
         if (GameIsPaused)
-        { Resume(); }
+        {
+            ///TO FIX
+            //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
+            //Invoke("Resume", 0.2f);
+            Resume();
+        }
         else
         {
             Pause();
@@ -41,81 +109,113 @@ public class GameMenu : MonoBehaviour
 
         Time.timeScale = 0f;
         PlayerController.joystickControl = false;
-        //SoundManager.AudioSrc.volume =.5f;
-        //SoundManager.BackgroundAudio.volume = .5f;
         GameIsPaused=true;  
+        //SoundManager.AudioSrc.volume =.5f;
     }
     public void Resume()
     {
         //pauseMenuUI.SetActive(false);
+        //pauseMenuAnimator.enabled = false;
+
         Time.timeScale = 1f;
         PlayerController.joystickControl=true;
         GameIsPaused = false;
-        //pauseMenuAnimator.enabled = false;
+        //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
 
     }
     #endregion
 
-    #region BACK TO MAIN
+    #region <BACK TO MAIN>
 
     public void BackToMain()
     {
-        //get Scenes to play from builder
+        SFXsoundManager.instance.PlayOKButtonSFXSound();
         Resume();
+        //get Scenes to play from builder
         SceneManager.LoadScene(0/*,parameterers */);
     }
     #endregion
 
-    //public void QuitGame()
-    //{
-    //    Application.Quit();
-    //    Debug.Log("QUIT!");
-    //}
+    #region <AUDIO ON/OFF>
 
-    void Start()
+    public void AudioONOFF()
     {
-        SoundManager.instance.PlayGameMusic();
-        ingameVolumeSlider.onValueChanged.AddListener(UpdateVolumeText);
-
-        if (ingameVolumeSlider == null) return;
-        ingameVolumeSlider.value=SoundManager.instance.volumeToSlider;
-        //UpdateVolumeText((float)SoundManager.instance.volumeToSlider);
-    }
-
-
-    private void UpdateVolumeText(float val)
-    {
-        if (ingameVolumeSlider == null) return;
-        if (ingameVolumeSlider.value == 0)
+        if (MusicAudioON)
         {
-            ingameVolumeSliderText.text = "OFF";
-            ingameVolumeSliderText.color = Color.white;
-
-            sliderFiller.color = Color.white;
-        }
-        else if (ingameVolumeSlider.value == 100)
-        {
-            ingameVolumeSliderText.text = "MAX";
-            ingameVolumeSliderText.color = Color.red;
-            sliderFiller.color = Color.red;
+            //MusicSource.enabled = false;
+            MusicAudioON = false;
+            SoundManager.instance.inGameMusicAudioON = false;
+            SoundManager.MusicSource.Stop();
+            GameMusicButton.image.color = Color.red;
         }
         else
         {
-            ingameVolumeSliderText.text = ingameVolumeSlider.value.ToString();
-            ingameVolumeSliderText.color = Color.yellow;
-            sliderFiller.color = Color.yellow;
+            //MusicSource.enabled = true;
+            MusicAudioON = true;
+            SoundManager.instance.inGameMusicAudioON = true;
+            SoundManager.instance.PlaySound("inGame_OST");
+            GameMusicButton.image.color = Color.green;
+
+
         }
-            SoundManager.instance.UpdateVolume(val);
+    }
+    #endregion
+
+    #endregion
+
+    #region <VOLUME SLIDERS UPDATES>
+
+    /// FIXED: NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
+
+    //SET VOLUME SLIDERS
+    private void MusicVolumeSliderUpdate(float val)
+    {
+        SoundManager.instance.UpdateVolume(val);
+        UpdateSliderText(val, ingameVolumeSlider, sliderFiller);
+    }
+    private void SFXVolumeSliderUpdate(float val)
+    {
+        SFXsoundManager.instance.UpdateSFXVolume(val);
+        UpdateSliderText(val, ingameSFXVolumeSlider, SFXsliderFiller);
     }
 
-    void Update()
+    //PLAY SLIDER SFX
+    private void MusicVolumeSliderSFX(float val) 
     {
-        //if (SoundManager.instance.volumeLvl == 100)
-        //{ ingameVolumeSliderText.text = "max"; }
-        //else
-        //{
-        //    ingameVolumeSliderText.text = SoundManager.instance.volumeLvl.ToString();
-        //}
-        //Debug.Log($"Volume {SoundManager.instance.volumeLvl}");
+        SFXsoundManager.instance.PlaySettingsSFXSound();
     }
+    private void SFXVolumeSliderSFX(float val)
+    {
+        SFXsoundManager.instance.PlaySettingsSFXSound();
+    }
+
+    //SET SLIDER TEXT
+    private void UpdateSliderText(float val, Slider slide, Image fill)
+    {
+        if (slide == null) return;
+
+        if (slide.value == 0)
+        {
+            slide.GetComponentInChildren<TMP_Text>().text = "OFF";
+            //volumeSliderTxt.fontSize = 60;
+            slide.GetComponentInChildren<TMP_Text>().color = Color.white;
+            fill.color = Color.white;
+        }
+        else if (slide.value == 100)
+        {
+            slide.GetComponentInChildren<TMP_Text>().text = "MAX";
+            slide.GetComponentInChildren<TMP_Text>().color = Color.red;
+            fill.color = Color.red;
+        }
+        else
+        {
+            slide.GetComponentInChildren<TMP_Text>().text = slide.value.ToString();
+            slide.GetComponentInChildren<TMP_Text>().color = Color.yellow;
+            fill.color = Color.yellow;
+        }
+    }
+    #endregion
+
+    void Update()
+    { }
 }

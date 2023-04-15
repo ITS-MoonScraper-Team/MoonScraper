@@ -15,53 +15,25 @@ using DG.Tweening;
 
 public class PlayerController : MonoBehaviour
 {
-    private int state = 0;
+    #region |||>>> VARIABLES <<<|||
 
-    #region |||>>> PLAYER COMPONENTS <<<|||
+    #region ||>> PLAYER COMPONENTS <<||
 
-    Rigidbody2D Rigidbody;
+    Rigidbody2D rigidbody;
     CapsuleCollider2D capsuleCollider;
     SpriteRenderer spriteRenderer;
     Color colorCharacter;
-    //Slider fuelSlider;
-    //PolygonCollider2D polygonCollider;
     #endregion
 
-    #region |||>> PUBLIC OBJECTS <<|||
+    #region ||> INTERFACE VARIABLES <<||
 
-    public GameObject Player;
-    public GameObject Trail;
-    public Camera mainCamera;
-    public FixedJoystick joystick;
-    public FloatingJoystick joyFloat;
-    public Sprite[] spriteArray;
-    public Slider fuelSlider;
-    public Button buttonRestart;
-    public TMP_Text fuelMeter;
-    public TMP_Text scoreText;
-    public TMP_Text GameOverText;
-    public TMP_Text livesText;
-    public TMP_Text deadText;
-    public TMP_Text outOfFuelText;
-    public GameObject ExplosionTemplate;
-    public Image FuelCircleProgression;
-    public Animator PlayerAnimator;
-    //public Slider maxLivesSlider;
-    //public TrailRenderer trailRenderer;
-    //public GameObject playerIdleLeft;
-    //public GameObject playerIdleRight;
-
-    #endregion
-
-    #region |||>> INTERFACE VARIABLES <<|||
-
-    [Header("FORCE LEVELS")] //BALANCING: jetForce=25, fromLeftRight=13
+    [Header("FORCE LEVELS")] //BALANCE per piattaf distanti 11: jetForce=25, fromLeftRight=13
     [Tooltip("BALANCE: jetForce = 25, from Left/Right = 13")]
     public float jumpForce=6;
     public float jetpackForce=25;
     public float fromLeftJetForce=13;
     public float fromRightJetForce=13;
-    [Header("FUEL LEVELS")] //BALANCING: fuel=100, fuelPerSec=49
+    [Header("FUEL LEVELS")] //BALANCE per piattaf distanti 11: fuel=100, fuelPerSec=49
     [Tooltip("BALANCE: fuel=100, fuelPerSec=49")]
     public float maxFuel=100f;
     public float fuelPerSecond = 49f;
@@ -72,13 +44,43 @@ public class PlayerController : MonoBehaviour
     public bool joystickYaxisInverted/*= true*/;
     public bool joystickXaxisInverted/*=true*/;
     [Header("OTHER")]
+    [Tooltip("The secret number is,\nthe number of the beast")]
     public float deathFallingSpeed = 9.0f;
-    public int secretNumber;
-    public int springForce = 500;
+    public int mushSpringForce = 500;
+    public static int secretNumber=0;
+    public static bool mushroomJumper = false;
 
     #endregion
 
-    #region |||>>> PROGRAM VARIABLES <<<|||
+    #region ||> PUBLIC OBJECTS <<||
+
+    [Header("GAME OBJECTS")]
+    public GameObject Player;
+    public GameObject Trail;
+    public Camera mainCamera;
+    public FixedJoystick joystick;
+    public FloatingJoystick joyFloat;
+    public Sprite[] spriteArray;
+    //public Slider fuelSlider;
+    public Button buttonRestart;
+    //public TMP_Text fuelMeter;
+    public TMP_Text scoreText;
+    public TMP_Text GameOverText;
+    public TMP_Text livesText;
+    public TMP_Text deadText;
+    public TMP_Text outOfFuelText;
+    public TMP_Text hiScoreText;
+    public GameObject ExplosionTemplate;
+    public Image FuelCircleProgression;
+    public Animator PlayerAnimator;
+    //public Slider maxLivesSlider;
+    //public TrailRenderer trailRenderer;
+    //public GameObject playerIdleLeft;
+    //public GameObject playerIdleRight;
+
+    #endregion
+
+    #region ||>> PLAYER VARIABLES <<||
 
     private Sprite directionLeftSprite;
     private Sprite directionRightSprite;
@@ -92,12 +94,15 @@ public class PlayerController : MonoBehaviour
     private float xRespawn;
     private float yRespawn;
     //private float[] xyRespawn = new float[2];
-    private Vector2 posCollision;
+    private Vector2 playerPosOnCollision;
     private float deathTimeDuration = .5f;
     private float yMinReachable=0;
     private int livesCount;
     private int livesMax;
+    private int maxScoreToSave;
+    private int oldMaxScore;
     private int platformCount=0;
+    //private int state = 0;
     private enum Index
     {
         DEAD = 0,
@@ -105,11 +110,10 @@ public class PlayerController : MonoBehaviour
         GONE_TOO_LOW = 2
     }
     private Index deathMessage;
-    public static PlayerController instance;
 
     #endregion
 
-    #region |||>>> CONTROL VARIABLES <<<|||
+    #region ||>> CONTROL VARIABLES <<||
 
     private bool inputPressed;
     private bool upPressedDown;
@@ -122,36 +126,57 @@ public class PlayerController : MonoBehaviour
     private bool livesActive;
     private bool halfFuel;
     private bool isFalling;
+    private bool isGrounded=true;
     private bool isAlive =true;
+    private bool isJumping = false;
+    private bool isLanding = false;
     private bool HC = false;
+    public float minJumpDelay;
+    private float minJumpDelayCounter;
+    public float minLandDelay;
+    private float minLandDelayCounter;
+    private bool isNearGround=false;
+
+
+#endregion
 
     #endregion
 
-    private void Awake()
+    #region ||>> INIT <<||
+
+private void Awake()
     {
-        //instance = this;
-        joystickXaxisInverted = AxisOrientation.instance.XAxisInverted/*!=null? AxisOrientation.instance.XAxisInverted:true*/;
-        joystickYaxisInverted = AxisOrientation.instance.YAxisInverted/* != null ? AxisOrientation.instance.YAxisInverted : true*/;
+        //SET AXIS ORIENTATION VARIABLE
+        if (AxisOrientation.instance != null)
+        {
+            joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
+            joystickYaxisInverted = AxisOrientation.instance.YAxisInverted;
+        }
+        else
+        {
+            joystickXaxisInverted=true;
+            joystickYaxisInverted=true;
+        }
+
+        LoadHighScore();
     }
 
     void Start()
     {
-        //GETTING PLAYER COMPONENTS
+        //GETTING GAME COMPONENTS
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        Rigidbody = GetComponent<Rigidbody2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         colorCharacter = spriteRenderer.color;
         fullFuelColor = FuelCircleProgression.color;
-        //polygonCollider = GetComponent<PolygonCollider2D>();
-        //trailRenderer = GetComponentInChildren<TrailRenderer>();
-        //rectTransform=Handle.GetComponent<RectTransform>();
 
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
-        livesMax = MainMenu.InstanceMenu.LivesMax;
-        livesCount = livesMax;  
-
-        //FACING DATA
+        //if (MainMenu.InstanceMenu != null)
+        livesMax = MainMenu.InstanceMenu.LivesMax!=null ? MainMenu.InstanceMenu.LivesMax:11;
+        livesCount = livesMax;
+        
+        //SPRITE DIRECTION
         leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
@@ -162,27 +187,39 @@ public class PlayerController : MonoBehaviour
         yRespawn= gameObject.transform.position.y;
 
         //LIVES CONDITION
-        if (livesMax != 11)
-        { livesActive = true; }
-        else if(livesMax==11)
+        if(livesMax==11)
         { 
             livesActive = false;
             livesText.text = "ETERNAL LIFE";
         }
-
-        if (livesMax == 1)
+        else if (livesMax != 11)
         { 
-            HC = true;
-            livesText.text = "HARDCORE"; 
+            livesActive = true; 
+            if (livesMax == 1)
+            { 
+                HC = true;
+                livesText.text = "HARDCORE"; 
+            }
         }
 
-        //buttonRestart.onClick.AddListener(RestartGame);
-    }
+        ////MUSHROOM JUMPER ò_ò
+        //if (mushroomJumper)
+        //{
+        //    ActivateJumper();
+        //}
 
-    #region |||>>> GAME OVER AND RESTART <<<|||
+    }
+    #endregion
+
+    #region ||>> GAME OVER MESSAGES AND RESTART <<||
 
     //RESTART GAME CON SCENE NAME
+    public void RestartGame()
+    {
 
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
     private void GameOver()
     {
         GameOverMessage();
@@ -197,41 +234,53 @@ public class PlayerController : MonoBehaviour
     private void GameOverMessOff()
     { GameOverText.gameObject.SetActive(false); }
 
-    public void RestartGame()
-    {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
     #endregion
 
-    #region |||>>> COLLISIONS <<<|||
+    #region ||>> COLLISIONS <<||
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
-
         //float yStageCollision = collision.gameObject.transform.position.y;
-        float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
-        PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
-        posCollision = transform.position;
-        Rigidbody.velocity = new Vector2(0, 0);
 
-        //jumper collision piazzato sul prefab col fungo 
-        if (collision.gameObject.layer==9)
+        PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
+        float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
+        playerPosOnCollision = transform.position;
+        rigidbody.velocity = new Vector2(0, 0);
+
+        //Collision su Jumper piazzato sul prefab col fungo
+        //(TO ACTIVATE: attiva bool mushroomJumper che attiva polygon collider del fungo e collider del jumper sul prefab)
+        if (collision.gameObject.layer == 9)
         {
-            Rigidbody.AddForce(Vector2.up*springForce*Time.deltaTime, ForceMode2D.Impulse);
+            //fine benza
+            if (remainingFuel < 1)
+            {
+                isAlive = false;
+                deathMessage = Index.OUT_OF_FUEL;
+                Invoke(DeathLogic(), deathTimeDuration);
+            }
+            else
+            { rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
         }
 
         //wall collision
         if (collision.gameObject.layer == 3)
-
-        //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
         {
-            isAlive = false;
-            deathMessage = Index.DEAD;
-            Invoke(DeathLogic(), deathTimeDuration);
-        }
+            
+            if (MainMenu.easyMode==false || Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
+            //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
+            {
+                isAlive = false;
+                deathMessage = Index.DEAD;
+                Invoke(DeathLogic(), deathTimeDuration);
+            }
+            else
+            { }
+            //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
 
-        //platform collison
+        }
+        
+        //PLATFORM COLLISION
         if (collision.gameObject.layer ==8)
         {
             //collision da sotto
@@ -273,6 +322,7 @@ public class PlayerController : MonoBehaviour
                 //}
             }
         }
+
         //collision ground level
         if (collision.gameObject.layer == 6)
         {
@@ -281,7 +331,6 @@ public class PlayerController : MonoBehaviour
                 isAlive = false;
                 deathMessage = Index.DEAD;
                 Invoke(DeathLogic(), deathTimeDuration);
-
             }
             //fine benza
             else if (remainingFuel < 1)
@@ -291,18 +340,30 @@ public class PlayerController : MonoBehaviour
                 Invoke(DeathLogic(), deathTimeDuration);
             }
         }
+
+        #region TEST LOWER LIMIT CONDITION
+        //TEST LOWER LIMIT CON COLLISION
+        if (collision.gameObject.layer == 10)
+        {
+            playerPosOnCollision = transform.position;
+            rigidbody.velocity = new Vector2(0, 0);
+            isAlive = false;
+            deathMessage = Index.DEAD;
+            Invoke(DeathLogic(), deathTimeDuration/*/2*/);
+        }
+        #endregion
+
     }
     #endregion
 
-    #region |||>>> DEATH LOGIC <<<|||
+    #region ||>> DEATH LOGIC <<||
 
     private string DeathLogic()
     {
-        if (livesActive == false)
-        {
-            platformCount = 0;
-        }
+        //disattiva player, toglie vita ed effetti di morte
         SetPlayerInactiveLoseLife();
+
+        //valorizza condition con messaggio death e chiama respawn in base al tipo di morte
         string condition = DeathMessageType();
         return condition;
     }
@@ -310,26 +371,40 @@ public class PlayerController : MonoBehaviour
     private void SetPlayerInactiveLoseLife()
     {
         //StartCoroutine(SetPlayerInactiveCorutine());
+        //isAlive = false;
 
-        //FX MORTE
-
+        //Disattiva player
         gameObject.SetActive(false);
-        //if(SoundManager.AudioON)
-        SoundManager.PlaySound("playerDeath");
-        GameObject explosion = Instantiate(ExplosionTemplate, posCollision, Quaternion.identity);
-        //explosion.Emit(60);
-        Destroy(explosion, .4f);
 
+        //Toglie una vita
         if (livesActive == true)
         {
             livesCount--;
-            //controllo particella da codice
         }
+
+        //azzera score se Eternal life attivo
+        if (livesActive == false)
+        {
+            platformCount = 0;
+        }
+
+        //Sound e graphic FX MORTE
+        if (SFXsoundManager.instance?.sfxSourceJetpack.isPlaying==true)
+        Invoke("StopSFXplaying", 0.05f);
+
+        if(SoundManager.instance)
+        SFXsoundManager.instance.PlayDeathSound();
+
+        GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
+        //explosion.Emit(60);
+        Destroy(explosion, .4f);
 
     }
 
     private string DeathMessageType()
     {
+        //messaggio morte e chiama respawn in base al tipo di morte
+
         string condition;
         if (livesCount == 0)
         { condition = "GameOver"; }
@@ -344,20 +419,22 @@ public class PlayerController : MonoBehaviour
             {
                 outOfFuelText.gameObject.SetActive(true);
             }
-                condition = "SetPlayerActive";
+            condition = "SetPlayerActive";
         }
         return condition;
     }
     #endregion
 
-    #region |||>>> RESPAWN LOGIC <<<|||
+    #region ||>> RESPAWN LOGIC <<||
 
+    //Calcola posizione piattaforma respawn
     private void PlayerRespawnCalculator(PlatformBehaviour _collidedPlat)
     {
         xRespawn = _collidedPlat.side == PlatformBehaviour.Side.RIGHT ? 1.5f : -1.5f;
         yRespawn = _collidedPlat.transform.position.y + .3f;
     }
 
+    //disattiva messagi di morte, setta respawn e riattiva player
     private void SetPlayerActive()
     {
         if(deadText.IsActive())
@@ -366,11 +443,12 @@ public class PlayerController : MonoBehaviour
         if(outOfFuelText.IsActive())
         outOfFuelText.gameObject.SetActive(false);
 
-        //StartCoroutine(SetPlayerActiveDelay());
+        //Setta respawn e attiva player
         SetPlayerRespawn();
         gameObject.SetActive(true);
     }
 
+    //Imposta le coordinate di respawn 
     private void SetPlayerRespawn(/*float xRespawn, float yRespawn*/)
     {
         isAlive = true;
@@ -394,13 +472,17 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    #region |||>>> NEW PLATFORM UPDATES <<<|||
+    #region ||>> NEW PLATFORM UPDATES <<||
 
     private void NewPlatformReached(PlatformBehaviour collidedPlat)
     {
         //PLAYER VARIABLES UPDATE: Fuel refill, platform score +1, minima Y raggiungibile
+        //Fuel refill
+        FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
         remainingFuel = maxFuel;
+        //aumenta score
         platformCount++;
+        //imposta minima y raggiungibile
         yMinReachable = collidedPlat.transform.position.y;
         //Calculate new respawn position
         PlayerRespawnCalculator(collidedPlat);
@@ -412,9 +494,13 @@ public class PlayerController : MonoBehaviour
 
     private void SetNewPlatformStatus(PlatformBehaviour collidedPlat)
     {
+        //StageSection collidedStage= collidedPlat.gameObject.GetComponentInParent<StageSection>();
+        //collidedStage.lowerCollider.enabled = true;
+
         collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
         collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
         collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+
     }
 
     private void SetPassedPlatformStatus()
@@ -434,92 +520,37 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
-    #region <<<OLD COLLISION-RESPAWN CALCULATOR>>>
-    private void OLD_ReachedPlatformCalculator_OLD()
+    #region ||>> KILL JETPACK EFFECTS (trail, particle, sound) <<||
+
+    private void KillJetpackEffects()
     {
-        int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        for (int i = iterMax - 1; i >= 0; i--)
-
-        //int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? WallGeneration.Instance.ListaStageGenerati.Count - 4 : 0;
-        //for(int i = WallGeneration.Instance.ListaStageGenerati.Count-1; i>iterMin;i--)
-        {
-            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.MAI_TOCCATA)
-            {
-                platformCount++;
-                remainingFuel = maxFuel;
-                WallGeneration.Instance.ListaPlatforms[i].index = PlatformBehaviour.Index.ULTIMA;
-                yMinReachable = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
-                WallGeneration.Instance.ListaPlatforms[i].mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-                WallGeneration.Instance.ListaPlatforms[i].edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side == PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
-                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y + .3f;
-
-                //mette status "2" = "passed" alle piattaforme vecchie DOPO L'ULTIMA RAGGIUNTA
-                //for (int z=i+1; z<iterMax; z++)
-                if (i < iterMax - 1)
-                {
-                    for (int j = i + 1; j < iterMax - 1; j++)
-                    {
-                        WallGeneration.Instance.ListaPlatforms[j].index = PlatformBehaviour.Index.PASSATA;
-                    }
-                }
-                break;
-            }
-        }
+        Invoke("StopJetpackSFXplaying", .05f);
+        Invoke("DestroyTrail", 0.2f);
+        Invoke("DestroyParticleFX", 0.5f);
     }
-    private void OLD_CollisionRespawnCalculator_OLD()
-    {
-        //int iterMax = WallGeneration.Instance.ListaStageGenerati.Count > 4 ? 4 : WallGeneration.Instance.ListaStageGenerati.Count;
-        int iterMin = WallGeneration.Instance.ListaStageGenerati.Count > 5 ? WallGeneration.Instance.ListaStageGenerati.Count - 5 : 0;
-        for (int i = WallGeneration.Instance.ListaStageGenerati.Count - 1; i >= iterMin; i--)
-        {
-            if (WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA)
-            {
-                yRespawn = WallGeneration.Instance.ListaPlatforms[i].transform.position.y + .3f;
-                xRespawn = (WallGeneration.Instance.ListaPlatforms[i].side == PlatformBehaviour.Side.RIGHT) ? 1.5f : -1.5f;
-                break;
-            }
-            else
-            {
-                yRespawn = .3f;
-                xRespawn = 0f;
-            }
-        }
-    }
-    #endregion
-
-    #region |||>>> TRAIL DESTROY <<<|||
 
     private void DestroyTrail()
     {
         Trail.SetActive(false);
     }
+
     private void DestroyParticleFX()
     {
-        gameObject.transform.GetChild(2).gameObject.SetActive(false);
+        gameObject.transform.GetChild(3).gameObject.SetActive(false);
+    }
+
+    private void StopJetpackSFXplaying()
+    {
+        SFXsoundManager.instance?.sfxSourceJetpack.Stop();
     }
     #endregion
 
-    #region |||>>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<<|||
+    #region ||>> CAMBIA SPRITE DIREZIONE MOVIMENTO <<||
 
     private void ChangeSprite(Sprite _newSprite)
     {
         spriteRenderer.sprite = _newSprite;
     }
-
-    #region changeAnim test
-    //void ChangeAnimationRight()
-    //{
-    //    GetComponentInChildren<GameObject>().SetActive(false);
-    //    //Destroy(playerIdleLeft);
-    //    Instantiate(playerIdleRight, transform);
-    //}
-    //void ChangeAnimationLeft()
-    //{
-    //    Destroy(playerIdleRight);
-    //    Instantiate(playerIdleLeft, transform);
-    //}
-    #endregion
 
     #endregion
 
@@ -565,19 +596,254 @@ public class PlayerController : MonoBehaviour
     //}
     #endregion
 
-    //void OnBecameInvisible()
-    //{
-    //    Destroy(gameObject);
-    //}
+    #region |> ACTIVATE-DEACTIVATE MUSHROOM JUMPER <|
+
+    private void ActivateJumper()
+    {
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
+    }
+    private void DeactivateJumper()
+    {
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = false;
+        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+    }
+    #endregion
+
+    #region ||>> SAVE HIGH SCORE <<||
+
+    private void SaveHighScore()
+    {
+        maxScoreToSave = platformCount;
+        //oldMaxScore = maxScoreToSave;
+        PlayerPrefs.SetInt("maxScore", maxScoreToSave);
+        PlayerPrefs.Save();
+    }
+    private void LoadHighScore()
+    {
+        if (PlayerPrefs.HasKey("maxScore"))
+        {
+            //VALORE DA MOSTRARE A TXT COME HI SCORE
+            oldMaxScore = PlayerPrefs.GetInt("maxScore");
+            hiScoreText.text = $"HI-SCORE:{oldMaxScore.ToString()}";
+        }
+    }
+    #endregion
+
+    #region ||||>>>> UPDATE FUNCTIONS: JOYSTICK MOVEMENT, LIFE, FUEL CONTROL <<<<||||
 
     void Update()
     {
         //DEBUG
-        Debug.Log($"VELOCITY {Rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
+        Debug.Log($"VELOCITY {rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
+        Debug.LogWarning($"HISCORE {oldMaxScore}");
+
+        #region <JUMP DELAY COUNTER>
+        if (minJumpDelayCounter < 0)
+            minJumpDelayCounter = 0;
+        else
+        {
+            minJumpDelayCounter-=Time.deltaTime;
+        }
+        #endregion
+
+        #region <LANDING TEST ANIMATION>
+        //if (minLandDelayCounter < 0)
+        //    minLandDelayCounter = 0;
+        //else
+        //{
+        //    minLandDelayCounter -= Time.deltaTime;
+        //}
+
+        //if (isNearGround && minLandDelayCounter <= 0)
+        //{
+        //    if (!isGrounded)
+        //    {
+        //        PlayerAnimator.SetTrigger("Landing");
+        //        minLandDelayCounter = minLandDelay;
+        //        isNearGround = false;
+        //    }
+        //}
+        #endregion
+
+        #region ||>> JOYSYICK AXIS ORIENTATION <<||
+
+        //Y AXIS
+        if (joystickYaxisInverted)
+        {
+            if (joystick.Vertical < 0)
+            { joystickYaxisCondition = true; }
+            else
+            { joystickYaxisCondition = false; }
+        }
+        else
+        {
+            if(joystick.Vertical > 0)
+            { joystickYaxisCondition = true; }
+            else
+            { joystickYaxisCondition = false; }
+        }
+
+        //X AXIS
+        if (joystickXaxisInverted)
+        {
+            if (joystick.Horizontal > 0)
+            { joystickXaxisCondition = true; }
+            else if (joystick.Horizontal < 0)
+            { joystickXaxisCondition = false; }
+        }
+        else
+        {
+            if (joystick.Horizontal > 0)
+            { joystickXaxisCondition = false; }
+            else if (joystick.Horizontal < 0)
+            { joystickXaxisCondition = true; }
+        }
+        #endregion
+
+        #region |||>>> JOYSTICK MOVEMENT <<<|||
+
+        if (joystickControl)
+        {
+            if (remainingFuel > 0 && isAlive)
+            {
+                //MOVEMENT EFFECTS
+                if (joystickYaxisCondition || joystick.Horizontal != 0)
+                {
+                    Trail.SetActive(true);
+                    //activate particleFX: cambia uso di Getchild
+                    gameObject.transform.GetChild(3).gameObject.SetActive(true);
+                }
+                else
+                {
+                    KillJetpackEffects();
+                }
+
+                #region ||>> VERTICAL MOVEMENT <<||
+
+                if (joystickYaxisCondition /*joystick.Vertical < 0*/)
+                {
+                    //playerState=inAir;
+
+                    //Play Jetpack sound
+                    if (SFXsoundManager.instance)
+                        if (SFXsoundManager.instance.sfxSourceJetpack.isPlaying == false)
+                            SFXsoundManager.instance.PlayJetpackPropulsion();
+
+                    //PLAY JUMP ANIMATION
+                    if (isGrounded)
+                    {
+                        if (!isJumping&&minJumpDelayCounter<=0)
+                        {
+                            PlayerAnimator.SetTrigger("Jump");
+                            //Debug.LogError("triggerjumpanimation");
+                            isJumping = true;
+                            minJumpDelayCounter = minJumpDelay;
+                        }
+                        //isGrounded = false;
+                    }
+
+                    //move body
+                    rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                    remainingFuel -= fuelPerSecond/2 * Time.deltaTime;
+
+                    //Alternativa Velocity:
+                    //{ rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+
+                    //if (rigidbody.velocity.y <.3f && nearGround)
+                    //{
+                    //    PlayerAnimator = GetComponent<Animator>();
+                    //    string animationName = "playerAnimation_JUMP";
+                    //    PlayerAnimator.Play(animationName);
+                    //}
+                }
+                else
+                { }
+                #endregion
+
+                #region ||>> HORIZONTAL MOVEMENT <<||
+
+                if (joystick.Horizontal != 0)
+                {
+                    remainingFuel -= fuelPerSecond/2 * Time.deltaTime;
+
+                    if (joystickXaxisCondition/*posizFacing > 0*/)
+                    {
+                        transform.localScale = leftFacingVector;
+                        rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionLeftSprite);
+
+                        //rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+                        //ChangeAnimationRight();
+                    }
+                    if (!joystickXaxisCondition/*posizFacing < 0*/)
+                    {
+                        transform.localScale = rightFacingVector;
+                        rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        ChangeSprite(directionRightSprite);
+                    }
+                }
+                #endregion
+
+            }
+            else
+            {
+                KillJetpackEffects();
+            }
+        }
+        else
+        {  }
+
+        //if (isOnGround)
+        //{
+        //    rigidbody.drag = drag;
+        //}
+        #region old xAxis
+        //if (joystickXaxisInverted)
+        //{
+        //    directionLeftSprite = spriteArray[0];
+        //    directionRightSprite = spriteArray[1];
+        //    if (/*joystickXaxisCondition*/posizFacing > 0)
+        //    {
+        //        rigidbody.AddForce(Vector2.left * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        //*(joyXinv?1:-1)
+
+        //        //rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+        //        //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
+        //        ChangeSprite(directionLeftSprite);
+        //        //ChangeAnimationRight();
+        //    }
+        //    if (/*!joystickXaxisCondition*/posizFacing < 0)
+        //    {
+        //        rigidbody.AddForce(Vector2.right * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        //rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+        //        //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
+        //        ChangeSprite(directionRightSprite);
+        //        //ChangeAnimationLeft();
+        //    }
+        //}
+        //else
+        //{
+        //    directionLeftSprite = spriteArray[0];
+        //    directionRightSprite = spriteArray[1];
+        //    if (posizFacing > 0)
+        //    {
+        //        rigidbody.AddForce(Vector2.right * fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        ChangeSprite(directionRightSprite);
+        //    }
+        //    if (posizFacing < 0)
+        //    {
+        //        rigidbody.AddForce(Vector2.left * fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        ChangeSprite(directionLeftSprite);
+        //    }
+        //}
+        #endregion
+
+        #endregion
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
-        if(Rigidbody.velocity.y>-7)
+        if(rigidbody.velocity.y>-7)
         {
             //spriteRenderer.DOColor(colorCharacter, .05f);
             if (isFalling)
@@ -585,7 +851,7 @@ public class PlayerController : MonoBehaviour
             spriteRenderer.color = colorCharacter;
         }
 
-        if (Rigidbody.velocity.y <= -7.5f&&Rigidbody.velocity.y>-9)
+        if (rigidbody.velocity.y <= -7.5f&&rigidbody.velocity.y>-9)
         {
             //GetComponent<MeshRenderer>().material = myHitTakenMaterial;
             //Invoke("SetNormalMaterial", 0.25f);
@@ -595,24 +861,27 @@ public class PlayerController : MonoBehaviour
                 StartCoroutine(VelocityWarnCoroutine());
             }
         }
-        if(Rigidbody.velocity.y<-9)
+        if(rigidbody.velocity.y<-9)
         {
             currentWarnColor = Color.red;
         }
         #endregion
 
-        #region |||>>> FUEL CONTROL <<<|||
+        #region ||>> FUEL CONTROL <<||
 
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
-        //indicatore fuel vecchio
-        fuelMeter.text = $"FUEL {(int)remainingFuel}";
-        fuelSlider.value = remainingFuel / maxFuel;
-        //setta livello fuel del serbatoio nuovo
-        FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
+        //DEATH IF FUEL EMPTY AND PLAYER NOT MOVING
+        if (remainingFuel<1&& rigidbody.velocity.magnitude==0)
+        {
+            isAlive = false;
+            deathMessage = Index.OUT_OF_FUEL;
+            Invoke(DeathLogic(), deathTimeDuration);
+        }
 
-        if(remainingFuel<1)
-        { Invoke("DestroyTrail", 0.2f); }
+        //Setta livello fuel del serbatoio nuovo
+        FuelCircleProgression.DOFillAmount(remainingFuel / maxFuel,.05f /*(1 - remainingFuel / maxFuel)*/) ;
+        //FuelCircleProgression.fillAmount=remainingFuel/maxFuel;
 
         //FUEL WARNS
         if (remainingFuel > maxFuel/2)
@@ -641,190 +910,237 @@ public class PlayerController : MonoBehaviour
 
         if(secretNumber==666)
         { remainingFuel = maxFuel; }
+
+        //indicatore fuel vecchio
+        //fuelMeter.text = $"FUEL {(int)remainingFuel}";
+        //fuelSlider.value = remainingFuel / maxFuel;
         #endregion
 
-        #region |||>>> LIFE AND SCORE COUNT <<<|||
+        #region ||>> LIFE AND SCORE COUNT <<||
 
-        if (livesCount != 0&&livesActive&&HC==false)
+        ///FIX TEXT VITE INGAME..ORA FUNZIA(17/03)
+        if (livesCount != 0)
         {
+            if(livesActive ==true&& HC == false)
              livesText.text = $"LIVES {livesCount}"; 
         }
         //else
         //{ livesText.text = "LIVES 0"; }
 
         scoreText.text = $"SCORE {platformCount}";
-        #endregion
 
-        //if (isOnGround)
-        //{
-        //    rb.drag = drag;
-        //}
-
-        #region |||>>> JOYSYICK AXIS ORIENTATION <<<|||
-
-        if (joystickYaxisInverted)
+        if (platformCount > oldMaxScore)
         {
-            if (joystick.Vertical < 0)
-            { joystickYaxisCondition = true; }
-            else
-            { joystickYaxisCondition = false; }
-        }
-        else
-        {
-            if(joystick.Vertical > 0)
-            { joystickYaxisCondition = true; }
-            else
-            { joystickYaxisCondition = false; }
-        }
-
-        if (joystickXaxisInverted)
-        {
-            if (joystick.Horizontal > 0)
-            { joystickXaxisCondition = true; }
-            else if (joystick.Horizontal < 0)
-            { joystickXaxisCondition = false; }
-        }
-        else
-        {
-            if (joystick.Horizontal > 0)
-            { joystickXaxisCondition = false; }
-            else if (joystick.Horizontal < 0)
-            { joystickXaxisCondition = true; }
+            SaveHighScore();
+            LoadHighScore();
+            //hiScoreText.text = $"HI-SCORE: {oldMaxScore.ToString()}";
         }
         #endregion
 
-        #region |||>>> JOYSTICK MOVEMENT <<<|||
-
-        if (joystickControl&&remainingFuel>0)
-        {
-            //VERTICAL MOVEMENT
-            if (joystickYaxisCondition || joystick.Horizontal != 0)
-            { 
-                Trail.SetActive(true);
-                gameObject.transform.GetChild(2).gameObject.SetActive(true);
-                
-            }
-            else
-            {
-               Invoke( "DestroyTrail", 0.3f);
-               Invoke("DestroyParticleFX", 0.6f);
-            }
-
-            if (joystickYaxisCondition /*joystick.Vertical < 0*/)
-            {
-                PlayerAnimator.SetTrigger("Jump");
-                Rigidbody.AddForce(Vector2.up * jetpackForce*Time.deltaTime, ForceMode2D.Impulse); 
-                remainingFuel -= fuelPerSecond*Time.deltaTime;
-                //Alternativa Velocity:
-                //{ Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
-
-                //if (Rigidbody.velocity.y == .3f)
-                //{
-                //    PlayerAnimator = GetComponent<Animator>();
-                //    string animationName = "playerAnimation_JUMP";
-                //    PlayerAnimator.Play(animationName);
-                //}
-
-            }
-            else 
-            {  }
-
-            //Check Facing
-            
-
-            //HORIZONTAL MOVEMENT
-            if (joystick.Horizontal != 0)
-            {
-                #region old xAxis
-                //if (joystickXaxisInverted)
-                //{
-                //    directionLeftSprite = spriteArray[0];
-                //    directionRightSprite = spriteArray[1];
-                //    if (/*joystickXaxisCondition*/posizFacing > 0)
-                //    {
-                //        Rigidbody.AddForce(Vector2.left * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                //        //*(joyXinv?1:-1)
-
-                //        //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                //        //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                //        ChangeSprite(directionLeftSprite);
-                //        //ChangeAnimationRight();
-                //    }
-                //    if (/*!joystickXaxisCondition*/posizFacing < 0)
-                //    {
-                //        Rigidbody.AddForce(Vector2.right * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                //        //Rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                //        //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
-                //        ChangeSprite(directionRightSprite);
-                //        //ChangeAnimationLeft();
-                //    }
-                //}
-                //else
-                //{
-                //    directionLeftSprite = spriteArray[0];
-                //    directionRightSprite = spriteArray[1];
-                //    if (posizFacing > 0)
-                //    {
-                //        Rigidbody.AddForce(Vector2.right * fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                //        ChangeSprite(directionRightSprite);
-                //    }
-                //    if (posizFacing < 0)
-                //    {
-                //        Rigidbody.AddForce(Vector2.left * fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                //        ChangeSprite(directionLeftSprite);
-                //    }
-                //}
-                #endregion
-
-                if (joystickXaxisCondition/*posizFacing > 0*/)
-                {
-                    transform.localScale= leftFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionLeftSprite);
-
-                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, Rigidbody.velocity.y);
-                    //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
-                    //ChangeAnimationRight();
-                }
-                if (!joystickXaxisCondition/*posizFacing < 0*/)
-                {
-                    transform.localScale= rightFacingVector;
-                    Rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-                    ChangeSprite(directionRightSprite);
-                }
-            }
-        }
-        else
-        { }
-        #endregion
-
-        #region |||>>> DEATH BELOW LAST PLAT <<<|||
+        #region ||>> DEATH BELOW LAST PLAT <<||
 
         if (transform.position.y < yMinReachable - 5f && isAlive /*WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA*/)
         {
             //yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
-                posCollision = transform.position;
-                Rigidbody.velocity = new Vector2(0, 0);
-                isAlive = false;
-                deathMessage = Index.DEAD;
-                Invoke(DeathLogic(), deathTimeDuration/*/2*/);
-
+            playerPosOnCollision = transform.position;
+            rigidbody.velocity = new Vector2(0, 0);
+            isAlive = false;
+            deathMessage = Index.DEAD;
+            Invoke(DeathLogic(), deathTimeDuration/*/2*/);
         }
         else
         { }
         #endregion
 
-        //if (transform.position.y>yLastReachedPlatform+5&& WallGeneration.Instance.ListaStageGenerati.Count > 6)
-        //{
-        //    for(int i=0; i>=WallGeneration.Instance.ListaStageGenerati.Count-7; i++)
-        //    {
-        //        StageSection twall = WallGeneration.Instance.ListaStageGenerati[i];
-        //        Destroy(twall);
-        //    }
-        //    WallGeneration.Instance.ListaStageGenerati.RemoveRange(0, WallGeneration.Instance.ListaStageGenerati.Count-6);
+        #region |> MUSHROOM JUMPER ò_ò <|
+        //MUSHROOM JUMPER ò_ò
+        if (mushroomJumper)
+        {
+            ActivateJumper();
+        }
+        else
+        {
+            DeactivateJumper();
+        }
+        #endregion
+    }
 
-        //    //foreach(StageSection stage in WallGeneration.Instance.ListaStageGenerati)
+    #endregion
+
+
+    /// <summary>
+    /// TO FIX AND UPDATE: KEYBOARD MOVEMENT
+    /// </summary>
+    void FixedUpdate()
+    {
+
+        #region <IS_GROUNDED CONTROL>
+        RaycastHit2D ground = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+        if (ground.collider != null)
+        {
+            Debug.Log("Sono a terra.");
+            Debug.Log($"{ground.collider.gameObject.name}");
+            isGrounded = true;
+            isJumping = false;
+            //rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+        }
+        else
+        {
+            isGrounded = false;
+        }
+        #endregion
+
+        #region <LANDING CONDITION TEST>
+        //if (isJumping && !isNearGround)
+        //{
+        //    RaycastHit2D landing = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.4f);
+        //    if (landing.collider != null)
+        //    {
+        //        //isLanding = true;
+        //        isNearGround = true;
+        //        //PlayerAnimator.SetTrigger("Landing");
+        //        //minLandDelayCounter = minLandDelay;
+        //    }
+        //    else
+        //    {
+        //        isNearGround = false;
+        //    }
+
         //}
+        #endregion
+
+        #region |||>>> KEYBOARD MOVEMENT <<<|||
+        // ||>> KEYBOARD LEFT <<||
+        if (Input.GetKey(KeyCode.LeftArrow))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+            if (hit.collider != null)
+            {
+                Debug.Log("Sono a terra.");
+                Debug.Log($"{hit.collider.gameObject.name}");
+
+                ChangeSprite(spriteArray[1]);
+                //ChangeAnimationRight();
+
+                if (!leftRightInAirOnly)
+                {
+                    ChangeSprite(spriteArray[1]);
+                    //ChangeAnimationRight();
+
+                    rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, rigidbody.velocity.y); //VELOCE
+
+                    //rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
+                }
+            }
+            else
+            {
+                Debug.Log("Sono in aria.");
+                ChangeSprite(spriteArray[1]);
+                //ChangeAnimationRight();
+
+                rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                //rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, rigidbody.velocity.y); //VELOCE
+            }
+        }
+
+        // ||>>KEYBOARD RIGHT<<||
+        if (Input.GetKey(KeyCode.RightArrow))
+        {
+            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+            if (hit.collider != null)
+            {
+                Debug.Log("Sono a terra.");
+                Debug.Log($"{hit.collider.gameObject.name}");
+
+                ChangeSprite(spriteArray[0]);
+                //ChangeAnimationLeft();
+
+                if (!leftRightInAirOnly)
+                {
+                    ChangeSprite(spriteArray[0]);
+                    //ChangeAnimationLeft();
+
+                    rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                    //rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, rigidbody.velocity.y); //VELOCE
+
+                    //rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
+                }
+            }
+            else
+            {
+                Debug.Log("Sono in aria.");
+                ChangeSprite(spriteArray[0]);
+                //ChangeAnimationLeft();
+
+                rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+
+                //rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, rigidbody.velocity.y); //VELOCE
+            }
+        }
+
+        // ||>>KEYBOARD JUMP<<||
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            upPressedDown = true;
+            //bool grounded = false;
+            //RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, capsuleCollider.size, capsuleCollider.direction, 0f, Vector2.down, 6);
+            //List<RaycastHit2D> hits = new List<RaycastHit2D>();
+
+            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+            if (hit.collider != null)
+            {
+                Debug.Log("Sono a terra.");
+                Debug.Log($"{hit.collider.gameObject.name}");
+                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            }
+            else
+            { Debug.Log("Sono in aria."); }
+        }
+        else
+        { upPressedDown = false; }
+
+        // ||>>KEYBOARD PROPULSION<<||
+        if (Input.GetKey(KeyCode.Space))
+        {
+            spacePressed = true;
+
+            //rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
+
+            RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
+            if (remainingFuel > 0)
+            {
+                if (hit2.collider != null)
+                {
+                    Debug.Log("Sono a terra.");
+                    if (!jetpackInAirOnly)
+                    {
+                        rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                        remainingFuel -= fuelPerSecond * Time.deltaTime;
+
+                        //rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+                    }
+                }
+                else
+                {
+                    Debug.Log("Sono in aria.");
+
+                    rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                    remainingFuel -= fuelPerSecond * Time.deltaTime;
+
+                    //rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+                }
+            }
+            else
+            {
+            }
+        }
+        else
+        { spacePressed = false; }
+        #endregion
 
         #region reycast test
         //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
@@ -847,150 +1163,17 @@ public class PlayerController : MonoBehaviour
         //RaycastHit2D hitz = Physics2D.Raycast(capsuleCollider.bounds.size, Vector2.one, 0.1f);
         ////if (hitz.collider != null)
 
-        //    if (hitz.collider != null&& Rigidbody.velocity.magnitude>10)
+        //    if (hitz.collider != null&& rigidbody.velocity.magnitude>10)
         //{
         //    this.gameObject.SetActive(false);
         //}
         #endregion
-
     }
 
-    void FixedUpdate()
-    {
-        #region |||>>> KEYBOARD MOVEMENT <<<|||
-        
-        // ||>> KEYBOARD LEFT <<||
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-            if (hit.collider != null)
-            {
-                Debug.Log("Sono a terra.");
-                Debug.Log($"{hit.collider.gameObject.name}");
-
-                ChangeSprite(spriteArray[1]);
-                //ChangeAnimationRight();
-
-                if (!leftRightInAirOnly)
-                {
-                    ChangeSprite(spriteArray[1]);
-                    //ChangeAnimationRight();
-
-                    Rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
-
-                    //Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
-
-                    //Rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
-                }
-            }
-            else
-            {
-                Debug.Log("Sono in aria.");
-                ChangeSprite(spriteArray[1]);
-                //ChangeAnimationRight();
-
-                Rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
-
-                //Rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, Rigidbody.velocity.y); //VELOCE
-            }
-        }
-
-        // ||>>KEYBOARD RIGHT<<||
-        if (Input.GetKey(KeyCode.RightArrow))
-        {
-            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-            if (hit.collider != null)
-            {
-                Debug.Log("Sono a terra.");
-                Debug.Log($"{hit.collider.gameObject.name}");
-
-                ChangeSprite(spriteArray[0]);
-                //ChangeAnimationLeft();
-
-                if (!leftRightInAirOnly)
-                {
-                    ChangeSprite(spriteArray[0]);
-                    //ChangeAnimationLeft();
-
-                    Rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
-
-                    //Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
-
-                    //Rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
-                }
-            }
-            else
-            {
-                Debug.Log("Sono in aria.");
-                ChangeSprite(spriteArray[0]);
-                //ChangeAnimationLeft();
-
-                Rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
-
-                //Rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, Rigidbody.velocity.y); //VELOCE
-            }
-        }
-
-        // ||>>KEYBOARD JUMP<<||
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            upPressedDown = true;
-            //bool grounded = false;
-            //RaycastHit2D hit = Physics2D.CapsuleCast(transform.position, capsuleCollider.size, capsuleCollider.direction, 0f, Vector2.down, 6);
-            //List<RaycastHit2D> hits = new List<RaycastHit2D>();
-
-            RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-            if (hit.collider != null)
-            {
-                Debug.Log("Sono a terra.");
-                Debug.Log($"{hit.collider.gameObject.name}");
-                Rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            }
-            else
-            { Debug.Log("Sono in aria."); }
-        }
-        else
-        { upPressedDown = false; }
-
-        // ||>>KEYBOARD PROPULSION<<||
-        if (Input.GetKey(KeyCode.Space))
-        {
-            spacePressed = true;
-
-            //Rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
-
-            RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-            if (remainingFuel > 0)
-            {
-                if (hit2.collider != null)
-                {
-                    Debug.Log("Sono a terra.");
-                    if (!jetpackInAirOnly)
-                    {
-                        Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
-                        remainingFuel -= fuelPerSecond * Time.deltaTime;
-
-                        //Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
-                    }
-                }
-                else
-                {
-                    Debug.Log("Sono in aria.");
-
-                    Rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
-                    remainingFuel -= fuelPerSecond * Time.deltaTime;
-
-                    //Rigidbody.velocity = new Vector2(Rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
-                }
-            }
-            else
-            {
-            }
-        }
-        else
-        { spacePressed = false; }
-        #endregion
-    }
+    //void OnBecameInvisible()
+    //{
+    //    Destroy(gameObject);
+    //}
 
     #region >> syntax info: getting child/parents <<
 
