@@ -88,12 +88,4 @@ public class SaveLoadPrefs
         }
         Debug.Log("loaded data");
     }
-
-
-    void Start()
-    {
-    }
-    void Update()
-    {
-    }
 }

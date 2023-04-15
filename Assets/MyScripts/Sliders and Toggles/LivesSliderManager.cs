@@ -6,14 +6,20 @@ using UnityEngine.UI;
 
 public class LivesSliderManager : MonoBehaviour
 {
+    #region <VARIABLES>
+
     public static LivesSliderManager instance;
+
     public Slider livesSlider;
     public TMP_Text livesSliderTxt;
     public Image sliderFiller;
     private Color textStartingColor;
     private Color sliderStartingColor;
-
     public int firstTimeStart = 0;
+
+    #endregion
+
+    #region <INIT>
 
     private void Awake()
     {
@@ -21,8 +27,6 @@ public class LivesSliderManager : MonoBehaviour
         instance = this;
         textStartingColor = livesSliderTxt.color;
         sliderStartingColor = sliderFiller.color;
-
-        //sliderFiller=livesSlider.transform.GetChild(2).gameObject.transform.GetChild(0).gameObject.GetComponent<Image>();
     }
 
     void Start()
@@ -41,22 +45,28 @@ public class LivesSliderManager : MonoBehaviour
 
         SavePlayerSettings();
     }
+    #endregion
+
+    #region <<LIVES SLIDER UPDATES>>
+
+    #region <SET LIVES SLIDER>
     private void SetLivesSlider(float val)
     {
         MainMenu.InstanceMenu.UpdateLives(val);
         UpdateSliderText(val);
-
     }
+    #endregion
+
+    #region <PLAY SLIDER SFX>
     private void SFXLivesSLider(float val)
     {
         SFXsoundManager.instance.PlaySettingsSFXSound();
-
     }
+    #endregion
 
+    #region <SET SLIDER TEXT>
     private void UpdateSliderText(float val)
     {
-        //SFXsoundManager.instance.PlaySettingsSFXSound();
-
         if (livesSlider.value == 1)
         {
             livesSliderTxt.text = "HC";
@@ -77,10 +87,12 @@ public class LivesSliderManager : MonoBehaviour
             livesSliderTxt.color= Color.yellow;
             sliderFiller.color = sliderStartingColor;
         }
-        //MainMenu.InstanceMenu.UpdateLives(val);
     }
+    #endregion
 
-    #region <FIRST START CHECK>
+    #endregion
+
+    #region <FIRST START CHECK SAVE>
 
     public void SavePlayerSettings()
     {
