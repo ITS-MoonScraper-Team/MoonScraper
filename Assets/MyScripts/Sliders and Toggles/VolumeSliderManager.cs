@@ -37,8 +37,8 @@ public class VolumeSliderManager : MonoBehaviour
     }
     void Start()
     {
-        ///FIXED(?): RIPRODUCE RUMORE BACKCLICK ALLO START
-        ///FIXED(?): METTE 0 LA PRIMA VOLTA ALL'AVVIO
+        ///FIXED: RIPRODUCE RUMORE BACKCLICK ALLO START
+        ///FIXED: METTE 0 LA PRIMA VOLTA ALL'AVVIO
 
         volumeSlider.onValueChanged.AddListener(MusicVolumeSliderUpdate);
         SFXvolumeSlider.onValueChanged.AddListener(SFXVolumeSliderUpdate);
@@ -145,26 +145,4 @@ public class VolumeSliderManager : MonoBehaviour
     {
     }
 
-    //private void UpdateSFXVolumeText(float val)
-    //{
-    //    if (SFXvolumeSlider.value == 0)
-    //    {
-    //        SFXvolumeSliderTxt.text = "OFF";
-    //        //volumeSliderTxt.fontSize = 60;
-    //        SFXvolumeSliderTxt.color = Color.white;
-    //        SFXsliderFiller.color = Color.white;
-    //    }
-    //    else if (SFXvolumeSlider.value == 100)
-    //    {
-    //        SFXvolumeSliderTxt.text = "MAX";
-    //        SFXvolumeSliderTxt.color = Color.red;
-    //        SFXsliderFiller.color = Color.red;
-    //    }
-    //    else
-    //    {
-    //        SFXvolumeSliderTxt.text = SFXvolumeSlider.value.ToString();
-    //        SFXvolumeSliderTxt.color = Color.yellow;
-    //        SFXsliderFiller.color = Color.yellow;
-    //    }
-    //}
 }

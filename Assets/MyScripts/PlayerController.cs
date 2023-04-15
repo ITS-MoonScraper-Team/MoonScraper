@@ -96,13 +96,12 @@ public class PlayerController : MonoBehaviour
     //private float[] xyRespawn = new float[2];
     private Vector2 playerPosOnCollision;
     private float deathTimeDuration = .5f;
-    private float yMinReachable=0;
+    private float yMinReachable=-0.1f;
     private int livesCount;
     private int livesMax;
     private int maxScoreToSave;
     private int oldMaxScore;
     private int platformCount=0;
-    //private int state = 0;
     private enum Index
     {
         DEAD = 0,
@@ -131,20 +130,19 @@ public class PlayerController : MonoBehaviour
     private bool isJumping = false;
     private bool isLanding = false;
     private bool HC = false;
+    private bool isNearGround=false;
     public float minJumpDelay;
     private float minJumpDelayCounter;
     public float minLandDelay;
     private float minLandDelayCounter;
-    private bool isNearGround=false;
 
-
-#endregion
+    #endregion
 
     #endregion
 
     #region ||>> INIT <<||
 
-private void Awake()
+    private void Awake()
     {
         //SET AXIS ORIENTATION VARIABLE
         if (AxisOrientation.instance != null)
@@ -201,39 +199,17 @@ private void Awake()
                 livesText.text = "HARDCORE"; 
             }
         }
-
-        ////MUSHROOM JUMPER ò_ò
-        //if (mushroomJumper)
-        //{
-        //    ActivateJumper();
-        //}
-
     }
+
     #endregion
 
-    #region ||>> GAME OVER MESSAGES AND RESTART <<||
+    #region ||>> RESTART FUNCTION <<||
 
     //RESTART GAME CON SCENE NAME
     public void RestartGame()
     {
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-    
-    private void GameOver()
-    {
-        GameOverMessage();
-        //livesText.text = "LIVES 0";
-        Invoke("GameOverMessOff", 2f);
-        Invoke("RestartGame", 2f);
-    }
-
-    private void GameOverMessage()
-    { GameOverText.gameObject.SetActive(true); }
-    
-    private void GameOverMessOff()
-    { GameOverText.gameObject.SetActive(false); }
-
     #endregion
 
     #region ||>> COLLISIONS <<||
@@ -248,98 +224,101 @@ private void Awake()
         playerPosOnCollision = transform.position;
         rigidbody.velocity = new Vector2(0, 0);
 
-        //Collision su Jumper piazzato sul prefab col fungo
-        //(TO ACTIVATE: attiva bool mushroomJumper che attiva polygon collider del fungo e collider del jumper sul prefab)
-        if (collision.gameObject.layer == 9)
-        {
-            //fine benza
-            if (remainingFuel < 1)
-            {
-                isAlive = false;
-                deathMessage = Index.OUT_OF_FUEL;
-                Invoke(DeathLogic(), deathTimeDuration);
-            }
-            else
-            { rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
-        }
+        Debug.LogError(collision.gameObject.name);
 
-        //wall collision
-        if (collision.gameObject.layer == 3)
+        if (isAlive)
         {
-            
-            if (MainMenu.easyMode==false || Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
-            //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
+            //WALL COLLISION
+            if (collision.gameObject.layer == 3)
             {
-                isAlive = false;
-                deathMessage = Index.DEAD;
-                Invoke(DeathLogic(), deathTimeDuration);
-            }
-            else
-            { }
-            //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
 
-        }
-        
-        //PLATFORM COLLISION
-        if (collision.gameObject.layer ==8)
-        {
-            //collision da sotto
-            if (transform.position.y < yCollidedPlat)
-            {
-                isAlive = false;
-                deathMessage = Index.DEAD;
-                Invoke(DeathLogic(), deathTimeDuration);
+                if (MainMenu.easyMode == false || Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
+                //prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
+                {
+                    isAlive = false;
+                    deathMessage = Index.DEAD;
+                    Invoke(DeathLogic(), deathTimeDuration);
+                }
+                else
+                { }
+                //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
             }
 
-            //atterraggio da sopra
-            else
+            //PLATFORM COLLISION
+            if (collision.gameObject.layer == 8)
             {
-                //morte too fast
+                //collision da sotto
+                if (transform.position.y < yCollidedPlat)
+                {
+                    isAlive = false;
+                    deathMessage = Index.DEAD;
+                    Invoke(DeathLogic(), deathTimeDuration);
+                }
+
+                //atterraggio da sopra
+                else
+                {
+                    //morte too fast
+                    if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
+                    {
+                        isAlive = false;
+                        deathMessage = Index.DEAD;
+                        Invoke(DeathLogic(), deathTimeDuration);
+                    }
+                    //respawn se finsici benza su stessa piatt
+                    else if (yCollidedPlat == yLastReachedPlatform && remainingFuel < 1)
+                    {
+                        isAlive = false;
+                        deathMessage = Index.OUT_OF_FUEL;
+                        Invoke(DeathLogic(), deathTimeDuration);
+                    }
+                    //rileva se nuova piattaforma e aumenta score
+                    else if (collidedPlat.index == PlatformBehaviour.Index.MAI_TOCCATA)
+                    {
+                        NewPlatformReached(collidedPlat);
+                        yLastReachedPlatform = yCollidedPlat;
+                        //Debug.Log(collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
+                    }
+
+                    //else if (yCollidedPlat != yLastReachedPlatform)
+                    //{
+                    //    yLastReachedPlatform = yCollidedPlat;
+                    //}
+                }
+            }
+
+            //GROUND LEVEL COLLISION
+            if (collision.gameObject.layer == 6)
+            {
                 if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
                 {
                     isAlive = false;
                     deathMessage = Index.DEAD;
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
-                //respawn se finsici benza su stessa piatt
-                else if(yCollidedPlat == yLastReachedPlatform&&remainingFuel < 1)
+                //fine benza
+                else if (remainingFuel < 1)
                 {
                     isAlive = false;
                     deathMessage = Index.OUT_OF_FUEL;
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
-                //rileva se nuova piattaforma e aumenta score
-                else if(collidedPlat.index==PlatformBehaviour.Index.MAI_TOCCATA)
+            }
+
+            //COLLISION SU JUMPER situato sul prefab col fungo
+            //(TO ACTIVATE: attiva bool mushroomJumper che attiva polygon collider del fungo e collider del jumper sul prefab)
+            if (collision.gameObject.layer == 9)
+            {
+                //fine benza
+                if (remainingFuel < 1)
                 {
-                    NewPlatformReached(collidedPlat);
-                    yLastReachedPlatform = yCollidedPlat;
-                    Debug.Log(collision.gameObject.transform.parent.gameObject.transform.parent.gameObject.name);
+                    isAlive = false;
+                    deathMessage = Index.OUT_OF_FUEL;
+                    Invoke(DeathLogic(), deathTimeDuration);
                 }
-
-                //else if (yCollidedPlat != yLastReachedPlatform)
-                //{
-                //    yLastReachedPlatform = yCollidedPlat;
-                //}
+                else
+                { rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
             }
-        }
-
-        //collision ground level
-        if (collision.gameObject.layer == 6)
-        {
-            if (Mathf.Abs(collision.relativeVelocity.y) > deathFallingSpeed)
-            {
-                isAlive = false;
-                deathMessage = Index.DEAD;
-                Invoke(DeathLogic(), deathTimeDuration);
-            }
-            //fine benza
-            else if (remainingFuel < 1)
-            {
-                isAlive = false;
-                deathMessage = Index.OUT_OF_FUEL;
-                Invoke(DeathLogic(), deathTimeDuration);
-            }
-        }
 
         #region TEST LOWER LIMIT CONDITION
         //TEST LOWER LIMIT CON COLLISION
@@ -353,10 +332,11 @@ private void Awake()
         }
         #endregion
 
+        }
     }
     #endregion
 
-    #region ||>> DEATH LOGIC <<||
+    #region ||>> DEATH LOGIC AND GAME OVER <<||
 
     private string DeathLogic()
     {
@@ -398,14 +378,13 @@ private void Awake()
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
         Destroy(explosion, .4f);
-
     }
 
     private string DeathMessageType()
     {
-        //messaggio morte e chiama respawn in base al tipo di morte
-
+        //messaggio morte e chiama respawn/game over
         string condition;
+
         if (livesCount == 0)
         { condition = "GameOver"; }
         else
@@ -423,6 +402,21 @@ private void Awake()
         }
         return condition;
     }
+
+    private void GameOver()
+    {
+        GameOverMessage();
+        //livesText.text = "LIVES 0";
+        Invoke("GameOverMessOff", 2f);
+        Invoke("RestartGame", 2f);
+    }
+
+    private void GameOverMessage()
+    { GameOverText.gameObject.SetActive(true); }
+    
+    private void GameOverMessOff()
+    { GameOverText.gameObject.SetActive(false); }
+
     #endregion
 
     #region ||>> RESPAWN LOGIC <<||
@@ -596,7 +590,7 @@ private void Awake()
     //}
     #endregion
 
-    #region |> ACTIVATE-DEACTIVATE MUSHROOM JUMPER <|
+    #region ||> ACTIVATE-DEACTIVATE MUSHROOM JUMPER <||
 
     private void ActivateJumper()
     {
@@ -872,7 +866,7 @@ private void Awake()
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         //DEATH IF FUEL EMPTY AND PLAYER NOT MOVING
-        if (remainingFuel<1&& rigidbody.velocity.magnitude==0)
+        if (remainingFuel < 1 && rigidbody.velocity.magnitude == 0)
         {
             isAlive = false;
             deathMessage = Index.OUT_OF_FUEL;
@@ -946,7 +940,7 @@ private void Awake()
             rigidbody.velocity = new Vector2(0, 0);
             isAlive = false;
             deathMessage = Index.DEAD;
-            Invoke(DeathLogic(), deathTimeDuration/*/2*/);
+            Invoke(DeathLogic(), deathTimeDuration);
         }
         else
         { }
@@ -967,19 +961,17 @@ private void Awake()
 
     #endregion
 
-
     /// <summary>
     /// TO FIX AND UPDATE: KEYBOARD MOVEMENT
     /// </summary>
     void FixedUpdate()
     {
-
         #region <IS_GROUNDED CONTROL>
         RaycastHit2D ground = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
         if (ground.collider != null)
         {
-            Debug.Log("Sono a terra.");
-            Debug.Log($"{ground.collider.gameObject.name}");
+            //Debug.Log("Sono a terra.");
+            Debug.Log($"tocco terra: {ground.collider.gameObject.name}");
             isGrounded = true;
             isJumping = false;
             //rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
@@ -1052,8 +1044,8 @@ private void Awake()
             RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
             if (hit.collider != null)
             {
-                Debug.Log("Sono a terra.");
-                Debug.Log($"{hit.collider.gameObject.name}");
+                //Debug.Log("Sono a terra.");
+                Debug.Log($"tocco terra: {hit.collider.gameObject.name}");
 
                 ChangeSprite(spriteArray[0]);
                 //ChangeAnimationLeft();
@@ -1093,8 +1085,8 @@ private void Awake()
             RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
             if (hit.collider != null)
             {
-                Debug.Log("Sono a terra.");
-                Debug.Log($"{hit.collider.gameObject.name}");
+                //Debug.Log("Sono a terra.");
+                Debug.Log($"tocco terra: {hit.collider.gameObject.name}");
                 rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             }
             else
@@ -1140,33 +1132,6 @@ private void Awake()
         }
         else
         { spacePressed = false; }
-        #endregion
-
-        #region reycast test
-        //if (Physics.Raycast(transform.position, Vector3.down, out hit, 100, 1 << 7))
-        //{
-        //    hit.collider.GetComponent<WallGeneration>().method();
-        //}
-
-        //RaycastHit2D hit = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
-        //if (hit.collider != null)
-        //{
-        //    Debug.Log("Sono a terra.");
-        //}
-
-        //RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector3.down, 0.1f, 6);
-        //if (hit)
-        //{
-        //    hit.collider.IsTouchingLayers(3);
-        //}
-
-        //RaycastHit2D hitz = Physics2D.Raycast(capsuleCollider.bounds.size, Vector2.one, 0.1f);
-        ////if (hitz.collider != null)
-
-        //    if (hitz.collider != null&& rigidbody.velocity.magnitude>10)
-        //{
-        //    this.gameObject.SetActive(false);
-        //}
         #endregion
     }
 

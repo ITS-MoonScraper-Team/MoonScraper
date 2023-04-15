@@ -57,9 +57,6 @@ public class SFXsoundManager : MonoBehaviour
     }
     #endregion
 
-    /// <summary>
-    /// FIXED: STOPPA AUDIO DELL'ESPLOSIONE QUANDO STOPPA JETPACK
-    /// </summary>
     #region <PLAY SFX SOUNDS>
 
     public void PlaySound(string clip)
@@ -126,7 +123,7 @@ public class SFXsoundManager : MonoBehaviour
         PlayerPrefs.SetInt("SFXVolumeToSlider", SFXvolSlider);
         PlayerPrefs.SetFloat("SFXVolumeLvl", SFXvolLvl);
         PlayerPrefs.Save();
-        Debug.Log("saved date");
+        Debug.Log("saved data");
     }
 
     public void LoadPlayerSettings()

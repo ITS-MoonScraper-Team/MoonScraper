@@ -790,7 +790,7 @@ GameObject:
   - component: {fileID: 4795541333422388919}
   - component: {fileID: 4795541333422388921}
   - component: {fileID: 4795541333422388920}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSteps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1069,3 +1069,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   platform: {fileID: 5938858234781329552}
+  lowerCollider: {fileID: 0}
