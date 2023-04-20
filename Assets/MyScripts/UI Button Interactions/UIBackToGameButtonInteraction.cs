@@ -5,13 +5,10 @@ using UnityEngine;
 
 public class UIBackToGameButtonInteraction : MonoBehaviour
 {
-    //On
-
     private Touch touch;
+
     void Start()
-    {
-        
-    }
+    { }
 
     /// <summary>
     /// NON FUNZIONA
@@ -21,9 +18,7 @@ public class UIBackToGameButtonInteraction : MonoBehaviour
         //Handle screen touches.
         if (Input.touchCount > 0)
         {
-            
             StartButtonAnimationCoroutine();
-        
         }
     }
     public void StartButtonAnimationCoroutine()
@@ -60,6 +55,5 @@ public class UIBackToGameButtonInteraction : MonoBehaviour
     private void OnDisable()
     {
             transform.DOScale(Vector3.one * 3.66f, .05f).SetEase(Ease.InBounce);
-
     }
 }

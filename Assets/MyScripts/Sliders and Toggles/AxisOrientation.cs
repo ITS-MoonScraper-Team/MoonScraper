@@ -7,7 +7,10 @@ using UnityEngine.UI;
 
 public class AxisOrientation : MonoBehaviour
 {
+    #region <VARIABLES>
+
     public static AxisOrientation instance;
+
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
     private Image xImage;
@@ -26,6 +29,10 @@ public class AxisOrientation : MonoBehaviour
         get { return yAxisInverted; } 
         set { yAxisInverted = value;  } 
     }
+
+    #endregion
+
+    #region <INIT>
 
     private void Awake()
     {
@@ -46,31 +53,12 @@ public class AxisOrientation : MonoBehaviour
             DontDestroyOnLoad(this);
         }
     }
-    void Start()
-    {
-    }
 
-    //void Update()
-    //{
-    //    if (xAxisToggle != null && yAxisToggle != null)
-    //    {
-    //        if (!xAxisInverted)
-    //            xImage.color = Color.red;
-    //        else
-    //        {
-    //            xImage.color = Color.green;
-    //        }
-    //        if (!yAxisInverted)
-    //            yImage.color = Color.red;
-    //        else
-    //        {
-    //            yImage.color = Color.green;
-    //        }
-    //    }
-    //}
+    void Start() { }
+    #endregion
 
+    #region <SAVE AXIS ORIENTATION>
     //SAVE CALLED ON BACK BUTTON IN MAIN MENU
-
     public void SavePlayerSettings()
     {
         int xValue = XAxisInverted ? 1 : 0;
@@ -96,4 +84,5 @@ public class AxisOrientation : MonoBehaviour
         }
         Debug.Log("loaded data");
     }
+    #endregion
 }

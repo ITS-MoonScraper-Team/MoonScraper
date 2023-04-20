@@ -165,8 +165,6 @@ public class GameMenu : MonoBehaviour
 
     #region <VOLUME SLIDERS UPDATES>
 
-    /// FIXED: NON SUONA IL RUMORE DI BACKCLICK AL VARIARE DEGLI SLIDER IN GAME
-
     //SET VOLUME SLIDERS
     private void MusicVolumeSliderUpdate(float val)
     {

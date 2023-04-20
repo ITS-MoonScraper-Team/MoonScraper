@@ -840,7 +840,7 @@ GameObject:
   - component: {fileID: 8007949639716753386}
   - component: {fileID: 8007949639716753384}
   - component: {fileID: 8007949639716753387}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: RightSteps (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
