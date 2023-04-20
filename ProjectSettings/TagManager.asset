@@ -19,8 +19,8 @@ TagManager:
   - Platforms
   - jumper
   - lowLimitCollider
-  - 
-  - 
+  - joystick
+  - ui joystick
   - 
   - 
   - 
@@ -43,4 +43,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: ui joystick
+    uniqueID: 1420363325
     locked: 0
