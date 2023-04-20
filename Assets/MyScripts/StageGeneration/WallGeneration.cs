@@ -134,7 +134,7 @@ public class WallGeneration : MonoBehaviour
     public void InstanceStageSectionAndPlatform()
     {
         GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)],
-            new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y + 11f, 0), Quaternion.identity);
+        new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y + 11f, 0), Quaternion.identity);
         StageSection newStageSection = newStage.GetComponent<StageSection>();
         ListaStageGenerati.Add(newStageSection);
         ListaPlatforms.Add(newStageSection.platform);

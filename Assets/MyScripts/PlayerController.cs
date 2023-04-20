@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> PLAYER COMPONENTS <<||
 
-    Rigidbody2D rigidbody;
+    Rigidbody2D myRigidbody;
     CapsuleCollider2D capsuleCollider;
     SpriteRenderer spriteRenderer;
     Color colorCharacter;
@@ -157,7 +157,7 @@ private void Awake()
             joystickXaxisInverted=true;
             joystickYaxisInverted=true;
         }
-
+        
         LoadHighScore();
     }
 
@@ -165,7 +165,7 @@ private void Awake()
     {
         //GETTING GAME COMPONENTS
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        rigidbody = GetComponent<Rigidbody2D>();
+        myRigidbody = GetComponent<Rigidbody2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         colorCharacter = spriteRenderer.color;
         fullFuelColor = FuelCircleProgression.color;
@@ -177,7 +177,7 @@ private void Awake()
         livesCount = livesMax;
         
         //SPRITE DIRECTION
-        leftFacingVector=new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
@@ -246,7 +246,7 @@ private void Awake()
         PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
         float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
         playerPosOnCollision = transform.position;
-        rigidbody.velocity = new Vector2(0, 0);
+        myRigidbody.velocity = new Vector2(0, 0);
 
         //Collision su Jumper piazzato sul prefab col fungo
         //(TO ACTIVATE: attiva bool mushroomJumper che attiva polygon collider del fungo e collider del jumper sul prefab)
@@ -260,7 +260,7 @@ private void Awake()
                 Invoke(DeathLogic(), deathTimeDuration);
             }
             else
-            { rigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
+            { myRigidbody.AddForce(Vector2.up * mushSpringForce * Time.deltaTime, ForceMode2D.Impulse); }
         }
 
         //wall collision
@@ -346,7 +346,7 @@ private void Awake()
         if (collision.gameObject.layer == 10)
         {
             playerPosOnCollision = transform.position;
-            rigidbody.velocity = new Vector2(0, 0);
+            myRigidbody.velocity = new Vector2(0, 0);
             isAlive = false;
             deathMessage = Index.DEAD;
             Invoke(DeathLogic(), deathTimeDuration/*/2*/);
@@ -635,7 +635,7 @@ private void Awake()
     void Update()
     {
         //DEBUG
-        Debug.Log($"VELOCITY {rigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
+        Debug.Log($"VELOCITY {myRigidbody.velocity.magnitude} || FUEL {remainingFuel} || Lives: {livesCount}");
         Debug.LogWarning($"HISCORE {oldMaxScore}");
 
         #region <JUMP DELAY COUNTER>
@@ -744,13 +744,13 @@ private void Awake()
                     }
 
                     //move body
-                    rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                    myRigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
                     remainingFuel -= fuelPerSecond/2 * Time.deltaTime;
 
                     //Alternativa Velocity:
-                    //{ rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
+                    //{ myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, jetpackForce * Mathf.Abs(joystick.Vertical)); }
 
-                    //if (rigidbody.velocity.y <.3f && nearGround)
+                    //if (myRigidbody.velocity.y <.3f && nearGround)
                     //{
                     //    PlayerAnimator = GetComponent<Animator>();
                     //    string animationName = "playerAnimation_JUMP";
@@ -770,16 +770,16 @@ private void Awake()
                     if (joystickXaxisCondition/*posizFacing > 0*/)
                     {
                         transform.localScale = leftFacingVector;
-                        rigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        myRigidbody.AddForce((joystickXaxisInverted ? Vector2.left : Vector2.right) * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
                         ChangeSprite(directionLeftSprite);
 
-                        //rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+                        //myRigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, myRigidbody.velocity.y);
                         //ChangeAnimationRight();
                     }
                     if (!joystickXaxisCondition/*posizFacing < 0*/)
                     {
                         transform.localScale = rightFacingVector;
-                        rigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+                        myRigidbody.AddForce((joystickXaxisInverted ? Vector2.right : Vector2.left) * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
                         ChangeSprite(directionRightSprite);
                     }
                 }
@@ -796,7 +796,7 @@ private void Awake()
 
         //if (isOnGround)
         //{
-        //    rigidbody.drag = drag;
+        //    myRigidbody.drag = drag;
         //}
         #region old xAxis
         //if (joystickXaxisInverted)
@@ -805,18 +805,18 @@ private void Awake()
         //    directionRightSprite = spriteArray[1];
         //    if (/*joystickXaxisCondition*/posizFacing > 0)
         //    {
-        //        rigidbody.AddForce(Vector2.left * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        myRigidbody.AddForce(Vector2.left * fromRightJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
         //        //*(joyXinv?1:-1)
 
-        //        //rigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+        //        //myRigidbody.velocity = new Vector2(fromLeftJetForce * -joystick.Horizontal, myRigidbody.velocity.y);
         //        //polygonCollider.transform.eulerAngles = new Vector3(0, 180, 0);
         //        ChangeSprite(directionLeftSprite);
         //        //ChangeAnimationRight();
         //    }
         //    if (/*!joystickXaxisCondition*/posizFacing < 0)
         //    {
-        //        rigidbody.AddForce(Vector2.right * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
-        //        //rigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, rigidbody.velocity.y);
+        //        myRigidbody.AddForce(Vector2.right * fromLeftJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        //myRigidbody.velocity = new Vector2(fromRightJetForce * -joystick.Horizontal, myRigidbody.velocity.y);
         //        //polygonCollider.transform.eulerAngles = new Vector3(0, 0, 0);
         //        ChangeSprite(directionRightSprite);
         //        //ChangeAnimationLeft();
@@ -828,12 +828,12 @@ private void Awake()
         //    directionRightSprite = spriteArray[1];
         //    if (posizFacing > 0)
         //    {
-        //        rigidbody.AddForce(Vector2.right * fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        myRigidbody.AddForce(Vector2.right * fromLeftJetForce * joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
         //        ChangeSprite(directionRightSprite);
         //    }
         //    if (posizFacing < 0)
         //    {
-        //        rigidbody.AddForce(Vector2.left * fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
+        //        myRigidbody.AddForce(Vector2.left * fromRightJetForce * -joystick.Horizontal * Time.deltaTime, ForceMode2D.Impulse);
         //        ChangeSprite(directionLeftSprite);
         //    }
         //}
@@ -843,7 +843,7 @@ private void Awake()
 
         #region ||>> HIGH VELOCITY WARNINGS <<||
 
-        if(rigidbody.velocity.y>-7)
+        if(myRigidbody.velocity.y>-7)
         {
             //spriteRenderer.DOColor(colorCharacter, .05f);
             if (isFalling)
@@ -851,7 +851,7 @@ private void Awake()
             spriteRenderer.color = colorCharacter;
         }
 
-        if (rigidbody.velocity.y <= -7.5f&&rigidbody.velocity.y>-9)
+        if (myRigidbody.velocity.y <= -7.5f&&myRigidbody.velocity.y>-9)
         {
             //GetComponent<MeshRenderer>().material = myHitTakenMaterial;
             //Invoke("SetNormalMaterial", 0.25f);
@@ -861,7 +861,7 @@ private void Awake()
                 StartCoroutine(VelocityWarnCoroutine());
             }
         }
-        if(rigidbody.velocity.y<-9)
+        if(myRigidbody.velocity.y<-9)
         {
             currentWarnColor = Color.red;
         }
@@ -872,7 +872,7 @@ private void Awake()
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         //DEATH IF FUEL EMPTY AND PLAYER NOT MOVING
-        if (remainingFuel<1&& rigidbody.velocity.magnitude==0)
+        if (remainingFuel<1&& myRigidbody.velocity.magnitude==0)
         {
             isAlive = false;
             deathMessage = Index.OUT_OF_FUEL;
@@ -943,7 +943,7 @@ private void Awake()
         {
             //yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
             playerPosOnCollision = transform.position;
-            rigidbody.velocity = new Vector2(0, 0);
+            myRigidbody.velocity = new Vector2(0, 0);
             isAlive = false;
             deathMessage = Index.DEAD;
             Invoke(DeathLogic(), deathTimeDuration/*/2*/);
@@ -982,7 +982,7 @@ private void Awake()
             Debug.Log($"{ground.collider.gameObject.name}");
             isGrounded = true;
             isJumping = false;
-            //rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            //myRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
         else
         {
@@ -1027,11 +1027,11 @@ private void Awake()
                     ChangeSprite(spriteArray[1]);
                     //ChangeAnimationRight();
 
-                    rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+                    myRigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
 
-                    //rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, rigidbody.velocity.y); //VELOCE
+                    //myRigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, myRigidbody.velocity.y); //VELOCE
 
-                    //rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
+                    //myRigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
                 }
             }
             else
@@ -1040,9 +1040,9 @@ private void Awake()
                 ChangeSprite(spriteArray[1]);
                 //ChangeAnimationRight();
 
-                rigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
+                myRigidbody.AddForce(Vector2.right * fromLeftJetForce * Time.deltaTime, ForceMode2D.Impulse);
 
-                //rigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, rigidbody.velocity.y); //VELOCE
+                //myRigidbody.velocity = new Vector2(fromLeftJetForce * Vector2.right.x, myRigidbody.velocity.y); //VELOCE
             }
         }
 
@@ -1063,11 +1063,11 @@ private void Awake()
                     ChangeSprite(spriteArray[0]);
                     //ChangeAnimationLeft();
 
-                    rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+                    myRigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
 
-                    //rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, rigidbody.velocity.y); //VELOCE
+                    //myRigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, myRigidbody.velocity.y); //VELOCE
 
-                    //rigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
+                    //myRigidbody.AddForceAtPosition(Vector2.right*fromLeftJetForce, )
                 }
             }
             else
@@ -1076,9 +1076,9 @@ private void Awake()
                 ChangeSprite(spriteArray[0]);
                 //ChangeAnimationLeft();
 
-                rigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
+                myRigidbody.AddForce(Vector2.left * fromRightJetForce * Time.deltaTime, ForceMode2D.Impulse);
 
-                //rigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, rigidbody.velocity.y); //VELOCE
+                //myRigidbody.velocity = new Vector2(fromRightJetForce * Vector2.left.x, myRigidbody.velocity.y); //VELOCE
             }
         }
 
@@ -1095,7 +1095,7 @@ private void Awake()
             {
                 Debug.Log("Sono a terra.");
                 Debug.Log($"{hit.collider.gameObject.name}");
-                rigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+                myRigidbody.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
             }
             else
             { Debug.Log("Sono in aria."); }
@@ -1108,7 +1108,7 @@ private void Awake()
         {
             spacePressed = true;
 
-            //rigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
+            //myRigidbody.AddForce(Vector2.up * jetpackForce, ForceMode2D.Force);
 
             RaycastHit2D hit2 = Physics2D.Raycast(capsuleCollider.bounds.min, Vector2.down, 0.1f);
             if (remainingFuel > 0)
@@ -1118,20 +1118,20 @@ private void Awake()
                     Debug.Log("Sono a terra.");
                     if (!jetpackInAirOnly)
                     {
-                        rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                        myRigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
                         remainingFuel -= fuelPerSecond * Time.deltaTime;
 
-                        //rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+                        //myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
                     }
                 }
                 else
                 {
                     Debug.Log("Sono in aria.");
 
-                    rigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
+                    myRigidbody.AddForce(Vector2.up * jetpackForce * Time.deltaTime, ForceMode2D.Impulse);
                     remainingFuel -= fuelPerSecond * Time.deltaTime;
 
-                    //rigidbody.velocity = new Vector2(rigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
+                    //myRigidbody.velocity = new Vector2(myRigidbody.velocity.x, jetpackForce * Vector2.up.y); //VELOCE
                 }
             }
             else
@@ -1163,7 +1163,7 @@ private void Awake()
         //RaycastHit2D hitz = Physics2D.Raycast(capsuleCollider.bounds.size, Vector2.one, 0.1f);
         ////if (hitz.collider != null)
 
-        //    if (hitz.collider != null&& rigidbody.velocity.magnitude>10)
+        //    if (hitz.collider != null&& myRigidbody.velocity.magnitude>10)
         //{
         //    this.gameObject.SetActive(false);
         //}
