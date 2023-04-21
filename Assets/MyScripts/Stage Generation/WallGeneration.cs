@@ -102,19 +102,6 @@ public class WallGeneration : MonoBehaviour
         }
         #endregion
 
-        #region OLD generation
-        //OLD
-        //if ((ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && stageDone == false /*firstStagePassed==true*/)
-        //{ stageDone = false; }
-        //if (stageDone == false)
-        //    GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)], new Vector3(0, ListaStageGenerati[0].transform.position.y + 11f, 0), Quaternion.identity);
-        //    StageSection newStageSection = newStage.GetComponent<StageSection>();
-        //    ListaStageGenerati.Add(newStageSection);
-        //    ListaPlatforms.Add(newStageSection.platform);
-        //    listaBackGround.Add( Instantiate(backGround[0], new Vector3(-2.3f, backGroundStart.transform.position.y + 19f, 1), Quaternion.Euler(0, 0, 270)));
-        //    stageDone = true;
-        //}
-        #endregion
     }
 
     #region <<< INSTANCE FUNCTIONS >>>
@@ -134,7 +121,7 @@ public class WallGeneration : MonoBehaviour
     public void InstanceStageSectionAndPlatform()
     {
         GameObject newStage = Instantiate(stageWalls[Random.Range(0, 12)],
-        new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y + 11f, 0), Quaternion.identity);
+                new Vector3(0, ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y + 11f, 0), Quaternion.identity);
         StageSection newStageSection = newStage.GetComponent<StageSection>();
         ListaStageGenerati.Add(newStageSection);
         ListaPlatforms.Add(newStageSection.platform);

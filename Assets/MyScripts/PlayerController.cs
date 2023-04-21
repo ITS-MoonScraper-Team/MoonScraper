@@ -29,16 +29,16 @@ public class PlayerController : MonoBehaviour
 
     [Header("FORCE LEVELS")] //BALANCE per piattaf distanti 11: jetForce=25, fromLeftRight=13
     [Tooltip("BALANCE: jetForce = 25, from Left/Right = 13")]
-    public float jumpForce=6;
-    public float jetpackForce=25;
-    public float fromLeftJetForce=13;
-    public float fromRightJetForce=13;
+    public float jumpForce = 6;
+    public float jetpackForce = 25;
+    public float fromLeftJetForce = 13;
+    public float fromRightJetForce = 13;
     [Header("FUEL LEVELS")] //BALANCE per piattaf distanti 11: fuel=100, fuelPerSec=49
     [Tooltip("BALANCE: fuel=100, fuelPerSec=49")]
-    public float maxFuel=100f;
+    public float maxFuel = 100f;
     public float fuelPerSecond = 49f;
     [Header("MOVEMENT MODES")]
-    public static bool joystickControl=true;
+    public static bool joystickControl = true;
     public bool jetpackInAirOnly;
     public bool leftRightInAirOnly;
     public bool joystickYaxisInverted/*= true*/;
@@ -47,8 +47,9 @@ public class PlayerController : MonoBehaviour
     [Tooltip("The secret number is,\nthe number of the beast")]
     public float deathFallingSpeed = 9.0f;
     public int mushSpringForce = 500;
-    public static int secretNumber=0;
+    public static int secretNumber = 0;
     public static bool mushroomJumper = false;
+    //se variabile static non is resetta al riavvio - rimane la stessa finchè non la cambi da code
 
     #endregion
 
@@ -96,12 +97,14 @@ public class PlayerController : MonoBehaviour
     //private float[] xyRespawn = new float[2];
     private Vector2 playerPosOnCollision;
     private float deathTimeDuration = .5f;
-    private float yMinReachable=0;
+    private float yMinReachable = 0;
     private int livesCount;
     private int livesMax;
     private int maxScoreToSave;
     private int oldMaxScore;
-    private int platformCount=0;
+    private int platformCount = 0;
+    private static int totalPlatformCount = 0;
+    public static int TotalPlatformCount { get { return totalPlatformCount; } }  
     //private int state = 0;
     private enum Index
     {
@@ -138,7 +141,7 @@ public class PlayerController : MonoBehaviour
     private bool isNearGround=false;
 
 
-#endregion
+    #endregion
 
     #endregion
 
@@ -175,9 +178,11 @@ private void Awake()
         //if (MainMenu.InstanceMenu != null)
         livesMax = MainMenu.InstanceMenu.LivesMax!=null ? MainMenu.InstanceMenu.LivesMax:11;
         livesCount = livesMax;
-        
-        //SPRITE DIRECTION
-        leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        totalPlatformCount = 0;
+
+
+    //SPRITE DIRECTION
+    leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
@@ -216,7 +221,6 @@ private void Awake()
     //RESTART GAME CON SCENE NAME
     public void RestartGame()
     {
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
@@ -345,14 +349,13 @@ private void Awake()
         //TEST LOWER LIMIT CON COLLISION
         if (collision.gameObject.layer == 10)
         {
-            playerPosOnCollision = transform.position;
-            myRigidbody.velocity = new Vector2(0, 0);
+            //playerPosOnCollision = transform.position;
+            //myRigidbody.velocity = new Vector2(0, 0);
             isAlive = false;
             deathMessage = Index.DEAD;
             Invoke(DeathLogic(), deathTimeDuration/*/2*/);
         }
         #endregion
-
     }
     #endregion
 
@@ -482,7 +485,10 @@ private void Awake()
         remainingFuel = maxFuel;
         //aumenta score
         platformCount++;
-        //imposta minima y raggiungibile
+        //aumenta conteggio totale piattaforme(non viene azzerato alla morte)
+        totalPlatformCount++;
+        //imposta minima y raggiungibile/attiva lowlimit collider 
+        collidedPlat.transform.parent.transform.GetComponentInChildren<LowerLimitCollider>().collider.enabled = true;
         yMinReachable = collidedPlat.transform.position.y;
         //Calculate new respawn position
         PlayerRespawnCalculator(collidedPlat);
@@ -937,19 +943,19 @@ private void Awake()
         }
         #endregion
 
-        #region ||>> DEATH BELOW LAST PLAT <<||
+        #region OLD >> death below last latform << OLD
 
-        if (transform.position.y < yMinReachable - 5f && isAlive /*WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA*/)
-        {
-            //yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
-            playerPosOnCollision = transform.position;
-            myRigidbody.velocity = new Vector2(0, 0);
-            isAlive = false;
-            deathMessage = Index.DEAD;
-            Invoke(DeathLogic(), deathTimeDuration/*/2*/);
-        }
-        else
-        { }
+        //if (transform.position.y < yMinReachable - 5f && isAlive /*WallGeneration.Instance.ListaPlatforms[i].index == PlatformBehaviour.Index.ULTIMA*/)
+        //{
+        //    //yMin = WallGeneration.Instance.ListaPlatforms[i].transform.position.y;
+        //    playerPosOnCollision = transform.position;
+        //    myRigidbody.velocity = new Vector2(0, 0);
+        //    isAlive = false;
+        //    deathMessage = Index.DEAD;
+        //    Invoke(DeathLogic(), deathTimeDuration/*/2*/);
+        //}
+        //else
+        //{ }
         #endregion
 
         #region |> MUSHROOM JUMPER ò_ò <|

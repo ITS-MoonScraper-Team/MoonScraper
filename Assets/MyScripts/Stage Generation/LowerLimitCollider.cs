@@ -8,7 +8,7 @@ public class LowerLimitCollider : MonoBehaviour
 
     void Start()
     {
-        collider = gameObject.GetComponent<BoxCollider2D>();
+        //collider = gameObject.GetComponent<BoxCollider2D>();
     }
 
 }

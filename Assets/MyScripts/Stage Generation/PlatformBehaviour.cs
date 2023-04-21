@@ -18,7 +18,7 @@ public class PlatformBehaviour : MonoBehaviour
         RIGHT=1
     }
     public Side side;
-    //public int absoluteNumber;
+
     public SpriteRenderer mainPart_SpriteRenderer;
     public SpriteRenderer edgePart_SpriteRenderer;
 

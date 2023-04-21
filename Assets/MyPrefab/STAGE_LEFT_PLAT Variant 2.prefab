@@ -7,6 +7,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5678602593372421347, guid: 53f3ae7d93cbfb94292bca8865f40c8b, type: 3}
+      propertyPath: m_RootOrder
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 6385631170130673218, guid: 53f3ae7d93cbfb94292bca8865f40c8b, type: 3}
       propertyPath: m_Name
       value: STAGE_LEFT_PLAT Variant 2
@@ -71,7 +75,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 339918492008688717, guid: 1f8b9fc629843cc428601078dba7db76, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 339918492008688717, guid: 1f8b9fc629843cc428601078dba7db76, type: 3}
       propertyPath: m_LocalPosition.x
