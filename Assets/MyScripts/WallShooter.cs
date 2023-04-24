@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class WallShooter : MonoBehaviour
 {
@@ -37,21 +38,29 @@ public class WallShooter : MonoBehaviour
     {
         //if (Player. > 0)
         //{
+        gameObject.transform.DOPunchScale(new Vector3(0.1f,.3f,0), 0.1f, 2, .5f);
+        //gameObject.transform.DOPunchScale()
+
+        Invoke("InstanceShot",.2f);
+
+        //thisShot.GetComponent<Shot>().FiringSide = this.side;
+
+        //}
+    }
+    public void InstanceShot()
+    {
         GameObject thisShot;
 
-        if (side == 0)
+        if (Side == 0)
         {
-            thisShot = Instantiate(shot, transform.position, Quaternion.Euler(0, 0, 270));
+            thisShot = Instantiate(shot, new Vector3(transform.position.x + 1, transform.position.y), Quaternion.Euler(0, 0, 270));
             thisShot.GetComponent<Shot>().FiringSide = 0;
         }
         else
         {
-            thisShot = Instantiate(shot, transform.position, Quaternion.Euler(0, 0, 90));
+            thisShot = Instantiate(shot, new Vector3(transform.position.x - 1, transform.position.y), Quaternion.Euler(0, 0, 90));
             thisShot.GetComponent<Shot>().FiringSide = 1;
         }
-        //thisShot.GetComponent<Shot>().FiringSide = this.side;
-        
-        //}
     }
     void Update()
     {

@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class Shot : MonoBehaviour
 {
-    [SerializeField]
-    private float speed;
+    [SerializeField] private float speed;
     //speed per platform pace
     public int speedRatePace = 20;
     //firing side
@@ -22,10 +21,12 @@ public class Shot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (firingSide==0)
-            transform.position += Vector3.right * Time.deltaTime * speed;
-        else
-            transform.position += Vector3.left * Time.deltaTime * speed;
+        transform.position += (FiringSide==0?Vector3.right:Vector3.left) * Time.deltaTime * speed;
+
+        //if (firingSide==0)
+        //    transform.position += Vector3.right * Time.deltaTime * speed;
+        //else
+        //    transform.position += Vector3.left * Time.deltaTime * speed;
 
 
     }
