@@ -416,11 +416,19 @@ private void Awake()
             if (deathMessage == Index.DEAD)
             {
                 deadText.gameObject.SetActive(true);
+                deadText.gameObject.transform.DOScale(deadText.gameObject.transform.localScale * 1.3f, .5f).SetEase(Ease.OutElastic);
+                deadText.gameObject.transform.DOScale(Vector3.one, .5f).SetEase(Ease.InElastic);
+
+
                 //condition = "SetPlayerActive";
             }
             else if (deathMessage==Index.OUT_OF_FUEL)
             {
                 outOfFuelText.gameObject.SetActive(true);
+                outOfFuelText.gameObject.transform.DOScale(outOfFuelText.gameObject.transform.localScale * 1.3f, .5f).SetEase(Ease.OutElastic);
+                outOfFuelText.gameObject.transform.DOScale(Vector3.one, .5f).SetEase(Ease.InElastic);
+
+
             }
             condition = "SetPlayerActive";
         }
@@ -907,7 +915,7 @@ private void Awake()
         }
         if (remainingFuel < maxFuel/4)
         {
-            currentFuelWarnColor = Color.red;
+            currentFuelWarnColor = Color.white;
         }
 
         //FUEL CHEATS

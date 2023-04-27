@@ -14,7 +14,8 @@ public class Shot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        speed = (4 + PlayerController.TotalPlatformCount / speedRatePace);
+        //speed = (4 + PlayerController.TotalPlatformCount / speedRatePace);
+        speed = 4 + Mathf.Log10(PlayerController.TotalPlatformCount);
         //if(PlayerController.TotalPlatformCount>)
     }
 
