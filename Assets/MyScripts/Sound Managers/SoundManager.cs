@@ -42,7 +42,7 @@ public class SoundManager : MonoBehaviour
         }
         else
         {
-            ///TO FIX: METTE 0 LA PRIMA VOLTA ALL'AVVIO
+            ///FIXed: METTE 0 LA PRIMA VOLTA ALL'AVVIO
             ///
             //volumeToSlider = 100;
             //volumeLvl = 1f;
