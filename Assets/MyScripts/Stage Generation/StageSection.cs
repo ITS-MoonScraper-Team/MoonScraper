@@ -27,6 +27,11 @@ public class StageSection : MonoBehaviour
             shooterY = transform.position.y + Random.Range(-6f, -4f);
             thisShooter = Instantiate(Shooter, new Vector3(shooterX, shooterY), Quaternion.Euler(0, 0, 90));
             thisShooter.Side = xCoordinatesIndex;
+            if (thisShooter.Side == 0)
+                thisShooter.transform.rotation = Quaternion.Euler(0, 0, 90);
+            else
+                thisShooter.transform.rotation = Quaternion.Euler(0, 0, -90);
+
         }
     }
     private void OnDestroy()

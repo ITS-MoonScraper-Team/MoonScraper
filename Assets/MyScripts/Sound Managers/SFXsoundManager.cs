@@ -15,6 +15,7 @@ public class SFXsoundManager : MonoBehaviour
     //SFX AUDIO SOURCES
     public static AudioSource sfxSource1;
     public AudioSource sfxSourceJetpack;
+    public AudioSource sfxSourceShooter;
 
     //SFX VOLUME VARIABLES
     private int SFXvolumeToSlider;
@@ -25,6 +26,8 @@ public class SFXsoundManager : MonoBehaviour
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
+    public List<AudioClip> shootSound = new List<AudioClip>(); 
+
 
     //Future use
     //public static bool SFXgameAudioON;
@@ -76,6 +79,10 @@ public class SFXsoundManager : MonoBehaviour
                 sfxSourceJetpack.clip = jetpackPropulsion;
                 sfxSourceJetpack.Play();
                 break;
+            case "shotSound":
+                sfxSourceShooter.clip = shootSound[ Random.Range(0, 5)];
+                sfxSourceShooter.Play();
+                break;
         }
     }
 
@@ -111,6 +118,7 @@ public class SFXsoundManager : MonoBehaviour
         SFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
+        sfxSourceShooter.volume = SFXVolumeLvl;
     }
     #endregion
 
