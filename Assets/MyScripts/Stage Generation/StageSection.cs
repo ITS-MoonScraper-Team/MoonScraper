@@ -37,6 +37,6 @@ public class StageSection : MonoBehaviour
     private void OnDestroy()
     {
         //Destroy(Shooter.gameObject);
-        Destroy(thisShooter.gameObject);
+        //Destroy(thisShooter?.gameObject);
     }
 }

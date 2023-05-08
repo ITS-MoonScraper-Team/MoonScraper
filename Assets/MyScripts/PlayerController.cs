@@ -176,13 +176,13 @@ private void Awake()
         //SETTING PLAYER DATA
         remainingFuel = maxFuel;
         //if (MainMenu.InstanceMenu != null)
-        livesMax = MainMenu.InstanceMenu.LivesMax!=null ? MainMenu.InstanceMenu.LivesMax:11;
+        livesMax = MainMenu.InstanceMenu!=null ? MainMenu.InstanceMenu.LivesMax:11;
         livesCount = livesMax;
         totalPlatformCount = 0;
 
 
-    //SPRITE DIRECTION
-    leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        //SPRITE DIRECTION
+        leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
         rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
         directionLeftSprite = spriteArray[0];
         directionRightSprite= spriteArray[1];
@@ -208,11 +208,7 @@ private void Awake()
         }
 
         ////MUSHROOM JUMPER ò_ò
-        //if (mushroomJumper)
-        //{
-        //    ActivateJumper();
-        //}
-
+        
     }
     #endregion
 
@@ -248,7 +244,7 @@ private void Awake()
         //float yStageCollision = collision.gameObject.transform.position.y;
 
         PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
-        float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
+        //float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
         playerPosOnCollision = transform.position;
         myRigidbody.velocity = new Vector2(0, 0);
 
@@ -287,6 +283,8 @@ private void Awake()
         //PLATFORM COLLISION
         if (collision.gameObject.layer ==8)
         {
+            float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
+
             //collision da sotto
             if (transform.position.y < yCollidedPlat)
             {
@@ -373,7 +371,6 @@ private void Awake()
 
     private void SetPlayerInactiveLoseLife()
     {
-        //StartCoroutine(SetPlayerInactiveCorutine());
         //isAlive = false;
 
         //Disattiva player
@@ -401,13 +398,11 @@ private void Awake()
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
         Destroy(explosion, .4f);
-
     }
 
     private string DeathMessageType()
     {
         //messaggio morte e chiama respawn in base al tipo di morte
-
         string condition;
         if (livesCount == 0)
         { condition = "GameOver"; }
@@ -416,7 +411,7 @@ private void Awake()
             if (deathMessage == Index.DEAD)
             {
                 deadText.gameObject.SetActive(true);
-                deadText.gameObject.transform.DOScale(deadText.gameObject.transform.localScale * 3f, .5f).SetEase(Ease.OutElastic);
+                deadText.gameObject.transform.DOScale(deadText.gameObject.transform.localScale * 2f, .5f).SetEase(Ease.OutElastic);
                 deadText.gameObject.transform.DOScale(deadText.gameObject.transform.localScale, .5f).SetEase(Ease.InElastic);
 
 
@@ -425,10 +420,8 @@ private void Awake()
             else if (deathMessage==Index.OUT_OF_FUEL)
             {
                 outOfFuelText.gameObject.SetActive(true);
-                outOfFuelText.gameObject.transform.DOScale(outOfFuelText.gameObject.transform.localScale * 3f, .5f).SetEase(Ease.OutElastic);
+                outOfFuelText.gameObject.transform.DOScale(outOfFuelText.gameObject.transform.localScale * 2f, .5f).SetEase(Ease.OutElastic);
                 outOfFuelText.gameObject.transform.DOScale(deadText.gameObject.transform.localScale, .5f).SetEase(Ease.InElastic);
-
-
             }
             condition = "SetPlayerActive";
         }
@@ -489,6 +482,7 @@ private void Awake()
     {
         //PLAYER VARIABLES UPDATE: Fuel refill, platform score +1, minima Y raggiungibile
         //Fuel refill
+        FuelCircleProgression.GetComponent<AudioSource>().Play();
         FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
         remainingFuel = maxFuel;
         //aumenta score
@@ -614,13 +608,24 @@ private void Awake()
 
     private void ActivateJumper()
     {
-        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
+        WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider").GetComponent<BoxCollider2D>().enabled = true;
+        WallGeneration.Instance.stageWalls[4].transform.Find("Mushroom").GetComponent<PolygonCollider2D>().enabled = true;
+
+        //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
+        //WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
     }
     private void DeactivateJumper()
     {
-        WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = false;
-        WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+        //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.name==""
+        //if (WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled==true)
+        if(WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider")!=null)
+        {
+            WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider").GetComponent<BoxCollider2D>().enabled = false;
+            WallGeneration.Instance.stageWalls[4].transform.Find("Mushroom").GetComponent<PolygonCollider2D>().enabled = false;
+
+            //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = false;
+            //WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = false;
+        }
     }
     #endregion
 
@@ -1183,11 +1188,6 @@ private void Awake()
         //}
         #endregion
     }
-
-    //void OnBecameInvisible()
-    //{
-    //    Destroy(gameObject);
-    //}
 
     #region >> syntax info: getting child/parents <<
 
