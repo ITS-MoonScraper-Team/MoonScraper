@@ -147,9 +147,38 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> INIT <<||
 
-private void Awake()
+    private void Awake()
     {
         //SET AXIS ORIENTATION VARIABLE
+        SetAxisOrientation();
+        
+        LoadHighScore();
+    }
+
+
+    void Start()
+    {
+        GetGameComponents();
+        InitializeColors();
+
+        //SETTING PLAYER DATA
+        SetPlayerData();
+
+        //SPRITE DIRECTION
+        SetSpriteDirection();
+        
+        //BASE RESPAWN 
+        SetBaseRespawn();
+
+        //LIVES CONDITION      
+        SetLivesCondition();
+
+        //MUSHROOM JUMPER ò_ò
+        
+    }
+
+    private void SetAxisOrientation()
+    {
         if (AxisOrientation.instance != null)
         {
             joystickXaxisInverted = AxisOrientation.instance.XAxisInverted;
@@ -157,58 +186,62 @@ private void Awake()
         }
         else
         {
-            joystickXaxisInverted=true;
-            joystickYaxisInverted=true;
+            joystickXaxisInverted = true;
+            joystickYaxisInverted = true;
         }
-        
-        LoadHighScore();
     }
-
-    void Start()
+    private void SetLivesCondition()
     {
-        //GETTING GAME COMPONENTS
-        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
-        myRigidbody = GetComponent<Rigidbody2D>();
-        capsuleCollider = GetComponent<CapsuleCollider2D>();
-        colorCharacter = spriteRenderer.color;
-        fullFuelColor = FuelCircleProgression.color;
-
-        //SETTING PLAYER DATA
-        remainingFuel = maxFuel;
-        //if (MainMenu.InstanceMenu != null)
-        livesMax = MainMenu.InstanceMenu!=null ? MainMenu.InstanceMenu.LivesMax:11;
-        livesCount = livesMax;
-        totalPlatformCount = 0;
-
-
-        //SPRITE DIRECTION
-        leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
-        directionLeftSprite = spriteArray[0];
-        directionRightSprite= spriteArray[1];
-
-        //BASE RESPAWN
-        xRespawn= gameObject.transform.position.x;
-        yRespawn= gameObject.transform.position.y;
-
-        //LIVES CONDITION
-        if(livesMax==11)
-        { 
+        if (livesMax == 11)
+        {
             livesActive = false;
             livesText.text = "ETERNAL LIFE";
         }
         else if (livesMax != 11)
-        { 
-            livesActive = true; 
+        {
+            livesActive = true;
             if (livesMax == 1)
-            { 
+            {
                 HC = true;
-                livesText.text = "HARDCORE"; 
+                livesText.text = "HARDCORE";
             }
         }
+    }
 
-        ////MUSHROOM JUMPER ò_ò
-        
+    private void SetBaseRespawn()
+    {
+        xRespawn = gameObject.transform.position.x;
+        yRespawn = gameObject.transform.position.y;
+    }
+
+    private void SetSpriteDirection()
+    {
+        leftFacingVector = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        rightFacingVector = new Vector3(-transform.localScale.x, transform.localScale.y, transform.localScale.z);
+        directionLeftSprite = spriteArray[0];
+        directionRightSprite = spriteArray[1];
+    }
+
+    private void SetPlayerData()
+    {
+        remainingFuel = maxFuel;
+        //if (MainMenu.InstanceMenu != null)
+        livesMax = MainMenu.InstanceMenu != null ? MainMenu.InstanceMenu.LivesMax : 11;
+        livesCount = livesMax;
+        totalPlatformCount = 0;
+    }
+
+    private void InitializeColors()
+    {
+        colorCharacter = spriteRenderer.color;
+        fullFuelColor = FuelCircleProgression.color;
+    }
+
+    private void GetGameComponents()
+    {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        myRigidbody = GetComponent<Rigidbody2D>();
+        capsuleCollider = GetComponent<CapsuleCollider2D>();
     }
     #endregion
 
@@ -241,7 +274,6 @@ private void Awake()
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
-        //float yStageCollision = collision.gameObject.transform.position.y;
 
         PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
         //float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
@@ -481,23 +513,40 @@ private void Awake()
     private void NewPlatformReached(PlatformBehaviour collidedPlat)
     {
         //PLAYER VARIABLES UPDATE: Fuel refill, platform score +1, minima Y raggiungibile
-        //Fuel refill
-        FuelCircleProgression.GetComponent<AudioSource>().Play();
-        FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
-        remainingFuel = maxFuel;
+        
+        FuelRefillOnNewPlatform();
+       
+        SetNewPlatformScore();
+        
+        SetMinimumYReachable(collidedPlat);
+
+        PlayerRespawnCalculator(collidedPlat);
+
+        SetNewPlatformStatus(collidedPlat);
+
+        SetPassedPlatformStatus();
+    }
+
+    private void SetMinimumYReachable(PlatformBehaviour collidedPlat)
+    {
+        //imposta minima y raggiungibile/attiva lowlimit collider 
+        collidedPlat.transform.parent.transform.GetComponentInChildren<LowerLimitCollider>().collider.enabled = true;
+        yMinReachable = collidedPlat.transform.position.y;
+    }
+
+    private void SetNewPlatformScore()
+    {
         //aumenta score
         platformCount++;
         //aumenta conteggio totale piattaforme(non viene azzerato alla morte)
         totalPlatformCount++;
-        //imposta minima y raggiungibile/attiva lowlimit collider 
-        collidedPlat.transform.parent.transform.GetComponentInChildren<LowerLimitCollider>().collider.enabled = true;
-        yMinReachable = collidedPlat.transform.position.y;
-        //Calculate new respawn position
-        PlayerRespawnCalculator(collidedPlat);
-        //Platform status and color 
-        SetNewPlatformStatus(collidedPlat);
-        //setta status PASSATA a piattaforme vecchie
-        SetPassedPlatformStatus();
+    }
+
+    private void FuelRefillOnNewPlatform()
+    {
+        FuelCircleProgression.GetComponent<AudioSource>().Play();
+        FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
+        remainingFuel = maxFuel;
     }
 
     private void SetNewPlatformStatus(PlatformBehaviour collidedPlat)
@@ -508,7 +557,6 @@ private void Awake()
         collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
         collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
         collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-
     }
 
     private void SetPassedPlatformStatus()
@@ -650,6 +698,9 @@ private void Awake()
     #endregion
 
     #region ||||>>>> UPDATE FUNCTIONS: JOYSTICK MOVEMENT, LIFE, FUEL CONTROL <<<<||||
+
+    private bool FuelEmpty => remainingFuel < 1;
+    private bool IsMoving => myRigidbody.velocity.magnitude != 0;
 
     void Update()
     {
@@ -891,7 +942,7 @@ private void Awake()
         remainingFuel = remainingFuel < 0 ? 0 : remainingFuel;
 
         //DEATH IF FUEL EMPTY AND PLAYER NOT MOVING
-        if (remainingFuel<1&& myRigidbody.velocity.magnitude==0)
+        if (FuelEmpty && !IsMoving)
         {
             isAlive = false;
             deathMessage = Index.OUT_OF_FUEL;
@@ -925,10 +976,15 @@ private void Awake()
 
         //FUEL CHEATS
         if (Input.GetKey(KeyCode.F))
-        { remainingFuel = 100000000; Debug.Log("FUEL " + remainingFuel); }
+        { 
+            remainingFuel = 100000000;
+            Debug.Log("FUEL " + remainingFuel);
+        }
 
         if(secretNumber==666)
-        { remainingFuel = maxFuel; }
+        { 
+            remainingFuel = maxFuel;
+        }
 
         //indicatore fuel vecchio
         //fuelMeter.text = $"FUEL {(int)remainingFuel}";
