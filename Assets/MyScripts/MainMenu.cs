@@ -58,7 +58,7 @@ public class MainMenu : MonoBehaviour
     //ACTIVATE UI COLOR-CHANGE COROUTINES
     private void OnEnable()
     {
-        StartCoroutine(ColorChangeCoroutine());
+        //StartCoroutine(ColorChangeCoroutine());
         StartCoroutine(LightAngleVariationCoroutine());
     }
     #endregion
