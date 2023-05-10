@@ -94,6 +94,7 @@ public class GameMenu : MonoBehaviour
             ///TO FIX
             //backToGameButton.gameObject.transform.DOScale(Vector3.one * 8f, .15f).SetEase(Ease.InBounce);
             //Invoke("Resume", 0.2f);
+            
             Resume();
         }
         else

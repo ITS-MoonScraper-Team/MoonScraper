@@ -58,7 +58,6 @@ public class MainMenu : MonoBehaviour
     //ACTIVATE UI COLOR-CHANGE COROUTINES
     private void OnEnable()
     {
-        //StartCoroutine(ColorChangeCoroutine());
         StartCoroutine(LightAngleVariationCoroutine());
     }
     #endregion
@@ -185,9 +184,6 @@ public class MainMenu : MonoBehaviour
             yield return new WaitForSeconds(.2f);
             playButton.image.DOColor(Color.white, 1.15f);
             yield return new WaitForSeconds(.8f);
-
-            //myMaterial.DOColor(Color.red, waitTime);
-            //yield return new WaitForSeconds(.5f);
         }
     }
     #endregion

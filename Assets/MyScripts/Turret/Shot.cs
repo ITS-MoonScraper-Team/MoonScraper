@@ -22,6 +22,7 @@ public class Shot : MonoBehaviour
         startingScale = transform.localScale;
         if ((Vector3.Distance(transform.position, FindObjectOfType<PlayerController>().gameObject.transform.position)<10f))
         {
+            GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl*.305f;
             GetComponent<AudioSource>().clip = shotSounds[Random.Range(0, 4)];
             GetComponent<AudioSource>().Play();
         }
@@ -34,6 +35,8 @@ public class Shot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl * .305f;
+
         transform.position += (FiringSide==0?Vector3.right:Vector3.left) * Time.deltaTime * speed;
         
         //if (firingSide==0)
@@ -69,6 +72,7 @@ public class Shot : MonoBehaviour
         while (true)
         {
             transform.DOPunchScale(startingScale * scaleResize, .4f, 4, 1f);
+            yield return new WaitForSeconds(.4f);
             //transform.DOScale(startingScale * scaleResize, .2f);
             //yield return new WaitForSeconds(.2f);
             //transform.DOScale(startingScale, .2f);
