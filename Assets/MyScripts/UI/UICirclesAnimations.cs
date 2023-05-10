@@ -41,7 +41,6 @@ public class UICirclesAnimations : MonoBehaviour
             yield return new WaitForSeconds(.8f);
             transform.DOScale(startingScale, .8f);
             yield return new WaitForSeconds(.8f);
-
         }
     }
     IEnumerator UIColorCoroutine()

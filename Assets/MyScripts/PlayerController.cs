@@ -577,8 +577,9 @@ public class PlayerController : MonoBehaviour
         //collidedStage.lowerCollider.enabled = true;
 
         collidedPlat.index=PlatformBehaviour.Index.ULTIMA;
-        collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
-        collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+        collidedPlat.GetComponentInChildren<SpriteRenderer>().color= new Color(255, 0f, 56, 255f);
+        //collidedPlat.mainPart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
+        //collidedPlat.edgePart_SpriteRenderer.color = new Color(200f, 0f, 0f, 255f);
     }
 
     private void SetPassedPlatformStatus()
