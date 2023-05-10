@@ -612,8 +612,6 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> VELOCITY/FUEL WARNING COROUTINES <<||
 
-    //CTRL+RR cambia nome in tutto documento
-
     IEnumerator VelocityWarnCoroutine()
     {
         //spriteRenderer.transform.DOShakePosition(.25f);
