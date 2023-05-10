@@ -16,8 +16,11 @@ public class Shot : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        GetComponent<AudioSource>().clip = shotSounds[Random.Range(0, 4)];
-        GetComponent<AudioSource>().Play();
+        if ((Vector3.Distance(transform.position, FindObjectOfType<PlayerController>().gameObject.transform.position)<10f))
+        {
+            GetComponent<AudioSource>().clip = shotSounds[Random.Range(0, 4)];
+            GetComponent<AudioSource>().Play();
+        }
         //speed = (4 + PlayerController.TotalPlatformCount / speedRatePace);
         speed = 4 + Mathf.Log10(PlayerController.TotalPlatformCount);
         //if(PlayerController.TotalPlatformCount>)

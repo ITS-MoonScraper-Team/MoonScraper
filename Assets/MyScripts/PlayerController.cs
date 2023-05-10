@@ -140,7 +140,6 @@ public class PlayerController : MonoBehaviour
     private float minLandDelayCounter;
     private bool isNearGround=false;
 
-
     #endregion
 
     #endregion
@@ -318,8 +317,9 @@ public class PlayerController : MonoBehaviour
             float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
 
             //collision da sotto
-            if (transform.position.y < yCollidedPlat)
+            if ((playerPosOnCollision.y - .2f)< collidedPlat.gameObject.transform.position.y/*transform.position.y < yCollidedPlat*/)
             {
+                Debug.Log("plat pos:" + collidedPlat.gameObject.transform.position.y + "--play pos:" + playerPosOnCollision.y);
                 isAlive = false;
                 deathMessage = Index.DEAD;
                 Invoke(DeathLogic(), deathTimeDuration);
@@ -343,7 +343,7 @@ public class PlayerController : MonoBehaviour
                     Invoke(DeathLogic(), deathTimeDuration);
                 }
                 //rileva se nuova piattaforma e aumenta score
-                else if(collidedPlat.index==PlatformBehaviour.Index.MAI_TOCCATA)
+                else if(collidedPlat.index==PlatformBehaviour.Index.MAI_TOCCATA/*&&(playerPosOnCollision.y-.5f)>collidedPlat.gameObject.transform.position.y+.2f*/)
                 {
                     NewPlatformReached(collidedPlat);
                     yLastReachedPlatform = yCollidedPlat;
