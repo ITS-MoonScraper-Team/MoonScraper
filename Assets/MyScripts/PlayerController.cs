@@ -104,7 +104,7 @@ public class PlayerController : MonoBehaviour
     private int oldMaxScore;
     private int platformCount = 0;
     private static int totalPlatformCount = 0;
-    public static int TotalPlatformCount { get { return totalPlatformCount; } }  
+    public static int TotalPlatformCount => totalPlatformCount;  
     //private int state = 0;
     private enum Index
     {
@@ -307,17 +307,31 @@ public class PlayerController : MonoBehaviour
             }
             else
             { }
-            //if (MainMenu.InstanceMenu.easyMode && Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
 
         }
-        
+        //shot collision
+        if (collision.gameObject.layer == 11)
+        {
+            //transform.DOPunchScale(transform.localScale*.8f , .2f, 2, 0);
+
+            //if (MainMenu.easyMode == false || Mathf.Abs(collision.relativeVelocity.y) > 7.5f)
+            ////prende posizione player alla collisione, occhio che conta anche allo start quando è fermo al ground
+            //{
+            isAlive = false;
+            deathMessage = Index.DEAD;
+            Invoke(DeathLogic(), deathTimeDuration);
+            //}
+            //else
+            //{ }
+        }
+
         //PLATFORM COLLISION
         if (collision.gameObject.layer ==8)
         {
             float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
 
             //collision da sotto
-            if ((playerPosOnCollision.y - .2f)< collidedPlat.gameObject.transform.position.y/*transform.position.y < yCollidedPlat*/)
+            if ((playerPosOnCollision.y - .1f)< collidedPlat.gameObject.transform.position.y/*transform.position.y < yCollidedPlat*/)
             {
                 Debug.Log("plat pos:" + collidedPlat.gameObject.transform.position.y + "--play pos:" + playerPosOnCollision.y);
                 isAlive = false;
@@ -375,8 +389,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        #region TEST LOWER LIMIT CONDITION
-        //TEST LOWER LIMIT CON COLLISION
+        //LOWER LIMIT CON COLLISION
         if (collision.gameObject.layer == 10)
         {
             //playerPosOnCollision = transform.position;
@@ -385,7 +398,14 @@ public class PlayerController : MonoBehaviour
             deathMessage = Index.DEAD;
             Invoke(DeathLogic(), deathTimeDuration/*/2*/);
         }
-        #endregion
+
+        //shot test
+        //if (FuelEmpty && !IsMoving&&collision.gameObject.layer!=11)
+        //{
+        //    isAlive = false;
+        //    deathMessage = Index.OUT_OF_FUEL;
+        //    Invoke(DeathLogic(), deathTimeDuration);
+        //}
     }
     #endregion
 
