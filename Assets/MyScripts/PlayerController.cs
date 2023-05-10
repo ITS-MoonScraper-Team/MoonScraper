@@ -148,9 +148,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        //SET AXIS ORIENTATION VARIABLE
         SetAxisOrientation();
-        
         LoadHighScore();
     }
 
@@ -159,21 +157,12 @@ public class PlayerController : MonoBehaviour
     {
         GetGameComponents();
         InitializeColors();
-
-        //SETTING PLAYER DATA
         SetPlayerData();
-
-        //SPRITE DIRECTION
         SetSpriteDirection();
-        
-        //BASE RESPAWN 
         SetBaseRespawn();
-
-        //LIVES CONDITION      
         SetLivesCondition();
 
         //MUSHROOM JUMPER ò_ò
-        
     }
 
     private void SetAxisOrientation()
@@ -425,10 +414,8 @@ public class PlayerController : MonoBehaviour
     {
         //isAlive = false;
 
-        //Disattiva player
         gameObject.SetActive(false);
 
-        //Toglie una vita
         if (livesActive == true)
         {
             livesCount--;
@@ -442,10 +429,10 @@ public class PlayerController : MonoBehaviour
 
         //Sound e graphic FX MORTE
         if (SFXsoundManager.instance?.sfxSourceJetpack.isPlaying==true)
-        Invoke("StopSFXplaying", 0.05f);
+            Invoke("StopSFXplaying", 0.05f);
 
         if(SoundManager.instance)
-        SFXsoundManager.instance.PlayDeathSound();
+            SFXsoundManager.instance.PlayDeathSound();
 
         GameObject explosion = Instantiate(ExplosionTemplate, playerPosOnCollision, Quaternion.identity);
         //explosion.Emit(60);
@@ -680,20 +667,14 @@ public class PlayerController : MonoBehaviour
         WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider").GetComponent<BoxCollider2D>().enabled = true;
         WallGeneration.Instance.stageWalls[4].transform.Find("Mushroom").GetComponent<PolygonCollider2D>().enabled = true;
 
-        //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = true;
-        //WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = true;
     }
     private void DeactivateJumper()
     {
-        //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.name==""
-        //if (WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled==true)
         if(WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider")!=null)
         {
             WallGeneration.Instance.stageWalls[4].transform.Find("JumperCollider").GetComponent<BoxCollider2D>().enabled = false;
             WallGeneration.Instance.stageWalls[4].transform.Find("Mushroom").GetComponent<PolygonCollider2D>().enabled = false;
 
-            //WallGeneration.Instance.stageWalls[4].transform.GetChild(3).gameObject.GetComponent<BoxCollider2D>().enabled = false;
-            //WallGeneration.Instance.stageWalls[4].transform.GetChild(4).gameObject.GetComponent<PolygonCollider2D>().enabled = false;
         }
     }
     #endregion
@@ -1265,14 +1246,4 @@ public class PlayerController : MonoBehaviour
         //}
         #endregion
     }
-
-    #region >> syntax info: getting child/parents <<
-
-    ///collision.gameObject.transform.parent.gameObject
-    ///Prende parent come GameObject: oggettofiglio.transform.parent.gameObject
-    ///se invece: oggettofiglio.transform.parent --> è preso come Transform;
-    ///
-    ///Prende child come GameObject: oggettoparent.transform.getchild(n).gameObject
-    ///se invece: oggettoparent.transform.getchild(n) --> è preso come Transform.
-    #endregion
 }

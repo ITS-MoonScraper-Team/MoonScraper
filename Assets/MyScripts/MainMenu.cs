@@ -29,6 +29,10 @@ public class MainMenu : MonoBehaviour
     public int LivesMax
     { get; set; }
 
+    [SerializeField] private int minPlatformToSpawnShooter = 5;
+    public int MinPlatformToSpawnShooter=>minPlatformToSpawnShooter;
+
+
     #endregion
 
     #region <<INIT>>
@@ -51,8 +55,6 @@ public class MainMenu : MonoBehaviour
     {
         //Screen.SetResolution(1080, 1920, true);
         SoundManager.instance.PlaySound("mainMenu_OST");
-        //StartCoroutine(LightAngleVariationCoroutine());
-        //StartCoroutine(ColorChangeCoroutine());
     }
 
     //ACTIVATE UI COLOR-CHANGE COROUTINES
@@ -101,8 +103,11 @@ public class MainMenu : MonoBehaviour
     //SETTA VALORE DEI TOGGLES ALLO SCRIPT ASSI QUANDO CI INTERAGISCI
     public void SetXaxisValue(bool xAxisInverted)
     {
-        SFXsoundManager.instance.PlaySettingsSFXSound();
+        SFXsoundManager.instance?.PlaySettingsSFXSound();
+
+        if(AxisOrientation.instance!=null)
         AxisOrientation.instance.XAxisInverted = xAxisInverted;
+
         if (xAxisInverted)
             xAxisToggle.image.color = Color.green;
         else
@@ -110,8 +115,11 @@ public class MainMenu : MonoBehaviour
     }
     public void SetYaxisValue(bool yAxisInverted)
     {
-        SFXsoundManager.instance.PlaySettingsSFXSound();
-        AxisOrientation.instance.YAxisInverted = yAxisInverted;
+        SFXsoundManager.instance?.PlaySettingsSFXSound();
+
+        if (AxisOrientation.instance != null)
+            AxisOrientation.instance.YAxisInverted = yAxisInverted;
+
         if (yAxisInverted)
             yAxisToggle.image.color = Color.green;
         else

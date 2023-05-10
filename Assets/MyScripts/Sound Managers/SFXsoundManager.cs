@@ -18,15 +18,15 @@ public class SFXsoundManager : MonoBehaviour
     public AudioSource sfxSourceShooter;
 
     //SFX VOLUME VARIABLES
-    private int SFXvolumeToSlider;
+    private int sFXvolumeToSlider;
     public int SFXVolumeToSlider { get; set; }
 
-    private float SFXvolumeLvl;
+    private float sFXvolumeLvl;
     public float SFXVolumeLvl { get; set; }
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
-    public List<AudioClip> shootSound = new List<AudioClip>(); 
+    [SerializeField] private List<AudioClip> shootSound = new List<AudioClip>(); 
 
 
     //Future use
@@ -57,6 +57,8 @@ public class SFXsoundManager : MonoBehaviour
     {
         //sfxSourceJetpack = GetComponentInChildren<AudioSource>();
         sfxSource1 = GetComponent<AudioSource>();
+        sfxSourceShooter.volume = SFXVolumeLvl * 0.305f;
+
     }
     #endregion
 
@@ -118,7 +120,7 @@ public class SFXsoundManager : MonoBehaviour
         SFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
-        sfxSourceShooter.volume = SFXVolumeLvl;
+        sfxSourceShooter.volume = SFXVolumeLvl*0.305f;
     }
     #endregion
 

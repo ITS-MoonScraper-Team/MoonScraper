@@ -36,6 +36,8 @@ public class WallGeneration : MonoBehaviour
     //CONTROL VARIABLES
     private bool firstStagePassed = false;
     private bool stageDone = false;
+    private bool IsPlayerNearTopLimit => (ListaStageGenerati[ListaStageGenerati.Count - 1].transform.position.y - capsuleCollider.bounds.max.y) < 4f;
+
 
     //Future Use - Pool variables
     public List<StageSection> activeStageList;
@@ -84,8 +86,8 @@ public class WallGeneration : MonoBehaviour
         #region <<< GENERA STAGE >>>
 
         //GENERAZIONE ENDLESS STAGE
-        //Se il player si avvicina più di 4 unità al lowerbound dell'ultimo stage creato ne istanzia uno nuovo
-        if ((ListaStageGenerati[ListaStageGenerati.Count-1].transform.position.y - capsuleCollider.bounds.max.y) < 4f && stageDone==false)
+        //Se il player si avvicina più di 4 unità alla posizione dell'ultimo stage creato ne istanzia uno nuovo
+        if (IsPlayerNearTopLimit && !stageDone)
         {
             stageDone = true;
 
@@ -138,7 +140,7 @@ public class WallGeneration : MonoBehaviour
 
     public void PutBackInPool(StageSection poolObject)
     {
-        //rimuove background da sotto se abbastanza distante da player
+        //rimuove background da sotto se abbastanza distante da ultimo stage generato
         if (poolObject.transform.position.y - listaBackGround[0].transform.position.y > 15f)
             RemoveBackground(listaBackGround[0]);
 

@@ -5,52 +5,36 @@ using UnityEngine;
 
 public class Shot : MonoBehaviour
 {
-    [SerializeField] private float speed;
-    //speed per platform pace
-    public int speedRatePace = 20;
-    //firing side
-    private int firingSide;
-    public int FiringSide { get ; set ; }
-    public float scaleResize = 1.2f;
+    [SerializeField] private float speed=4f;
+    public float Speed=> speed + Mathf.Log10(PlayerController.TotalPlatformCount);
+    
+    [SerializeField] private float scaleResize = 1.2f;
     private Vector3 startingScale;
 
-    public List<AudioClip> shotSounds = new List<AudioClip>(); 
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        startingScale = transform.localScale;
-        if ((Vector3.Distance(transform.position, FindObjectOfType<PlayerController>().gameObject.transform.position)<10f))
-        {
-            GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl*.305f;
-            GetComponent<AudioSource>().clip = shotSounds[Random.Range(0, 4)];
-            GetComponent<AudioSource>().Play();
-        }
-        //speed = (4 + PlayerController.TotalPlatformCount / speedRatePace);
-        speed = 4 + Mathf.Log10(PlayerController.TotalPlatformCount);
-        StartCoroutine(ShotScalingCoroutine());
-        //if(PlayerController.TotalPlatformCount>)
+    //firing side
+    private int firingSide;
+    public int FiringSide 
+    { 
+        get =>firingSide;
+        set =>firingSide= value; 
     }
 
-    // Update is called once per frame
+    void Start()
+    {
+        Invoke("DestroyShot", 10f);
+
+        startingScale = transform.localScale;
+        StartCoroutine(ShotPulsatingCoroutine());
+    }
+
     void Update()
     {
-        GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl * .305f;
-
-        transform.position += (FiringSide==0?Vector3.right:Vector3.left) * Time.deltaTime * speed;
-        
-        //if (firingSide==0)
-        //    transform.position += Vector3.right * Time.deltaTime * speed;
-        //else
-        //    transform.position += Vector3.left * Time.deltaTime * speed;
-
-
+        transform.position += (FiringSide==0?Vector3.right:Vector3.left) * Time.deltaTime * Speed;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Destroy(gameObject);
-
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -60,23 +44,19 @@ public class Shot : MonoBehaviour
     }
     private void OnBecameInvisible()
     {
-        Invoke("DestroyObj", .1f);
+        Invoke("DestroyShot", .1f);
     }
-    private void DestroyObj()
+    
+    private void DestroyShot()
     {
         Destroy(gameObject);
-
     }
-    IEnumerator ShotScalingCoroutine()
+    IEnumerator ShotPulsatingCoroutine()
     {
         while (true)
         {
             transform.DOPunchScale(startingScale * scaleResize, .4f, 4, 1f);
             yield return new WaitForSeconds(.4f);
-            //transform.DOScale(startingScale * scaleResize, .2f);
-            //yield return new WaitForSeconds(.2f);
-            //transform.DOScale(startingScale, .2f);
-            //yield return new WaitForSeconds(.2f);
         }
     }
 }

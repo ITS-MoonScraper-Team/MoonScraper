@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class UIPlayButtonAnimations : MonoBehaviour
 {
-    public float playScaleResize = 1.1f;
+    [SerializeField] private float playScaleResize = 1.1f;
     private Vector3 startingScale;
 
     private void Awake()
@@ -19,7 +19,7 @@ public class UIPlayButtonAnimations : MonoBehaviour
     }
     private void OnEnable()
     {
-            StartCoroutine(UIPlayButtonPulsation());
+        StartCoroutine(UIPlayButtonPulsation());
     }
 
     void Update()
