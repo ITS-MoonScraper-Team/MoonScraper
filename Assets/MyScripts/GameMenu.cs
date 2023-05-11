@@ -89,6 +89,8 @@ public class GameMenu : MonoBehaviour
     public void CheckPause()
     {
         SFXsoundManager.instance.PlaySound("okClick");
+        SoundManager.instance.SavePlayerSettings();
+        SFXsoundManager.instance.SavePlayerSettings();
         if (GameIsPaused)
         {
             ///TO FIX
@@ -117,7 +119,6 @@ public class GameMenu : MonoBehaviour
     {
         //pauseMenuUI.SetActive(false);
         //pauseMenuAnimator.enabled = false;
-
         Time.timeScale = 1f;
         PlayerController.joystickControl=true;
         GameIsPaused = false;
@@ -131,6 +132,8 @@ public class GameMenu : MonoBehaviour
     public void BackToMain()
     {
         SFXsoundManager.instance.PlayOKButtonSFXSound();
+        SFXsoundManager.instance.SavePlayerSettings();
+        SoundManager.instance.SavePlayerSettings();
         Resume();
         //get Scenes to play from builder
         SceneManager.LoadScene(0/*,parameterers */);

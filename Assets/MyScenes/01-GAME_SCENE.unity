@@ -8133,7 +8133,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 1
-        m_CallState: 0
+        m_CallState: 1
       - m_Target: {fileID: 1851055661}
         m_TargetAssemblyTypeName: GameMenu, Assembly-CSharp
         m_MethodName: CheckPause
