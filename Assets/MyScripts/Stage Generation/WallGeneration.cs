@@ -16,11 +16,11 @@ public class WallGeneration : MonoBehaviour
     //SpriteRenderer spriteRenderer;
 
     //GAME OBJECTS
+    public GameObject[] backGround;
+    public GameObject[] stageWalls;
     public GameObject backGroundStart;
     public StageSection startingStage;
     public PlatformBehaviour startingPlatform;
-    public GameObject[] backGround;
-    public GameObject[] stageWalls;
     //public Sprite[] spriteArray;
 
     //ACTIVE OBJECTS LISTS
