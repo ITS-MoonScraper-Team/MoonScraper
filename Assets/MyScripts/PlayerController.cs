@@ -214,7 +214,7 @@ public class PlayerController : MonoBehaviour
     {
         remainingFuel = maxFuel;
         //if (MainMenu.InstanceMenu != null)
-        livesMax = MainMenu.InstanceMenu != null ? MainMenu.InstanceMenu.LivesMax : 11;
+        livesMax = LivesSliderManager.instance != null ? LivesSliderManager.instance.LivesMax : 11;
         livesCount = livesMax;
         totalPlatformCount = 0;
     }

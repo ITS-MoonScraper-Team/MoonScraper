@@ -16,7 +16,14 @@ public class LivesSliderManager : MonoBehaviour
     private Color textStartingColor;
     private Color sliderStartingColor;
     public int firstTimeStart = 0;
-
+    private int livesMax;
+    public int LivesMax /*=> livesMax;*/
+    {
+        get
+        { return livesMax; }
+        //set
+        //{ livesMax = value; }
+    }
     #endregion
 
     #region <INIT>
@@ -24,9 +31,21 @@ public class LivesSliderManager : MonoBehaviour
     private void Awake()
     {
         LoadPlayerSettings();
-        instance = this;
+
+        if (LivesSliderManager.instance != null)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            LivesSliderManager.instance = this;
+            DontDestroyOnLoad(this);
+        }
         textStartingColor = livesSliderTxt.color;
         sliderStartingColor = sliderFiller.color;
+
+        LoadPlayerLivesSettings();
+
     }
 
     void Start()
@@ -39,7 +58,7 @@ public class LivesSliderManager : MonoBehaviour
         }
         else
         {
-            livesSlider.value = MainMenu.InstanceMenu.LivesMax;
+            livesSlider.value = LivesMax;
         }
         livesSlider.onValueChanged.AddListener(SFXLivesSLider);
 
@@ -52,7 +71,7 @@ public class LivesSliderManager : MonoBehaviour
     #region <SET LIVES SLIDER>
     private void SetLivesSlider(float val)
     {
-        MainMenu.InstanceMenu.UpdateLives(val);
+        UpdateLives(val);
         UpdateSliderText(val);
     }
     #endregion
@@ -90,6 +109,35 @@ public class LivesSliderManager : MonoBehaviour
     }
     #endregion
 
+    #endregion
+
+
+    #region <<UPDATE-SAVE-LOAD LIVES>>
+
+    public void UpdateLives(float value)
+    {
+        //prende valore dallo slider e aggiorna la variabile che passa le vite in game
+        livesMax = (int)value;
+    }
+
+    public void SavePlayerLivesSettings()
+    {
+        int livesMaxSet = LivesMax;
+        PlayerPrefs.SetInt("LivesMax", livesMaxSet);
+        PlayerPrefs.Save();
+        Debug.Log("saved data");
+    }
+
+    public void LoadPlayerLivesSettings()
+    {
+        if (PlayerPrefs.HasKey("LivesMax"))
+        {
+            int livesMaxSet = PlayerPrefs.GetInt("LivesMax");
+            livesMax = livesMaxSet;
+        }
+
+        Debug.Log("loaded data");
+    }
     #endregion
 
     #region <FIRST START CHECK SAVE>

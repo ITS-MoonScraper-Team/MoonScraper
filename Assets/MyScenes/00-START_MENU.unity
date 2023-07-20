@@ -2735,7 +2735,6 @@ GameObject:
   - component: {fileID: 849491953}
   - component: {fileID: 849491954}
   - component: {fileID: 849491955}
-  - component: {fileID: 849491956}
   m_Layer: 5
   m_Name: MAIN MENU
   m_TagString: Untagged
@@ -2784,7 +2783,6 @@ MonoBehaviour:
   menuAnimator: {fileID: 516498740}
   xAxisToggle: {fileID: 692876647}
   yAxisToggle: {fileID: 727262297}
-  lifeMeterTXT: {fileID: 1693867417}
   titleMat: {fileID: 1961889024661576231, guid: cdc395fd672e4894d84562f7fdd4792e, type: 2}
   menuAudioON: 0
   minPlatformToSpawnShooter: 5
@@ -2806,22 +2804,6 @@ MonoBehaviour:
   SFXvolumeSlider: {fileID: 859819081}
   SFXvolumeSliderTxt: {fileID: 1120224947}
   SFXsliderFiller: {fileID: 1149673913}
-  firstTimeStart: 0
---- !u!114 &849491956
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 849491952}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 33024620e8475a044816c7a83b49f0d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  livesSlider: {fileID: 987849759}
-  livesSliderTxt: {fileID: 1693867417}
-  sliderFiller: {fileID: 599186135}
   firstTimeStart: 0
 --- !u!1 &859819079
 GameObject:
@@ -3400,6 +3382,54 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 740.8, y: 525.69}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1055630586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1055630588}
+  - component: {fileID: 1055630587}
+  m_Layer: 0
+  m_Name: LivesSliderManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1055630587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055630586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33024620e8475a044816c7a83b49f0d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  livesSlider: {fileID: 987849759}
+  livesSliderTxt: {fileID: 1693867417}
+  sliderFiller: {fileID: 599186135}
+  firstTimeStart: 0
+--- !u!4 &1055630588
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055630586}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -10.48, y: -0.89, z: -0.5082172}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1112411852
 GameObject:
   m_ObjectHideFlags: 0

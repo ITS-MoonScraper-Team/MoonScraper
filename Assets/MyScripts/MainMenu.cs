@@ -18,21 +18,23 @@ public class MainMenu : MonoBehaviour
     public Animator menuAnimator;
     public Toggle xAxisToggle;
     public Toggle yAxisToggle;
-    public TMP_Text lifeMeterTXT;
+    //public TMP_Text lifeMeterTXT;
     public Material titleMat;
     public bool menuAudioON;
     public static bool easyMode = false;
 
     //public float volumeLvl;
     //public int volumeIntLvl;
+    /*
     private int livesMax;
-    public int LivesMax /*=> livesMax;*/
+    public int LivesMax => livesMax;
     { 
         get
         { return livesMax; }
         //set
         //{ livesMax = value; }
     }
+    */
 
     [SerializeField] private int minPlatformToSpawnShooter = 5;
     public int MinPlatformToSpawnShooter=>minPlatformToSpawnShooter;
@@ -44,6 +46,8 @@ public class MainMenu : MonoBehaviour
 
     private void Awake()
     {
+        //MainMenu.InstanceMenu = this;
+
         if (MainMenu.InstanceMenu != null)
         {
             Destroy(gameObject);
@@ -53,7 +57,7 @@ public class MainMenu : MonoBehaviour
             InstanceMenu = this;
             DontDestroyOnLoad(this);
         }
-        LoadPlayerLivesSettings();
+
     }
 
     private void Start()
@@ -84,7 +88,7 @@ public class MainMenu : MonoBehaviour
         menuAnimator.enabled = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1/*,parameterers */);
     }
-    public  void OpenOptions()
+    public void OpenOptions()
     {
         SFXsoundManager.instance.PlayOKButtonSFXSound();
         SetToggles();
@@ -140,33 +144,7 @@ public class MainMenu : MonoBehaviour
     }
     #endregion
 
-    #region <<UPDATE-SAVE-LOAD LIVES>>
-
-    public void UpdateLives(float value)
-    {
-        //prende valore dallo slider e aggiorna la variabile che passa le vite in game
-        livesMax = (int)value;
-    }
-
-    public void SavePlayerLivesSettings()
-    {
-        int livesMaxSet = LivesMax;
-        PlayerPrefs.SetInt("LivesMax", livesMaxSet);
-        PlayerPrefs.Save();
-        Debug.Log("saved data");
-    }
-
-    public void LoadPlayerLivesSettings()
-    {
-        if (PlayerPrefs.HasKey("LivesMax"))
-        {
-            int livesMaxSet = PlayerPrefs.GetInt("LivesMax");
-            livesMax = livesMaxSet;
-        }
-       
-        Debug.Log("loaded data");
-    }
-    #endregion
+   
 
     #region <<UI EFFECTS COROUTINE>>
 
@@ -210,7 +188,7 @@ public class MainMenu : MonoBehaviour
         //SaveLoadPrefs.instance.SavePlayerAxisSettings();
         //SaveLoadPrefs.instance.SavePlayerVolumeSettings();
 
-        SavePlayerLivesSettings();
+        LivesSliderManager.instance.SavePlayerLivesSettings();
         AxisOrientation.instance.SavePlayerSettings();
         SoundManager.instance.SavePlayerSettings();
         SFXsoundManager.instance.SavePlayerSettings();
