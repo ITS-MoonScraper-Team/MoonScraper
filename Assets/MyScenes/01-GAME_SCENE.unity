@@ -9268,6 +9268,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1435914154}
     - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
+      propertyPath: fuelPerSecond
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 8955911963742077091, guid: 651b1a836db7b85499d41b385ddcdc73, type: 3}
       propertyPath: outOfFuelText
       value: 
       objectReference: {fileID: 2104397152}

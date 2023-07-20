@@ -17,10 +17,10 @@ public class SoundManager : MonoBehaviour
 
     //MUSIC VOLUME VARIABLES
     private int volumeToSlider;
-    public int VolumeToSlider { get; set; }
+    public int VolumeToSlider { get { return volumeToSlider; } /*set;*/ }
 
     private float volumeLvl;
-    public float VolumeLvl { get; set; }
+    public float VolumeLvl { get { return volumeLvl; } /*set;*/ }
 
     //INGAME MUSIC CONTROL
     public bool inGameMusicAudioON;
@@ -89,9 +89,9 @@ public class SoundManager : MonoBehaviour
         //Prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
         //volume che appare sullo slider
-        VolumeToSlider = (int)value;
+        volumeToSlider = (int)value;
         //volume effettivo tra 0 e 1 (float)
-        VolumeLvl = value / 100f;
+        volumeLvl = value / 100f;
         MusicSource.volume = VolumeLvl;
 
     }
@@ -119,12 +119,12 @@ public class SoundManager : MonoBehaviour
         if (PlayerPrefs.HasKey("volumeToSlider"))
         {
             int volSlider = PlayerPrefs.GetInt("volumeToSlider");
-            VolumeToSlider = volSlider;
+            volumeToSlider = volSlider;
         }
         if (PlayerPrefs.HasKey("volumeLvl"))
         {
             float volLvl = PlayerPrefs.GetFloat("volumeLvl");
-            VolumeLvl = volLvl;
+            volumeLvl = volLvl;
         }
         Debug.Log("loaded data");
     }

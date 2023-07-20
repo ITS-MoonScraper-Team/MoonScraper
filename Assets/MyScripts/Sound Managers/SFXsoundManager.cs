@@ -18,11 +18,11 @@ public class SFXsoundManager : MonoBehaviour
     public AudioSource sfxSourceShooter;
 
     //SFX VOLUME VARIABLES
-    private int sFXvolumeToSlider;
-    public int SFXVolumeToSlider { get; set; }
+    private int sFXVolumeToSlider;
+    public int SFXVolumeToSlider { get { return sFXVolumeToSlider; }/* set; */}
 
-    private float sFXvolumeLvl;
-    public float SFXVolumeLvl { get; set; }
+    private float sFXVolumeLvl;
+    public float SFXVolumeLvl { get { return sFXVolumeLvl; } /*set; */}
 
     //AUDIO CLIPS
     [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
@@ -115,9 +115,9 @@ public class SFXsoundManager : MonoBehaviour
         //prende valore dallo slider e aggiorna la variabile che passa tra le scene
 
         //volume che appare sullo slider
-        SFXVolumeToSlider = (int)value;
+        sFXVolumeToSlider = (int)value;
         //volume effettivo tra 0 e 1 (float)
-        SFXVolumeLvl = value / 100f;
+        sFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
         sfxSourceShooter.volume = SFXVolumeLvl*0.350f;
@@ -141,12 +141,12 @@ public class SFXsoundManager : MonoBehaviour
         if (PlayerPrefs.HasKey("SFXVolumeToSlider"))
         {
             int SFXvolSlider = PlayerPrefs.GetInt("SFXVolumeToSlider");
-            SFXVolumeToSlider = SFXvolSlider;
+            sFXVolumeToSlider = SFXvolSlider;
         }
         if (PlayerPrefs.HasKey("SFXVolumeLvl"))
         {
             float SFXvolLvl = PlayerPrefs.GetFloat("SFXvolumeLvl");
-            SFXVolumeLvl = SFXvolLvl;
+            sFXVolumeLvl = SFXvolLvl;
         }
         Debug.Log("loaded data");
     }

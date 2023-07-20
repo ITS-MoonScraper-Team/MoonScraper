@@ -12,14 +12,14 @@ public class EditorTools : EditorWindow
     [MenuItem("EditorTools/Open Scene/Start_Menu")]
     public static void OpenMainMenuScene()
     {
-        EditorSceneManager.OpenScene("Assets/MyScenes/START_MENU.unity");
+        EditorSceneManager.OpenScene("Assets/MyScenes/00-START_MENU.unity");
         //SceneManager.LoadScene(0);
     }
 
     [MenuItem("EditorTools/Open Scene/Game_Scene")]
     public static void OpenGameScene()
     {
-        EditorSceneManager.OpenScene("Assets/MyScenes/GAME_SCENE.unity");
+        EditorSceneManager.OpenScene("Assets/MyScenes/01-GAME_SCENE.unity");
     }
 
     [MenuItem("EditorTools/MODs/EasyMode ON-OFF")]

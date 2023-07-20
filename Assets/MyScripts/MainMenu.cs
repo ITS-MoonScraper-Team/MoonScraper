@@ -26,8 +26,13 @@ public class MainMenu : MonoBehaviour
     //public float volumeLvl;
     //public int volumeIntLvl;
     private int livesMax;
-    public int LivesMax
-    { get; set; }
+    public int LivesMax /*=> livesMax;*/
+    { 
+        get
+        { return livesMax; }
+        //set
+        //{ livesMax = value; }
+    }
 
     [SerializeField] private int minPlatformToSpawnShooter = 5;
     public int MinPlatformToSpawnShooter=>minPlatformToSpawnShooter;
@@ -140,7 +145,7 @@ public class MainMenu : MonoBehaviour
     public void UpdateLives(float value)
     {
         //prende valore dallo slider e aggiorna la variabile che passa le vite in game
-        LivesMax = (int)value;
+        livesMax = (int)value;
     }
 
     public void SavePlayerLivesSettings()
@@ -156,7 +161,7 @@ public class MainMenu : MonoBehaviour
         if (PlayerPrefs.HasKey("LivesMax"))
         {
             int livesMaxSet = PlayerPrefs.GetInt("LivesMax");
-            LivesMax = livesMaxSet;
+            livesMax = livesMaxSet;
         }
        
         Debug.Log("loaded data");

@@ -35,16 +35,22 @@ public class WallShooter : MonoBehaviour
 
     public void SpawnShot()
     {
-        gameObject.transform.DOPunchScale(new Vector3(0.1f,.3f,0), 0.1f, 2, .5f);
-
-        Invoke("InstanceShot",.1f);
-        if ((Vector3.Distance(gameObject.transform.position, FindObjectOfType<PlayerController>().gameObject.transform.position) < 10f))
+        if (FindObjectOfType<PlayerController>() != null)
         {
-            SFXsoundManager.instance.PlaySound("shotSound");
-        }
-        gameObject.transform.DOPunchScale(new Vector3(0.1f, .2f, 0), 0.05f, 2, .5f);
+            if ((Vector3.Distance(this.transform.position, FindObjectOfType<PlayerController>().collidedPlat.transform.position) < 10f))
+            {
+                gameObject.transform.DOPunchScale(new Vector3(0.1f,.3f,0), 0.1f, 2, .5f);
 
-        //thisShot.GetComponent<Shot>().FiringSide = this.side;
+                Invoke("InstanceShot",.1f);
+
+                //CAMBIA PLAYER POSITION CON LAST PLATFORM REACHED POSITION
+            
+                SFXsoundManager.instance.PlaySound("shotSound");
+                gameObject.transform.DOPunchScale(new Vector3(0.1f, .2f, 0), 0.05f, 2, .5f);
+
+                //thisShot.GetComponent<Shot>().FiringSide = this.side;
+            }
+        }
     }
     public void InstanceShot()
     {
@@ -68,5 +74,9 @@ public class WallShooter : MonoBehaviour
     void Update()
     {
         //timerCounter += Time.deltaTime;
+    }
+    private void OnDestroy()
+    {
+        CancelSpawn();
     }
 }

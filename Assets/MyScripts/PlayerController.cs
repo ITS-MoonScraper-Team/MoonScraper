@@ -259,11 +259,13 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> COLLISIONS <<||
 
+    public PlatformBehaviour collidedPlat;
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
 
-        PlatformBehaviour collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
+        collidedPlat = collision.gameObject.GetComponentInParent<PlatformBehaviour>();
         //float yCollidedPlat = collision.gameObject.transform.parent.transform.position.y;
         playerPosOnCollision = transform.position;
         myRigidbody.velocity = new Vector2(0, 0);
