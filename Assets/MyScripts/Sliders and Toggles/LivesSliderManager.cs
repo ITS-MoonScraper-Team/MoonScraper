@@ -10,12 +10,12 @@ public class LivesSliderManager : MonoBehaviour
 
     public static LivesSliderManager instance;
 
-    public Slider livesSlider;
-    public TMP_Text livesSliderTxt;
-    public Image sliderFiller;
-    private Color textStartingColor;
-    private Color sliderStartingColor;
-    public int firstTimeStart = 0;
+    //public Slider livesSlider;
+    //public TMP_Text livesSliderTxt;
+    //public Image sliderFiller;
+    //private Color textStartingColor;
+    //private Color sliderStartingColor;
+
     private int livesMax;
     public int LivesMax /*=> livesMax;*/
     {
@@ -30,7 +30,7 @@ public class LivesSliderManager : MonoBehaviour
 
     private void Awake()
     {
-        LoadPlayerSettings();
+        //LoadPlayerSettings();
 
         if (LivesSliderManager.instance != null)
         {
@@ -38,78 +38,78 @@ public class LivesSliderManager : MonoBehaviour
         }
         else
         {
-            LivesSliderManager.instance = this;
+            instance = this;
             DontDestroyOnLoad(this);
         }
-        textStartingColor = livesSliderTxt.color;
-        sliderStartingColor = sliderFiller.color;
+        //textStartingColor = livesSliderTxt.color;
+        //sliderStartingColor = sliderFiller.color;
 
-        LoadPlayerLivesSettings();
+        //LoadPlayerLivesSettings();
 
     }
 
     void Start()
     {
-        livesSlider.onValueChanged.AddListener(SetLivesSlider);
-        if (firstTimeStart == 0)
-        {
-            livesSlider.value = 11f;
-            firstTimeStart++;
-        }
-        else
-        {
-            livesSlider.value = LivesMax;
-        }
-        livesSlider.onValueChanged.AddListener(SFXLivesSLider);
+        //livesSlider.onValueChanged.AddListener(SetLivesSlider);
+        //if (firstTimeStart == 0)
+        //{
+        //    livesSlider.value = 11f;
+        //    firstTimeStart++;
+        //}
+        //else
+        //{
+        //    livesSlider.value = LivesMax;
+        //}
+        //livesSlider.onValueChanged.AddListener(SFXLivesSLider);
 
-        SavePlayerSettings();
+        //SavePlayerSettings();
     }
     #endregion
 
-    #region <<LIVES SLIDER UPDATES>>
+    //#region <<LIVES SLIDER UPDATES>>
 
-    #region <SET LIVES SLIDER>
-    private void SetLivesSlider(float val)
-    {
-        UpdateLives(val);
-        UpdateSliderText(val);
-    }
-    #endregion
+    //#region <SET LIVES SLIDER>
+    //private void SetLivesSlider(float val)
+    //{
+    //    UpdateLives(val);
+    //    UpdateSliderText(val);
+    //}
+    //#endregion
 
-    #region <PLAY SLIDER SFX>
-    private void SFXLivesSLider(float val)
-    {
-        SFXsoundManager.instance.PlaySettingsSFXSound();
-    }
-    #endregion
+    //#region <PLAY SLIDER SFX>
+    //private void SFXLivesSLider(float val)
+    //{
+    //    SFXsoundManager.instance.PlaySettingsSFXSound();
+    //}
+    //#endregion
 
-    #region <SET SLIDER TEXT>
-    private void UpdateSliderText(float val)
-    {
-        if (livesSlider.value == 1)
-        {
-            livesSliderTxt.text = "HC";
-            //livesSliderTxt.fontSize = 60;
-            livesSliderTxt.color = Color.red;
+    //#region <SET SLIDER TEXT>
+    //private void UpdateSliderText(float val)
+    //{
+    //    if (livesSlider.value == 1)
+    //    {
+    //        livesSliderTxt.text = "HC";
+    //        //livesSliderTxt.fontSize = 60;
+    //        livesSliderTxt.color = Color.red;
             
-            sliderFiller.color = Color.red;
-        }
-        else if(livesSlider.value == 11)
-        {
-            livesSliderTxt.text = "ETERNAL";
-            livesSliderTxt.color = textStartingColor;
-            sliderFiller.color = sliderStartingColor;
-        }
-        else
-        {
-            livesSliderTxt.text = livesSlider.value.ToString();
-            livesSliderTxt.color= Color.yellow;
-            sliderFiller.color = sliderStartingColor;
-        }
-    }
-    #endregion
+    //        sliderFiller.color = Color.red;
+    //    }
+    //    else if(livesSlider.value == 11)
+    //    {
+    //        livesSliderTxt.text = "ETERNAL";
+    //        livesSliderTxt.color = textStartingColor;
+    //        sliderFiller.color = sliderStartingColor;
+    //    }
+    //    else
+    //    {
+    //        livesSliderTxt.text = livesSlider.value.ToString();
+    //        livesSliderTxt.color= Color.yellow;
+    //        sliderFiller.color = sliderStartingColor;
+    //    }
+    //}
+    //#endregion
 
-    #endregion
+    //#endregion
 
 
     #region <<UPDATE-SAVE-LOAD LIVES>>
@@ -140,26 +140,6 @@ public class LivesSliderManager : MonoBehaviour
     }
     #endregion
 
-    #region <FIRST START CHECK SAVE>
-
-    public void SavePlayerSettings()
-    {
-        int firstTime = firstTimeStart;
-
-        PlayerPrefs.SetInt("firstTime", firstTime);
-        PlayerPrefs.Save();
-        Debug.Log("saved date");
-    }
-
-    public void LoadPlayerSettings()
-    {
-        if (PlayerPrefs.HasKey("firstTime"))
-        {
-            int firstTime = PlayerPrefs.GetInt("firstTime");
-            firstTimeStart = firstTime;
-        }
-        Debug.Log("loaded data");
-    }
-    #endregion
+   
 
 }

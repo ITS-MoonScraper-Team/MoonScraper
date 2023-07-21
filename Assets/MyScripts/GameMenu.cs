@@ -134,6 +134,7 @@ public class GameMenu : MonoBehaviour
         SFXsoundManager.instance.PlayOKButtonSFXSound();
         SFXsoundManager.instance.SavePlayerSettings();
         SoundManager.instance.SavePlayerSettings();
+        //LivesSliderManager.instance.SavePlayerLivesSettings();
         Resume();
         //get Scenes to play from builder
         SceneManager.LoadScene(0/*,parameterers */);

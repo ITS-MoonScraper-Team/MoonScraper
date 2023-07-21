@@ -8,6 +8,7 @@ using Unity.Burst.CompilerServices;
 using System;
 using TMPro;
 using DG.Tweening;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 //using System.Xml.Schema;
 //using JetBrains.Annotations;
 //using System.Runtime.CompilerServices;
@@ -259,9 +260,10 @@ public class PlayerController : MonoBehaviour
 
     #region ||>> COLLISIONS <<||
 
-    public PlatformBehaviour collidedPlat;
+    private PlatformBehaviour collidedPlat;
+    public bool IsPlayerNearShooter(WallShooter shooter) => Vector3.Distance(shooter.transform.position, collidedPlat.transform.position) < 10f;
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void OnCollisionEnter2D(Collision2D collision)
     {
         //if(capsuleCollider.CompareTag("walls"))
 

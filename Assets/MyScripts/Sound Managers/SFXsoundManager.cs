@@ -57,7 +57,7 @@ public class SFXsoundManager : MonoBehaviour
     {
         //sfxSourceJetpack = GetComponentInChildren<AudioSource>();
         sfxSource1 = GetComponent<AudioSource>();
-        sfxSourceShooter.volume = SFXVolumeLvl * 0.350f;
+        sfxSourceShooter.volume = SFXVolumeLvl * 0.66f;
 
     }
     #endregion
@@ -120,7 +120,7 @@ public class SFXsoundManager : MonoBehaviour
         sFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
-        sfxSourceShooter.volume = SFXVolumeLvl*0.350f;
+        sfxSourceShooter.volume = SFXVolumeLvl*0.66f;
     }
     #endregion
 

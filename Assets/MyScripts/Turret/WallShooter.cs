@@ -37,8 +37,11 @@ public class WallShooter : MonoBehaviour
     {
         if (FindObjectOfType<PlayerController>() != null)
         {
-            if ((Vector3.Distance(this.transform.position, FindObjectOfType<PlayerController>().collidedPlat.transform.position) < 10f))
+            var player = FindObjectOfType<PlayerController>();
+
+            if (player.IsPlayerNearShooter(this))
             {
+                
                 gameObject.transform.DOPunchScale(new Vector3(0.1f,.3f,0), 0.1f, 2, .5f);
 
                 Invoke("InstanceShot",.1f);
