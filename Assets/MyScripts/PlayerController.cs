@@ -555,9 +555,10 @@ public class PlayerController : MonoBehaviour
 
     private void FuelRefillOnNewPlatform()
     {
-        FuelCircleProgression.GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl;
+        //FuelCircleProgression.GetComponent<AudioSource>().volume = SFXsoundManager.instance.SFXVolumeLvl;
+        //FuelCircleProgression.GetComponent<AudioSource>().Play();
 
-        FuelCircleProgression.GetComponent<AudioSource>().Play();
+        SFXsoundManager.instance.PlayFuelRefillSound();
         FuelCircleProgression.DOFillAmount(maxFuel, (1 - remainingFuel / maxFuel) * 1f);
         remainingFuel = maxFuel;
     }

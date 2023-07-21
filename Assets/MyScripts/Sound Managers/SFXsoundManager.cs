@@ -16,6 +16,7 @@ public class SFXsoundManager : MonoBehaviour
     public static AudioSource sfxSource1;
     public AudioSource sfxSourceJetpack;
     public AudioSource sfxSourceShooter;
+    public AudioSource sfxSourceRefill;
 
     //SFX VOLUME VARIABLES
     private int sFXVolumeToSlider;
@@ -25,8 +26,8 @@ public class SFXsoundManager : MonoBehaviour
     public float SFXVolumeLvl { get { return sFXVolumeLvl; } /*set; */}
 
     //AUDIO CLIPS
-    [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion;
-    [SerializeField] private List<AudioClip> shootSound = new List<AudioClip>(); 
+    [SerializeField] private AudioClip playerDeathClip, okClick, backClick, jetpackPropulsion, refillSound;
+    [SerializeField] private List<AudioClip> shootSound /*= new List<AudioClip>()*/; 
 
 
     //Future use
@@ -57,7 +58,7 @@ public class SFXsoundManager : MonoBehaviour
     {
         //sfxSourceJetpack = GetComponentInChildren<AudioSource>();
         sfxSource1 = GetComponent<AudioSource>();
-        sfxSourceShooter.volume = SFXVolumeLvl * 0.66f;
+        sfxSourceShooter.volume = sfxSource1.volume * 0.5f ;
 
     }
     #endregion
@@ -85,6 +86,11 @@ public class SFXsoundManager : MonoBehaviour
                 sfxSourceShooter.clip = shootSound[ Random.Range(0, 5)];
                 sfxSourceShooter.Play();
                 break;
+            case "refillSound":
+                sfxSourceRefill.clip = refillSound;
+                sfxSourceRefill.Play();
+                break;
+
         }
     }
 
@@ -106,6 +112,10 @@ public class SFXsoundManager : MonoBehaviour
     {
         PlaySound("jetPackProp");
     }
+    public void PlayFuelRefillSound()
+    {
+        PlaySound("refillSound");
+    }
     #endregion
 
     #region <SFX VOLUME UPDATE>
@@ -120,13 +130,15 @@ public class SFXsoundManager : MonoBehaviour
         sFXVolumeLvl = value / 100f;
         sfxSource1.volume = SFXVolumeLvl;
         sfxSourceJetpack.volume = SFXVolumeLvl;
-        sfxSourceShooter.volume = SFXVolumeLvl*0.66f;
-    }
-    #endregion
+        sfxSourceShooter.volume = SFXVolumeLvl * 0.5f;
+        sfxSourceRefill.volume = SFXVolumeLvl;
 
-    #region <SAVE/LOAD SFX VOLUME SETTINGS>
+}
+#endregion
 
-    public void SavePlayerSettings()
+#region <SAVE/LOAD SFX VOLUME SETTINGS>
+
+public void SavePlayerSettings()
     {
         int SFXvolSlider = SFXVolumeToSlider;
         float SFXvolLvl = SFXVolumeLvl;
