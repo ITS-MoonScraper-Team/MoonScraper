@@ -1001,10 +1001,12 @@ public class PlayerController : MonoBehaviour
         #region ||>> LIFE AND SCORE COUNT <<||
 
         ///FIX TEXT VITE INGAME..ORA FUNZIA(17/03)
-        if (livesCount != 0)
+        if (livesActive == true && HC == false)
         {
-            if(livesActive ==true&& HC == false)
-             livesText.text = $"LIVES {livesCount}"; 
+            if (livesCount >= 0)
+            {
+                livesText.text = $"LIVES {livesCount}";
+            }
         }
         //else
         //{ livesText.text = "LIVES 0"; }

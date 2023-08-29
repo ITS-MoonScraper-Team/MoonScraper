@@ -9108,6 +9108,10 @@ PrefabInstance:
       propertyPath: m_SortingOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6438067610788018770, guid: 3010cf0554ffa8543b3d80bb4420bbe4, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7740334208031232131, guid: 3010cf0554ffa8543b3d80bb4420bbe4, type: 3}
       propertyPath: m_SortingOrder
       value: 1
